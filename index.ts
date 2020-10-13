@@ -16,7 +16,7 @@ abstract class User {
     }
 }
 
-export class LoginBuilder {
+export class UserBuilder {
     logIn(email: string, password: string): User {
         return;
     }
@@ -40,22 +40,45 @@ export interface UploadedFile {
     lastModified: Date;
 }
 
+export class Comment{
+    text: string;
+    user: User;
+    createdOn: Date;
+}
+
+export class CodeBlock{
+    //Individual portion or segment of code in a file
+    from: number;
+    to: number;
+    file: UploadedFile;
+}
+
 export class CodeMatch {
-    code1: string;
-    code2: string;
+    //Code in a file of one student that matches with code in file of other student
+    code1: CodeBlock;
+    code2: CodeBlock;
+    comments: Comment[];
+
+    publishComment(user: User): void {}
 }
 
 export class FileMatch {
+    //File of a submission of one student with file in other students submission
     file1: UploadedFile;
     file2: UploadedFile;
-    codeBlockMatch: CodeMatch;
+    codeBlockMatches: CodeMatch[]; //all the code matches in file1 and file2.
+
+    getAllComments(): Comment[]{
+        //get all comments from all the matched codeblocks
+        return;
+    }
 }
 
 export class SubmissionMatch {
+    //Match between submission of one student and submission of other student
     matchId: string;
     match: [Submission, Submission];
     fileMatch: FileMatch[];
-
     similarityRating: number;
 
     getFiles(): [Submission, Submission] {
@@ -64,11 +87,12 @@ export class SubmissionMatch {
 }
 
 export class Submission {
+    //All the files beloning to a student
     submissionId: string;
     student: Student;
     shared: boolean; // defaults to false
+    codeblocks: CodeBlock[];
     files: UploadedFile[];
-    similarityRating: number;
 
     getMatches(): SubmissionMatch[] {
         return;
@@ -93,7 +117,7 @@ export class Project {
         return;
     }
     
-    uploadFiles(file: File): void {}
+    uploadFiles(files: File[]): void {}
 }
 
 
@@ -107,12 +131,21 @@ export class Student extends User {
 
 }
 
+export class Note {
+    note: string;
+    createdOn: Date;
+    isArchived: boolean;
+
+    archiveNote(): void {
+        return;
+    }
+}
+
 export class Instructor extends User {
+    notes: Note[];
+
     getProjects(): Project[] {
         return;
     }
-
-    publishComment(codeMatch: CodeMatch): void {}
-
 }
 
