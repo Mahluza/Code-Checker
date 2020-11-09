@@ -1,17 +1,25 @@
+import * as express from 'express';
 
-/**
- * Sample TypeDoc comment for class MyProject
- */
-export class MyProject {
+const app = express();
 
-  /**
-   * sample TypeDoc comment for my method.
-   * Params and Returns will be auto-generated
-   */
-  public static myMethod = (arg1: string, arg2: number): string => {
-    return 'It works!!';
-  }
+app.use(express.json({type: "json"}));
 
-}
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Methods", "*");
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  next();
+});
 
-console.log(MyProject.myMethod('', 0));
+app.get('/', (req: express.Request, res: express.Response) => {
+  res.status(200).send("Team 18");
+})
+
+app.post('/', (req: express.Request, res: express.Response) => {
+  console.log("req", req.body)
+  res.status(200).send("Team 18");
+})
+
+app.listen(4000, () => {
+  console.log("Started listening on port 4000");
+});
