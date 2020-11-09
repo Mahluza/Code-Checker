@@ -4,6 +4,7 @@
   "description": "Project scaffold for server",
   "main": "dist/server.js",
   "scripts": {
+    "start:dev": "nodemon",
     "start": "npm run build && node dist/server.js",
     "build": "node scripts/webpack.js",
     "build:analysis": "node scripts/webpack.js --analyze",
