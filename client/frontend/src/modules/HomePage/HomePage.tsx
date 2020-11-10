@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Row, Col, Space, Tag, Divider, Table, Button } from 'antd';
+import { Row, Col, Space, Tag, Divider, Table, Button, Typography } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons'
 import './homePageStyles.css'
 import 'antd/dist/antd.css';
@@ -8,6 +8,7 @@ import 'antd/dist/antd.css';
 function HomePage() {
   // Declare a new state variable, which we'll call "count"
   const [count, setCount] = useState(0);
+  const { Title } = Typography;
 
   const columns = [
     {
@@ -85,7 +86,13 @@ function HomePage() {
     <Row>
         <Col span={8}>
             <div className="home-page-container">
-                <Divider orientation="left">Instructor</Divider>
+                <Row justify="center">
+                    <Divider orientation="center" style={{marginTop: 15}}>Instructor</Divider>
+                    <Col>
+                        <Title level={5}>Professor Fauci</Title>
+                        <Title level={5}> Active Projects: {data.length}</Title>
+                    </Col>
+                </Row>
             </div>
         </Col>
         <Col span={16}>
