@@ -1,3 +1,8 @@
+# Patterns
+
+1. Using Model View Controller Pattern for the Project. View is being implemented as a seperate service. So the server holds Models and Controller portion.
+2. Builder Pattern to create models whenever needed.
+
 
 # server
 

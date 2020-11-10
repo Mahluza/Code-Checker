@@ -1,7 +1,11 @@
 import * as express from 'express';
 
 const app = express();
+const detectionController = require("./controllers/detection")
 
+const PORT = process.env.PORT || 4000;
+
+//Middlewares
 app.use(express.json({type: "json"}));
 
 app.use(function(req, res, next) {
@@ -11,15 +15,12 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use("/detection", detectionController)
+//Routes
+
 app.get('/', (req: express.Request, res: express.Response) => {
-  res.status(200).send("Team 18");
 })
 
-app.post('/', (req: express.Request, res: express.Response) => {
-  console.log("req", req.body)
-  res.status(200).send("Team 18");
-})
-
-app.listen(4000, () => {
-  console.log("Started listening on port 4000");
+app.listen(PORT, () => {
+  console.log(`Started listening on port ${PORT}`);
 });
