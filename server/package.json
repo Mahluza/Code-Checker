@@ -18,6 +18,7 @@
   "author": "team-18",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.0",
     "express": "^4.17.1"
   },
   "devDependencies": {
@@ -46,6 +47,7 @@
     "sinon": "^9.0.2",
     "ts-loader": "^7.0.5",
     "ts-mocha": "^7.0.0",
+    "ts-morph": "^8.1.2",
     "ts-node": "^8.10.2",
     "tslint": "^6.1.2",
     "tslint-consistent-codestyle": "^1.16.0",

@@ -1,7 +1,8 @@
 import * as express from 'express';
 
 const app = express();
-const detectionController = require("./controllers/detection")
+const DetectionController = require("./controllers/DetectionController")
+const UserController = require("./controllers/UserController")
 
 const PORT = process.env.PORT || 4000;
 
@@ -15,7 +16,8 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use("/detection", detectionController)
+app.use("/detection", DetectionController)
+app.use("/users", UserController)
 //Routes
 
 app.get('/', (req: express.Request, res: express.Response) => {
