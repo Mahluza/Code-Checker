@@ -1,12 +1,9 @@
 import * as express from 'express';
 import Builder from '../models/Builder';
 import Director from '../models/Director';
-import {generateToken} from "./../utils/authorization";
-
+import {generateToken} from "../authorization.ts/authorization";
 
 let router = express.Router();
-const jwt = require('jsonwebtoken');
-
 
 router.route("").post((req: express.Request, res: express.Response) => {
     let firstName = req.body.firstName

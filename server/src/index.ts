@@ -1,9 +1,9 @@
 import * as express from 'express';
-import {authorize} from "./utils/authorization";
-import Director from './models/Director';
+import {authorize} from "./authorization.ts/authorization";
 
 const app = express();
 const bodyParser = require('body-parser');
+const morgan = require('morgan')
 
 const DetectionController = require("./controllers/DetectionController")
 const UserController = require("./controllers/UserController")
@@ -24,6 +24,7 @@ app.use(function(req, res, next) {
 
 app.use((req, res, next) => authorize(req, res, next));
 
+app.use(morgan('tiny'))
 
 app.use("/detection", DetectionController)
 app.use("/users", UserController)

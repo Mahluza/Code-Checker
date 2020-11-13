@@ -1,6 +1,6 @@
 import e = require('express');
 import IUserModel from '../models/IUserModel';
-import Director from './../models/Director';
+import Director from '../models/Director';
 
 const jwt = require('jsonwebtoken');
 
