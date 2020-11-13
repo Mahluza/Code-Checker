@@ -1,4 +1,3 @@
-import e = require('express');
 import IUserModel from '../models/IUserModel';
 import Director from '../models/Director';
 
