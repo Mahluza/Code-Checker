@@ -1,0 +1,15 @@
+/build/**
+/node_modules/**
+/coverage/**
+/docs/**
+/jsdoc/**
+/scripts/**
+/scripts/*.js
+/templates/**
+/tests/bench/**
+/tests/fixtures/**
+/tests/performance/**
+/tmp/**
+/tools/internal-rules/node_modules/**
+test.js
+!.eslintrc.js

@@ -1,5 +1,4 @@
-
-const path = require('path');
+const path = require('path')
 
 module.exports = {
   entry: './src/index.ts',
@@ -17,11 +16,11 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [ '.tsx', '.ts', '.js' ],
+    extensions: ['.tsx', '.ts', '.js'],
   },
   node: {
     __dirname: false,
-    __filename: false
+    __filename: false,
   },
   output: {
     library: 'myLib',
@@ -30,4 +29,4 @@ module.exports = {
     filename: 'server.js',
     path: path.resolve(__dirname, 'dist'),
   },
-};
+}
