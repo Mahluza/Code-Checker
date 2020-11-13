@@ -1,5 +1,5 @@
 import * as express from 'express';
-import {authorize} from "./authorization.ts/authorization";
+import {authorize} from "./authorization/authorization";
 
 const app = express();
 const bodyParser = require('body-parser');
