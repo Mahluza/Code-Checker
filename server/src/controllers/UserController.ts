@@ -1,11 +1,12 @@
 import * as express from 'express';
 import Builder from '../models/Builder';
 import Director from '../models/Director';
+import {generateToken} from "./../utils/authorization";
+
 
 let router = express.Router();
 const jwt = require('jsonwebtoken');
 
-const accessTokenSecret = 'youraccesstokensecret';
 
 router.route("").post((req: express.Request, res: express.Response) => {
     let firstName = req.body.firstName
@@ -15,7 +16,8 @@ router.route("").post((req: express.Request, res: express.Response) => {
     let password = req.body.password
     let builder = new Builder();
     let userModel = builder.buildUser(firstName, lastName, institution, email, password);
-    res.status(200).send({"status": "success"});
+    const accessToken = generateToken(userModel);
+    res.status(200).send({"status": "success", "accessToken": accessToken});
 })
 
 router.route("/validate").post((req: express.Request, res: express.Response) => {
@@ -24,7 +26,7 @@ router.route("/validate").post((req: express.Request, res: express.Response) => 
     let userModel = Director.getUserModel(email);
     if(userModel){
         if(userModel.validate(password)){
-            const accessToken = jwt.sign({ username: email,  role: 1 }, accessTokenSecret);
+            const accessToken = generateToken(userModel);
             res.status(200).send({"result": true, "accessToken": accessToken});
         }else{
             res.status(200).send({"result": false, "message": "Incorrect email/password"});

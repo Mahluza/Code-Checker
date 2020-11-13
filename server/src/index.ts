@@ -1,11 +1,9 @@
 import * as express from 'express';
+import {authorize} from "./utils/authorization";
 import Director from './models/Director';
 
 const app = express();
 const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
-
-const accessTokenSecret = 'youraccesstokensecret';
 
 const DetectionController = require("./controllers/DetectionController")
 const UserController = require("./controllers/UserController")
@@ -24,29 +22,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use(function(req, res, next) {
-  if(req.url != "/users" && req.url !="/users/validate"){
-    const authHeader = req.headers.authorization;
-    if (authHeader) {
-        const token = authHeader.split(' ')[1];
-
-        jwt.verify(token, accessTokenSecret, (err: any, userDetails: any) => {
-            if (err) {
-                console.log("err", err)
-                return res.sendStatus(403);
-            }
-            let user = Director.getUserModel(userDetails.username)
-            req.body.user = user;
-            next();
-        });
-    } else {
-        res.sendStatus(401);
-    }
-  }
-  else{
-    next();
-  }
-});
+app.use((req, res, next) => authorize(req, res, next));
 
 
 app.use("/detection", DetectionController)
