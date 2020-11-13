@@ -4,6 +4,10 @@
 2. Builder Pattern to create models whenever needed.
 
 
+# References
+
+1. https://stackabuse.com/authentication-and-authorization-with-jwts-in-express-js/
+
 # server
 
 Project scaffold for server
