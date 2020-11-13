@@ -1,13 +1,13 @@
-import IUserModel from "./IUserModel";
+import IUserModel from './IUserModel'
 
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcrypt')
 
 export default class UserModel implements IUserModel {
-  private firstName: string;
-  private lastName: string;
-  private institution: string;
-  private email: string;
-  private passwordHash: string;
+  private firstName: string
+  private lastName: string
+  private institution: string
+  private email: string
+  private passwordHash: string
 
   constructor(
     firstName: string,
@@ -16,30 +16,30 @@ export default class UserModel implements IUserModel {
     email: string,
     password: string
   ) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.institution = institution;
-    this.email = email;
-    this.passwordHash = bcrypt.hashSync(password, 10);
+    this.firstName = firstName
+    this.lastName = lastName
+    this.institution = institution
+    this.email = email
+    this.passwordHash = bcrypt.hashSync(password, 10)
   }
   getFirstName(): string {
-    return this.firstName;
+    return this.firstName
   }
   getLastName(): string {
-    return this.lastName;
+    return this.lastName
   }
   getFullName(): string {
-    return this.getFirstName() + " " + this.getLastName();
+    return this.getFirstName() + ' ' + this.getLastName()
   }
   getInstitution(): string {
-    return this.institution;
+    return this.institution
   }
 
   getEmail(): string {
-    return this.email;
+    return this.email
   }
 
   validate(password: string): boolean {
-    return bcrypt.compareSync(password, this.passwordHash);
+    return bcrypt.compareSync(password, this.passwordHash)
   }
 }
