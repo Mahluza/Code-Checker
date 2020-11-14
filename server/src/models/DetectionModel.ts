@@ -1,6 +1,14 @@
 import FileModel from './fileModel'
-import { Project, Node, SourceFile, SyntaxKind, Identifier } from 'ts-morph'
-import { start } from 'repl'
+import {
+  Project,
+  Node,
+  SourceFile,
+  SyntaxKind,
+  Identifier,
+  VariableDeclaration,
+  BinaryExpression,
+  ExpressionStatement,
+} from 'ts-morph'
 
 export default class DetectionModel {
   astNodeHashMap: Map<number, number>
@@ -13,23 +21,13 @@ export default class DetectionModel {
   run() {
     const project = new Project()
     project.addSourceFileAtPath('./src/models/exp1.ts')
-    // project.addSourceFileAtPath("./src/models/suspected.ts");
     const sourceFile = project.getSourceFileOrThrow('exp1.ts')
-    //  const suspectedFile = project.getSourceFileOrThrow("suspected.ts");
-    // sourceFile.
-    const interfaces = sourceFile.getInterfaces()
-    // console.log(interfaces.length);
-    // this.printAST(sourceFile, 2);
-    this.traverseAST(sourceFile)
-    //this.astNodeSuspectedHashMap = this.traverseAST(suspectedFile);
-    this.PrintMap()
-    console.log('New world!!!!')
+    console.log('calling traverse-----------')
+    let hashcode = this.traverseAST(sourceFile)
+    console.log('completed traverse-----------', hashcode)
   }
 
   printAST(src: Node, acc: number) {
-    // console.log("s", src.getChildSyntaxList());
-    // if(acc>0){
-    //     acc--;
     src.forEachChild((node_el: Node) => {
       console.log(
         '>>',
@@ -51,83 +49,77 @@ export default class DetectionModel {
     // }
   }
 
-  traverseExpression(src: Node): number {
-    let hashValueforeachKind = 0
-    src.forEachChild((node_el: Node) => {
-      switch (node_el.getKind()) {
+  traverseAST(node: Node): SyntaxKind[] {
+    if (node) {
+      let hashcode: SyntaxKind[] = []
+      node.forEachChild((child_node: Node) => {
+        switch (child_node.getKind()) {
+          case SyntaxKind.Identifier:
+            hashcode.push(SyntaxKind.Identifier)
+            break
+          case SyntaxKind.StringLiteral:
+          case SyntaxKind.NumericLiteral:
+            hashcode.push(child_node.getKind())
+            break
+          case SyntaxKind.FunctionDeclaration:
+            hashcode.push(
+              ...this.traverseAST(
+                child_node.getFirstChildByKind(SyntaxKind.Block)
+              )
+            )
+            break
+          case SyntaxKind.VariableDeclarationList:
+          case SyntaxKind.VariableStatement:
+          case SyntaxKind.VariableDeclaration:
+            hashcode.push(...this.traverseAST(child_node))
+            break
+
+          case SyntaxKind.ExpressionStatement:
+          case SyntaxKind.BinaryExpression:
+            hashcode.push(...this.traverseExpression(child_node))
+            break
+          default:
+            console.log(
+              'came in ',
+              child_node.getText(),
+              '     ',
+              child_node.getKindName(),
+              '   ',
+              child_node.getKind()
+            )
+            break
+        }
+      })
+      return hashcode
+    }
+  }
+
+  traverseExpression(node: Node): SyntaxKind[] {
+    let hashcode: SyntaxKind[] = []
+    node.forEachChild((child_node) => {
+      switch (child_node.getKind()) {
+        case SyntaxKind.Identifier:
+          hashcode.push(child_node.getKind())
+          break
         case SyntaxKind.BinaryExpression:
-          hashValueforeachKind += this.traverseExpression(node_el)
+          hashcode.push(...this.traverseExpression(child_node))
+          break
+        case SyntaxKind.PlusToken:
+        case SyntaxKind.MinusToken:
+        case SyntaxKind.AsteriskToken:
+        case SyntaxKind.AsteriskAsteriskToken:
+        case SyntaxKind.SlashToken:
+        case SyntaxKind.PercentToken:
+          hashcode.push(child_node.getKind())
+          break
+        case SyntaxKind.EqualsToken:
+          // To handle cases were code can be declared and initialized seperately
+          hashcode.pop()
           break
         default:
-          hashValueforeachKind += node_el.getKind()
           break
       }
     })
-    return hashValueforeachKind
-  }
-
-  traverseStatement(src: Node): number {
-    let hashValueforeachKind = 0
-    src.forEachChild((node_el: Node) => {
-      switch (node_el.getKind()) {
-        case SyntaxKind.BinaryExpression:
-          hashValueforeachKind += this.traverseExpression(node_el)
-          break
-        default:
-          hashValueforeachKind += node_el.getKind()
-          break
-      }
-    })
-
-    return hashValueforeachKind
-  }
-
-  traverseAST(src: Node) {
-    let hashValueforeachKind = 0
-    src.forEachChild((node_el: Node) => {
-      switch (node_el.getKind()) {
-        // case SyntaxKind.NumericLiteral:
-        // case SyntaxKind.Parameter:
-        // case SyntaxKind.NumberKeyword
-        // case SyntaxKind.Identifier: hashValueforeachDescendant += descendant.getKind();
-        //                             console.log(hashValueforeachDescendant);
-        //                             break;
-
-        case SyntaxKind.Block:
-        case SyntaxKind.FunctionDeclaration:
-        case SyntaxKind.VariableStatement: //hashValueforeachKind+=node_el.getKind();
-        case SyntaxKind.VariableDeclarationList:
-          this.traverseAST(node_el)
-
-        case SyntaxKind.ExpressionStatement: //startLine = node_el.getStartLineNumber();
-          // this.traverseAST(node_el);
-          break
-        case SyntaxKind.VariableDeclaration:
-          hashValueforeachKind += this.traverseStatement(node_el)
-          this.astNodeHashMap.set(
-            node_el.getStartLineNumber(),
-            hashValueforeachKind
-          )
-          break
-        case SyntaxKind.EndOfFileToken:
-          break
-        case SyntaxKind.BinaryExpression:
-          break
-
-          // default: hashValueforeachKind += node_el.getKind();
-          //console.log(hashValueforeachDescendant);
-          break
-      }
-    })
-
-    hashValueforeachKind = 0
-  }
-
-  PrintMap() {
-    console.log('length : ', this.astNodeHashMap.size)
-    this.astNodeHashMap.forEach((value: number, key: number) => {
-      console.log(key, value)
-      console.log('\n')
-    })
+    return hashcode
   }
 }

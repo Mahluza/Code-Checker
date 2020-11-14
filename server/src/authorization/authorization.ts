@@ -6,7 +6,11 @@ const jwt = require('jsonwebtoken')
 export const ACCESS_TOKEN_SECRET = 'aNhztLmF5F5RhHTxI9EJ6jodwefMq19m'
 
 export function authorize(req: any, res: any, next: any): void {
-  if (req.url != '/users' && req.url != '/users/validate') {
+  if (
+    req.url != '/users' &&
+    req.url != '/users/validate' &&
+    req.url != '/detection/create'
+  ) {
     const authHeader = req.headers.authorization
     if (authHeader) {
       jwt.verify(
