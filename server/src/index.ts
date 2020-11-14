@@ -5,8 +5,10 @@ const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 
-const DetectionController = require('./controllers/DetectionController')
 const UserController = require('./controllers/UserController')
+const ProjectController = require('./controllers/ProjectController')
+const SubmissionController = require('./controllers/SubmissionController')
+const DetectionController = require('./controllers/DetectionController')
 
 const PORT = process.env.PORT || 4000
 
@@ -29,8 +31,10 @@ app.use((req, res, next) => authorize(req, res, next))
 
 app.use(morgan('tiny'))
 
-app.use('/detection', DetectionController)
 app.use('/users', UserController)
+app.use('/project', ProjectController)
+app.use('/submission', SubmissionController)
+app.use('/detection', DetectionController)
 //Routes
 
 app.get('/', (req: express.Request, res: express.Response) => {})
