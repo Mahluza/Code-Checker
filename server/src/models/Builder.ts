@@ -5,7 +5,7 @@ import IBuilder from './IBuilder'
 import IUserModel from './IUserModel'
 import ProjectModel from './ProjectModel'
 import UserModel from './UserModel'
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 
 export default class DetectionBuilder implements IBuilder {
   buildProject(projectName: string, owner: IUserModel): ProjectModel {

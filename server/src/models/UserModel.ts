@@ -1,6 +1,6 @@
 import IUserModel from './IUserModel'
 
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 
 export default class UserModel implements IUserModel {
   private firstName: string
