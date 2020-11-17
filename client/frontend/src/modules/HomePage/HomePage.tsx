@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from 'axios';
 import { withRouter } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import allActions from '../../redux/allActions';
 import { Row, Col, Divider, Table, Button, Typography } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import UploadModal from "./subcomponents/UploadModal";
@@ -8,10 +11,29 @@ import "./homePageStyles.css";
 import "antd/dist/antd.css";
 
 function HomePage() {
-  // Declare a new state variable, which we'll call "count"
-  const [count, setCount] = useState(0);
   // check if upload modal is enabled
   const [visible, setVisible] = useState(false);
+  const currentUser = useSelector(state => state);
+  const dispatch = useDispatch()
+
+  const user = {name: "Rei"}
+
+  useEffect(() => {
+    dispatch(allActions.userActions.setUser(user))
+  }, [])
+
+  const instance = axios.create({baseURL: 'http://localhost:4000'})
+
+  instance.post("/users", {
+    firstName: 'Fred',
+    lastName: 'Flintstone',
+    institution: "bop",
+    email: "woo@woo.com",
+    password: "passowrd"
+  }).then((result) => {
+    console.log(result)
+  });
+
   const { Title } = Typography;
 
   const showModal = () => {
