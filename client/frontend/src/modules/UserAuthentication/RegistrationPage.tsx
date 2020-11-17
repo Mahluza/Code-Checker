@@ -42,6 +42,13 @@ function RegistrationPage() {
 
   const onFinish = (values: any) => {
     values.institution = institution;
+    fetch('http://localhost:4000/users', {
+      method: 'POST',
+      headers: new Headers({ 'content-type': 'applicaiton/json' }),
+      body: JSON.stringify(values),
+    })
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err));
     console.log('Received following values from form: ', values);
   };
 

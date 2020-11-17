@@ -11,6 +11,9 @@ router.route('').post((req: express.Request, res: express.Response) => {
   let institution = req.body.institution
   let email = req.body.email
   let password = req.body.password
+  console.log(req.body)
+  // console.log('institution:', email)
+  // console.log('lastName:', password)
   let builder = new Builder()
   let userModel = builder.buildUser(
     firstName,
@@ -28,6 +31,8 @@ router
   .post((req: express.Request, res: express.Response) => {
     let email = req.body.email
     let password = req.body.password
+    // console.log('email:', email)
+    // console.log('password:', password)
     let userModel = Director.getUserModel(email)
     if (userModel) {
       if (userModel.validate(password)) {

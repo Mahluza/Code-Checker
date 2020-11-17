@@ -23,3 +23,23 @@ What exactly does vh mean?
 
 Is my logic okay in this conditional render? *
 {location.pathname !== '/login' && location.pathname !== '/register' &&
+
+Authentication
+Currently react is running off its own server right?
+We want it to run off of the server that we created
+So how connect express and react so that react webpage is being rendered by express
+
+// what does this header do?
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Methods', '*')
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  )
+  next()
+})
+
+What does this do?
+app.use('/users', UserController)
+- I think it's mapping '/users' to '' in userController

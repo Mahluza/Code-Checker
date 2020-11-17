@@ -14,6 +14,17 @@ const { Title } = Typography;
 function LogInPage() {
   // does it matter if onFinish is defined in here?
   const onFinish = (values: any) => {
+    // are you telling it to post to this url?
+    // what does then do?
+    fetch('http://localhost:4000/users/validate', {
+      method: 'POST',
+      headers: new Headers({
+        'content-type': 'application/json',
+      }),
+      body: JSON.stringify(values),
+    })
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err));
     console.log('Received following values from form: ', values);
   };
 
@@ -34,14 +45,14 @@ function LogInPage() {
           <Row gutter={[0, 50]} align="middle" style={{ minHeight: '30vh' }}>
             <Form name="login" className="login-form" onFinish={onFinish}>
               <Form.Item
-                name="username"
+                name="email"
                 rules={[
                   { required: true, message: 'Please input your username!' },
                 ]}
               >
                 <Input
                   prefix={<UserOutlined className="site-form-item-icon" />}
-                  placeholder="username"
+                  placeholder="email"
                 />
               </Form.Item>
               <Form.Item
