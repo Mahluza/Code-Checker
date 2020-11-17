@@ -1,0 +1,25 @@
+// is withRouter necessary
+// allows redirection?
+// what is this.props.history
+export default LogInPage;
+
+// from typography module import Title class. And assign it to a variable Title?
+const { Title } = Typography;
+
+//difference between switch and router?
+
+// canyou think of name... as an argument into the Form element?
+<Form
+    name=""
+>
+
+Does className dictate how the thing is going to be styled?
+
+Are the styles being completely self-defined in the case of LogInPage.tsx
+
+Why is eveything in the form 
+
+What exactly does vh mean?  
+
+Is my logic okay in this conditional render? *
+{location.pathname !== '/login' && location.pathname !== '/register' &&
