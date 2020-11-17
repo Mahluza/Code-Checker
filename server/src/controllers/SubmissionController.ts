@@ -21,3 +21,5 @@ router.route('/test').get((req: express.Request, res: express.Response) => {
   fileModel.run()
   res.status(200).send('Team 18')
 })
+
+module.exports = router

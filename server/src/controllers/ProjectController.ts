@@ -15,3 +15,5 @@ router.route('').post((req: express.Request, res: express.Response) => {
 router.route('').get((req: express.Request, res: express.Response) => {
   res.status(200).send({ status: 'success' })
 })
+
+module.exports = router
