@@ -1,31 +1,38 @@
-import React from 'react';
-// import { withRouter } from "react-router-dom";
-import { Row, Form, Input, Button, Typography } from 'antd';
+import React from "react";
+import axios from "axios";
+import { withRouter, useHistory } from "react-router-dom";
+import { Row, Form, Input, Button, Typography } from "antd";
 //import Login from 'antd'; //'ant-design-pro/lib/Login';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 // import 'antd/dist/antd.css';
-import './loginAndRegistration.css';
+import "./loginAndRegistration.css";
+import { useDispatch } from "react-redux";
+import allActions from "../../redux/allActions";
 
 // difference between doing a class and a function?
 
 // from typography module import Title class. And assign it to a variable Title?
 const { Title } = Typography;
+const instance = axios.create({ baseURL: "http://localhost:4000" });
 
 function LogInPage() {
-  // does it matter if onFinish is defined in here?
+  let history = useHistory();
+  let dispatch = useDispatch();
+
   const onFinish = (values: any) => {
-    // are you telling it to post to this url?
-    // what does then do?
-    fetch('http://localhost:4000/users/validate', {
-      method: 'POST',
-      headers: new Headers({
-        'content-type': 'application/json',
-      }),
-      body: JSON.stringify(values),
-    })
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
-    console.log('Received following values from form: ', values);
+    instance
+      .post("/users/validate", values)
+      .then((result) => {
+        console.log(result, values);
+        if (result.data.result) {
+          const user = { token: result.data.accessToken };
+          dispatch(allActions.userActions.setUser(user));
+          history.push("/home");
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   return (
@@ -33,21 +40,21 @@ function LogInPage() {
     // and Form.Item as a class or method within Form
 
     <div className="center-div">
-      <Row align="bottom" justify="center" style={{ minHeight: '35vh' }}>
+      <Row align="bottom" justify="center" style={{ minHeight: "35vh" }}>
         <Title>CodeChecker</Title>
       </Row>
 
-      <Row align="middle" style={{ minHeight: '35vh' }}>
+      <Row align="middle" style={{ minHeight: "35vh" }}>
         <div className="login-form-container">
-          <Row align="bottom" justify="center" style={{ minHeight: '8vh' }}>
+          <Row align="bottom" justify="center" style={{ minHeight: "8vh" }}>
             <h6>Log in to CodeChecker</h6>
           </Row>
-          <Row gutter={[0, 50]} align="middle" style={{ minHeight: '30vh' }}>
+          <Row gutter={[0, 50]} align="middle" style={{ minHeight: "30vh" }}>
             <Form name="login" className="login-form" onFinish={onFinish}>
               <Form.Item
                 name="email"
                 rules={[
-                  { required: true, message: 'Please input your username!' },
+                  { required: true, message: "Please input your username!" },
                 ]}
               >
                 <Input
@@ -58,7 +65,7 @@ function LogInPage() {
               <Form.Item
                 name="password"
                 rules={[
-                  { required: true, message: 'Please input your username!' },
+                  { required: true, message: "Please input your username!" },
                 ]}
               >
                 <Input

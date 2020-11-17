@@ -16,23 +16,7 @@ function HomePage() {
   const currentUser = useSelector(state => state);
   const dispatch = useDispatch()
 
-  const user = {name: "Rei"}
-
-  useEffect(() => {
-    dispatch(allActions.userActions.setUser(user))
-  }, [])
-
-  const instance = axios.create({baseURL: 'http://localhost:4000'})
-
-  instance.post("/users", {
-    firstName: 'Fred',
-    lastName: 'Flintstone',
-    institution: "bop",
-    email: "woo@woo.com",
-    password: "passowrd"
-  }).then((result) => {
-    console.log(result)
-  });
+  console.log(currentUser)
 
   const { Title } = Typography;
 

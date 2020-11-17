@@ -1,15 +1,20 @@
-import React from 'react';
+import React from "react";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
 // import { withRouter } from "react-router-dom";
-import { Radio, Select, Col, Row, Form, Input, Button, Typography } from 'antd';
+import { Radio, Select, Col, Row, Form, Input, Button, Typography } from "antd";
 //import Login from 'antd'; //'ant-design-pro/lib/Login';
-import { LockOutlined } from '@ant-design/icons';
+import { LockOutlined } from "@ant-design/icons";
 // import 'antd/dist/antd.css';
-import './loginAndRegistration.css';
-import './RoleRadio';
-import RoleRadio from './RoleRadio';
+import "./loginAndRegistration.css";
+import "./RoleRadio";
+import RoleRadio from "./RoleRadio";
+import allActions from "../../redux/allActions";
+import { useDispatch } from "react-redux";
 
 const { Title } = Typography;
 const { Option } = Select;
+const instance = axios.create({ baseURL: "http://localhost:4000" });
 
 /*
 How make when doing function and not class
@@ -30,26 +35,30 @@ function RegistrationPage() {
 
   let institution: string;
 
+  let history = useHistory();
+  let dispatch = useDispatch();
+
   const onRoleChange = (values: any) => {
-    console.log('chosen value is,', values);
+    console.log("chosen value is,", values);
     state.value = values;
   };
 
   const onInstitutionChange = (ins: any) => {
-    console.log('selected institution is: ', ins);
+    console.log("selected institution is: ", ins);
     institution = ins;
   };
 
   const onFinish = (values: any) => {
-    values.institution = institution;
-    fetch('http://localhost:4000/users', {
-      method: 'POST',
-      headers: new Headers({ 'content-type': 'applicaiton/json' }),
-      body: JSON.stringify(values),
-    })
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
-    console.log('Received following values from form: ', values);
+    instance
+      .post("/users", values)
+      .then((result) => {
+        const user = {token : result.data.accessToken}
+        dispatch(allActions.userActions.setUser(user));
+        history.push("/home");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   return (
@@ -57,7 +66,7 @@ function RegistrationPage() {
     // and Form.Item as a class or method within Form
 
     <div className="center-div">
-      <Row align="bottom" justify="center" style={{ minHeight: '30vh' }}>
+      <Row align="bottom" justify="center" style={{ minHeight: "30vh" }}>
         <Title>Registration</Title>
       </Row>
 
@@ -66,7 +75,7 @@ function RegistrationPage() {
           <Row align="bottom" justify="center">
             <h6>Register for a CodeChecker Account</h6>
           </Row>
-          <Row style={{ minHeight: '30vh' }}>
+          <Row style={{ minHeight: "30vh" }}>
             <Form
               name="registration"
               className="login-form"
@@ -79,7 +88,7 @@ function RegistrationPage() {
                     rules={[
                       {
                         required: true,
-                        message: 'Please enter your first name!',
+                        message: "Please enter your first name!",
                       },
                     ]}
                   >
@@ -92,7 +101,7 @@ function RegistrationPage() {
                     rules={[
                       {
                         required: true,
-                        message: 'Please enter your last name!',
+                        message: "Please enter your last name!",
                       },
                     ]}
                   >
@@ -112,7 +121,7 @@ function RegistrationPage() {
                 */}
                 <Select
                   placeholder="Institution"
-                  style={{ width: '170%' }}
+                  style={{ width: "170%" }}
                   onChange={onInstitutionChange}
                 >
                   <Option value="other">Other</Option>
@@ -144,7 +153,7 @@ function RegistrationPage() {
                     rules={[
                       {
                         required: true,
-                        message: 'Please input your username!',
+                        message: "Please input your username!",
                       },
                     ]}
                   >
@@ -160,7 +169,7 @@ function RegistrationPage() {
                     rules={[
                       {
                         required: true,
-                        message: 'Please input your username!',
+                        message: "Please input your username!",
                       },
                     ]}
                   >
