@@ -12,11 +12,11 @@ export default class FileModel {
   }
 
   getName(): string {
-    return name
+    return this.name
   }
 
   getContent(): string {
-    return name
+    return this.content
   }
 
   run() {
