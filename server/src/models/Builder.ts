@@ -34,6 +34,9 @@ export default class DetectionBuilder implements IBuilder {
     email: string,
     password: string
   ): UserModel {
+    if(Director.getUserModel(email)){
+      throw new Error("User already exists");
+    }
     let userModel = new UserModel(
       firstName,
       lastName,

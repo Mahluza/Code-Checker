@@ -12,15 +12,20 @@ router.route('').post((req: express.Request, res: express.Response) => {
   let email = req.body.email
   let password = req.body.password
   let builder = new Builder()
-  let userModel = builder.buildUser(
-    firstName,
-    lastName,
-    institution,
-    email,
-    password
-  )
-  const accessToken = generateToken(userModel)
-  res.status(200).send({ status: 'success', accessToken: accessToken })
+  let userModel = undefined
+  try {
+    userModel = builder.buildUser(
+      firstName,
+      lastName,
+      institution,
+      email,
+      password
+    )
+    const accessToken = generateToken(userModel)
+    res.status(200).send({ status: 'success', accessToken: accessToken })
+  } catch (error) {
+    res.status(200).send({ result: false, message: error.message })
+  }
 })
 
 router
