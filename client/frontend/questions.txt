@@ -1,0 +1,45 @@
+// is withRouter necessary
+// allows redirection?
+// what is this.props.history
+export default LogInPage;
+
+// from typography module import Title class. And assign it to a variable Title?
+const { Title } = Typography;
+
+//difference between switch and router?
+
+// canyou think of name... as an argument into the Form element?
+<Form
+    name=""
+>
+
+Does className dictate how the thing is going to be styled?
+
+Are the styles being completely self-defined in the case of LogInPage.tsx
+
+Why is eveything in the form 
+
+What exactly does vh mean?  
+
+Is my logic okay in this conditional render? *
+{location.pathname !== '/login' && location.pathname !== '/register' &&
+
+Authentication
+Currently react is running off its own server right?
+We want it to run off of the server that we created
+So how connect express and react so that react webpage is being rendered by express
+
+// what does this header do?
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Methods', '*')
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  )
+  next()
+})
+
+What does this do?
+app.use('/users', UserController)
+- I think it's mapping '/users' to '' in userController

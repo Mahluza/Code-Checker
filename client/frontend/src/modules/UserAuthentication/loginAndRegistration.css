@@ -1,0 +1,71 @@
+/*
+Why is this on Ant Design page: https://ant.design/components/form/#components-form-demo-normal-login
+#components-form-demo-normal-login .login-form {}
+*/
+
+.login-form {
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.register-form {
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.alt-action {
+  float: left;
+}
+
+.login-form-button1 {
+  width: 152%;
+}
+
+.register-form-button {
+  /*152*/
+  width: 170%;
+}
+
+.login-form-container {
+  background-color: rgb(1, 21, 40);
+  border-radius: 10px;
+  width: 400px;
+  height: 325px;
+}
+
+.register-form-container {
+  background-color: rgb(1, 21, 40);
+  border-radius: 10px;
+  width: 500px;
+  height: 475px;
+  text-align: left;
+}
+
+h6 {
+  color: white;
+  margin-top: 32px;
+}
+
+.center-div {
+  height: auto;
+  margin: 0 auto;
+}
+/*
+div {
+  height: auto;
+  margin: 0 auto;
+}
+*/
+.full-length {
+  width: 175%;
+}
+
+text {
+  color: white;
+  float: left;
+}
+
+.ant-radio-wrapper {
+  color: white;
+}
+/*RGB 1,21,40 */
