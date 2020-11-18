@@ -3,8 +3,22 @@ import ISyntaxTreeNode from './ISyntaxTreeNode'
 import SyntaxTreeNode from './SyntaxTreeNode'
 import ComparisonModel from './ComparisonModel'
 
+var crypto = require('crypto');
+
 export default class FileModel {
-  constructor() {}
+
+  constructor(private name: string, private content: string) {
+    //TODO: file meta data
+  }
+
+  getName(): string {
+    return name
+  }
+
+  getContent(): string {
+    return name
+  }
+
   run() {
     const project = new Project()
     project.addSourceFileAtPath('./src/models/exp1.ts')
@@ -135,7 +149,7 @@ export default class FileModel {
           treeNode.addChild(childTreeNode)
           treeNode.setHashValue(hashcode)
           this.updateHashCodeMapOfANode(childTreeNode, hashcode)
-
+          break
         case SyntaxKind.Identifier:
         case SyntaxKind.NumericLiteral:
         case SyntaxKind.PlusToken:

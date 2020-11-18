@@ -11,9 +11,6 @@ router.route('').post((req: express.Request, res: express.Response) => {
   let institution = req.body.institution
   let email = req.body.email
   let password = req.body.password
-  console.log(req.body)
-  // console.log('institution:', email)
-  // console.log('lastName:', password)
   let builder = new Builder()
   let userModel = undefined
   try {
@@ -25,9 +22,9 @@ router.route('').post((req: express.Request, res: express.Response) => {
       password
     )
     const accessToken = generateToken(userModel)
-    res.status(200).send({ status: 'success', accessToken: accessToken })
+    res.status(200).send({ accessToken: accessToken, userDetails: userModel.getUserDetails() })
   } catch (error) {
-    res.status(200).send({ result: false, message: error.message })
+    res.status(200).send({ errMessage: error.message })
   }
 })
 
@@ -36,20 +33,18 @@ router
   .post((req: express.Request, res: express.Response) => {
     let email = req.body.email
     let password = req.body.password
-    // console.log('email:', email)
-    // console.log('password:', password)
     let userModel = Director.getUserModel(email)
     if (userModel) {
       if (userModel.validate(password)) {
         const accessToken = generateToken(userModel)
-        res.status(200).send({ result: true, accessToken: accessToken })
+        res.status(200).send({ accessToken: accessToken, userDetails: userModel.getUserDetails() })
       } else {
         res
           .status(200)
-          .send({ result: false, message: 'Incorrect email/password' })
+          .send({ errMessage: 'Incorrect email/password' })
       }
     } else {
-      res.status(200).send({ result: false, message: 'User does not exist' })
+      res.status(200).send({ errMessage: 'User does not exist' })
     }
   })
 
