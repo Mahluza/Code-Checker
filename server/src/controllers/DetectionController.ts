@@ -7,7 +7,7 @@ let router = express.Router()
 router.route('/test').post((req: express.Request, res: express.Response) => {
   let user: IUserModel = req.body.user
   console.log('user ', user)
-  res.status(200).send(user.getFullName())
+  res.status(200).send({result: "success"})
 })
 
 module.exports = router
