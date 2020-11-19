@@ -2,11 +2,12 @@ import { Project, Node, SyntaxKind } from 'ts-morph'
 import ISyntaxTreeNode from './ISyntaxTreeNode'
 import SyntaxTreeNode from './SyntaxTreeNode'
 import ComparisonModel from './ComparisonModel'
+import { HashString } from '../schema/HashString'
 
-var crypto = require('crypto');
+var crypto = require('crypto')
+const DELIMITER: string = ' '
 
 export default class FileModel {
-
   constructor(private name: string, private content: string) {
     //TODO: file meta data
   }
@@ -28,99 +29,62 @@ export default class FileModel {
 
     let root1: ISyntaxTreeNode = undefined
     sourceFile.fixUnusedIdentifiers()
-    root1 = this.constructTreeNode(root1, sourceFile)
-    let hashcode = this.traverseAST(sourceFile, root1)
-    root1.setHashValue(hashcode)
-    this.updateHashCodeMapOfANode(root1, hashcode)
+    root1 = this.createSyntaxTreeNode(
+      sourceFile,
+      '',
+      this.traverseAST(sourceFile)
+    )
 
-    let root2: ISyntaxTreeNode = undefined
-    sourceFile2.fixUnusedIdentifiers()
-    root2 = this.constructTreeNode(root2, sourceFile2)
-    let hashcode2 = this.traverseAST(sourceFile2, root2)
-    root2.setHashValue(hashcode2)
-    this.updateHashCodeMapOfANode(root2, hashcode2)
-
-    let comparisonObject = new ComparisonModel()
-    comparisonObject.compareFiles(root1, root2)
+    this.printTreeNode(root1)
   }
 
-  constructTreeNode(treeNode: ISyntaxTreeNode, astNode: Node) {
-    treeNode = new SyntaxTreeNode()
-    treeNode.setNodeType(astNode.getKind())
-    treeNode.setStartLineNumber(astNode.getStartLineNumber())
-    treeNode.setEndLineNumber(astNode.getEndLineNumber())
-    return treeNode
-  }
-
-  updateHashCodeMapOfANode(
-    treeNode: ISyntaxTreeNode,
-    hashCodeArray: Array<SyntaxKind>
-  ) {
-    if (treeNode) {
-      for (let key of hashCodeArray) {
-        if (treeNode.getHashCodeMap().has(key)) {
-          let occurences = treeNode.getHashCodeMap().get(key)
-          treeNode.getHashCodeMap().set(key, occurences + 1)
-        } else {
-          treeNode.getHashCodeMap().set(key, 1)
-        }
+  printTreeNode(treeNode: ISyntaxTreeNode) {
+    let children = treeNode.getChildren()
+    console.log('node Type->', treeNode.getNodeType())
+    if (children != null)
+      for (let i = 0; i < children.length; i++) {
+        console.log(
+          'Tree: nodetype->',
+          children[i].getNodeType(),
+          'hash->',
+          children[i].getHashCode()
+        )
+        this.printTreeNode(children[i])
       }
-    }
   }
-  traverseAST(node: Node, treeNode: ISyntaxTreeNode): SyntaxKind[] {
-    if (node) {
-      let hashcode: SyntaxKind[] = []
-      let childTreeNode: ISyntaxTreeNode = undefined
 
+  traverseAST(node: Node): ISyntaxTreeNode[] {
+    if (node) {
+      let childNodes: ISyntaxTreeNode[] = []
+      let syntaxTreeNodes: ISyntaxTreeNode[] = []
+      let hashCode: HashString = ''
       node.forEachChild((child_node: Node) => {
         switch (child_node.getKind()) {
-          case SyntaxKind.Identifier:
-            childTreeNode = this.constructTreeNode(childTreeNode, child_node)
-            hashcode.push(SyntaxKind.Identifier)
-            treeNode.addChild(childTreeNode)
-            treeNode.setHashValue(hashcode)
-            this.updateHashCodeMapOfANode(treeNode, [SyntaxKind.Identifier])
-            break
-          case SyntaxKind.StringLiteral:
-          case SyntaxKind.NumericLiteral:
-            childTreeNode = this.constructTreeNode(childTreeNode, child_node)
-            hashcode.push(child_node.getKind())
-            treeNode.addChild(childTreeNode)
-            treeNode.setHashValue(hashcode)
-            this.updateHashCodeMapOfANode(treeNode, [child_node.getKind()])
-            break
           case SyntaxKind.FunctionDeclaration:
-            childTreeNode = this.constructTreeNode(childTreeNode, child_node)
-            hashcode.push(
-              ...this.traverseAST(
-                child_node.getFirstChildByKind(SyntaxKind.Block),
-                childTreeNode
-              )
+            childNodes = this.traverseAST(
+              child_node.getFirstChildByKind(SyntaxKind.Block)
             )
-            treeNode.addChild(childTreeNode)
-            treeNode.setHashValue(hashcode)
-            break
-          case SyntaxKind.VariableDeclarationList:
-          case SyntaxKind.VariableStatement:
-            hashcode.push(...this.traverseAST(child_node, treeNode))
-            treeNode.setHashValue(hashcode)
-            break
-          case SyntaxKind.VariableDeclaration:
-            childTreeNode = this.constructTreeNode(childTreeNode, child_node)
-            hashcode.push(...this.traverseAST(child_node, childTreeNode))
-            treeNode.setHashValue(hashcode)
-            treeNode.addChild(childTreeNode)
-            this.updateHashCodeMapOfANode(treeNode, hashcode)
+            syntaxTreeNodes.push(
+              this.createSyntaxTreeNode(child_node, '', childNodes)
+            )
             break
 
+          case SyntaxKind.VariableStatement:
+            let declNode = child_node.getFirstDescendantByKind(
+              SyntaxKind.VariableDeclaration
+            )
+            childNodes = this.traverseAST(declNode)
+            hashCode += this.getHashForVariableStatement(declNode)
+            syntaxTreeNodes.push(
+              this.createSyntaxTreeNode(declNode, hashCode, childNodes)
+            )
+            break
           case SyntaxKind.ExpressionStatement:
           case SyntaxKind.BinaryExpression:
-            childTreeNode = this.constructTreeNode(childTreeNode, child_node)
-            this.traverseExpression(child_node, childTreeNode)
-            hashcode.push(...this.traverseExpression(child_node, childTreeNode))
-            treeNode.setHashValue(hashcode)
-            treeNode.addChild(childTreeNode)
-            this.updateHashCodeMapOfANode(childTreeNode, hashcode)
+            hashCode = this.traverseExpression(child_node)
+            syntaxTreeNodes.push(
+              this.createSyntaxTreeNode(child_node, hashCode)
+            )
             break
           default:
             console.log(
@@ -134,44 +98,106 @@ export default class FileModel {
         }
       })
 
-      return hashcode
+      return syntaxTreeNodes
     }
   }
 
-  traverseExpression(node: Node, treeNode: ISyntaxTreeNode): SyntaxKind[] {
-    let hashcode: SyntaxKind[] = []
-    let childTreeNode: ISyntaxTreeNode = undefined
+  traverseExpression(node: Node): HashString {
+    let hashCode: HashString = ''
+    node.forEachDescendant((child_node: Node) => {
+      if (child_node.getKind() != SyntaxKind.BinaryExpression) {
+        console.log(child_node.getText(), child_node.getKind())
+        hashCode +=
+          node.getKind() +
+          DELIMITER +
+          child_node.getKind().toString() +
+          DELIMITER
+      }
+    })
+    return hashCode
+  }
+
+  createSyntaxTreeNode(
+    node: Node,
+    hashCode: HashString,
+    childNodes: ISyntaxTreeNode[] = null
+  ): SyntaxTreeNode {
+    return new SyntaxTreeNode(
+      node.getKind(),
+      node.getStartLineNumber(),
+      node.getEndLineNumber(),
+      hashCode,
+      childNodes
+    )
+  }
+
+  getHashForVariableStatement(node: Node): HashString {
+    if (node) {
+      let hashCode: HashString = ''
+      node.forEachChild((child_node: Node) => {
+        switch (child_node.getKind()) {
+          case SyntaxKind.NumericLiteral:
+            hashCode +=
+              node.getKind() +
+              DELIMITER +
+              child_node.getKind().toString() +
+              DELIMITER
+            break
+          default:
+            console.log(child_node.getKind())
+        }
+      })
+      return hashCode
+    }
+  }
+
+  getHashForExpression(node: Node): HashString {
+    if (node) {
+      let hashCode: HashString = ''
+      node.forEachChild((child_node: Node) => {
+        switch (child_node.getKind()) {
+          case SyntaxKind.NumericLiteral:
+          case SyntaxKind.PlusToken:
+          case SyntaxKind.MinusToken:
+          case SyntaxKind.AsteriskToken:
+          case SyntaxKind.AsteriskAsteriskToken:
+          case SyntaxKind.SlashToken:
+          case SyntaxKind.PercentToken:
+            hashCode +=
+              node.getKind() +
+              DELIMITER +
+              child_node.getKind().toString() +
+              DELIMITER
+            break
+          default:
+            console.log(child_node.getKind())
+        }
+      })
+      return hashCode
+    }
+  }
+
+  traverseExpression1(node: Node): ISyntaxTreeNode[] {
+    let childNodes: ISyntaxTreeNode[] = []
+    let syntaxTreeNodes: ISyntaxTreeNode[] = []
+    let hashCode: HashString = ''
     node.forEachChild((child_node) => {
       switch (child_node.getKind()) {
         case SyntaxKind.BinaryExpression:
-          childTreeNode = this.constructTreeNode(childTreeNode, child_node)
-          hashcode.push(...this.traverseExpression(child_node, childTreeNode))
-          treeNode.addChild(childTreeNode)
-          treeNode.setHashValue(hashcode)
-          this.updateHashCodeMapOfANode(childTreeNode, hashcode)
-          break
-        case SyntaxKind.Identifier:
-        case SyntaxKind.NumericLiteral:
-        case SyntaxKind.PlusToken:
-        case SyntaxKind.MinusToken:
-        case SyntaxKind.AsteriskToken:
-        case SyntaxKind.AsteriskAsteriskToken:
-        case SyntaxKind.SlashToken:
-        case SyntaxKind.PercentToken:
-          childTreeNode = this.constructTreeNode(childTreeNode, child_node)
-          hashcode.push(child_node.getKind())
-          treeNode.addChild(childTreeNode)
-          treeNode.setHashValue(hashcode)
-          this.updateHashCodeMapOfANode(childTreeNode, [child_node.getKind()])
+          // childNodes = this.traverseExpression(child_node)
+          hashCode = this.getHashForExpression(child_node)
+          syntaxTreeNodes.push(
+            this.createSyntaxTreeNode(child_node, hashCode, childNodes)
+          )
           break
         case SyntaxKind.EqualsToken:
           // To handle cases were code can be declared and initialized seperately
-          hashcode.pop()
+          // hashcode.pop()
           break
         default:
           break
       }
     })
-    return hashcode
+    return syntaxTreeNodes
   }
 }
