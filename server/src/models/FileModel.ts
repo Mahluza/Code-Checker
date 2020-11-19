@@ -1,4 +1,4 @@
-import { Project, Node, SyntaxKind } from 'ts-morph'
+import { Project, Node, SyntaxKind, VariableDeclaration, BinaryExpression, VariableStatement } from 'ts-morph'
 import ISyntaxTreeNode from './ISyntaxTreeNode'
 import SyntaxTreeNode from './SyntaxTreeNode'
 import ComparisonModel from './ComparisonModel'
@@ -25,7 +25,7 @@ export default class FileModel {
     project.addSourceFileAtPath('./src/models/exp1.ts')
     project.addSourceFileAtPath('./src/models/suspected.ts')
     const sourceFile = project.getSourceFileOrThrow('exp1.ts')
-    const sourceFile2 = project.getSourceFileOrThrow('suspected.ts')
+    // const sourceFile2 = project.getSourceFileOrThrow('suspected.ts')
 
     let root1: ISyntaxTreeNode = undefined
     sourceFile.fixUnusedIdentifiers()
@@ -35,7 +35,7 @@ export default class FileModel {
       this.traverseAST(sourceFile)
     )
 
-    this.printTreeNode(root1)
+    // this.printTreeNode(root1)
   }
 
   printTreeNode(treeNode: ISyntaxTreeNode) {
@@ -55,12 +55,11 @@ export default class FileModel {
 
   traverseAST(node: Node): ISyntaxTreeNode[] {
     if (node) {
-      let childNodes: ISyntaxTreeNode[] = []
       let syntaxTreeNodes: ISyntaxTreeNode[] = []
-      let hashCode: HashString = ''
       node.forEachChild((child_node: Node) => {
         switch (child_node.getKind()) {
           case SyntaxKind.FunctionDeclaration:
+            let childNodes: ISyntaxTreeNode[] = []
             childNodes = this.traverseAST(
               child_node.getFirstChildByKind(SyntaxKind.Block)
             )
@@ -68,26 +67,16 @@ export default class FileModel {
               this.createSyntaxTreeNode(child_node, '', childNodes)
             )
             break
-
           case SyntaxKind.VariableStatement:
-            let declNode = child_node.getFirstDescendantByKind(
-              SyntaxKind.VariableDeclaration
-            )
-            childNodes = this.traverseAST(declNode)
-            hashCode += this.getHashForVariableStatement(declNode)
-            syntaxTreeNodes.push(
-              this.createSyntaxTreeNode(declNode, hashCode, childNodes)
-            )
+            this.traverseVariableStatements(child_node, syntaxTreeNodes)
             break
           case SyntaxKind.ExpressionStatement:
           case SyntaxKind.BinaryExpression:
-            hashCode = this.traverseExpression(child_node)
-            syntaxTreeNodes.push(
-              this.createSyntaxTreeNode(child_node, hashCode)
-            )
+            this.traverseExpressions(child_node, syntaxTreeNodes)
             break
           default:
             console.log(
+              "default in AST ",
               child_node.getText(),
               '     ',
               child_node.getKindName(),
@@ -100,21 +89,6 @@ export default class FileModel {
 
       return syntaxTreeNodes
     }
-  }
-
-  traverseExpression(node: Node): HashString {
-    let hashCode: HashString = ''
-    node.forEachDescendant((child_node: Node) => {
-      if (child_node.getKind() != SyntaxKind.BinaryExpression) {
-        console.log(child_node.getText(), child_node.getKind())
-        hashCode +=
-          node.getKind() +
-          DELIMITER +
-          child_node.getKind().toString() +
-          DELIMITER
-      }
-    })
-    return hashCode
   }
 
   createSyntaxTreeNode(
@@ -131,73 +105,55 @@ export default class FileModel {
     )
   }
 
-  getHashForVariableStatement(node: Node): HashString {
-    if (node) {
-      let hashCode: HashString = ''
-      node.forEachChild((child_node: Node) => {
-        switch (child_node.getKind()) {
-          case SyntaxKind.NumericLiteral:
-            hashCode +=
-              node.getKind() +
-              DELIMITER +
-              child_node.getKind().toString() +
-              DELIMITER
-            break
-          default:
-            console.log(child_node.getKind())
-        }
-      })
-      return hashCode
-    }
-  }
-
-  getHashForExpression(node: Node): HashString {
-    if (node) {
-      let hashCode: HashString = ''
-      node.forEachChild((child_node: Node) => {
-        switch (child_node.getKind()) {
-          case SyntaxKind.NumericLiteral:
-          case SyntaxKind.PlusToken:
-          case SyntaxKind.MinusToken:
-          case SyntaxKind.AsteriskToken:
-          case SyntaxKind.AsteriskAsteriskToken:
-          case SyntaxKind.SlashToken:
-          case SyntaxKind.PercentToken:
-            hashCode +=
-              node.getKind() +
-              DELIMITER +
-              child_node.getKind().toString() +
-              DELIMITER
-            break
-          default:
-            console.log(child_node.getKind())
-        }
-      })
-      return hashCode
-    }
-  }
-
-  traverseExpression1(node: Node): ISyntaxTreeNode[] {
-    let childNodes: ISyntaxTreeNode[] = []
-    let syntaxTreeNodes: ISyntaxTreeNode[] = []
+  traverseVariableStatements(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
     let hashCode: HashString = ''
-    node.forEachChild((child_node) => {
-      switch (child_node.getKind()) {
-        case SyntaxKind.BinaryExpression:
-          // childNodes = this.traverseExpression(child_node)
-          hashCode = this.getHashForExpression(child_node)
-          syntaxTreeNodes.push(
-            this.createSyntaxTreeNode(child_node, hashCode, childNodes)
-          )
-          break
-        case SyntaxKind.EqualsToken:
-          // To handle cases were code can be declared and initialized seperately
-          // hashcode.pop()
-          break
-        default:
-          break
+    let declNodes: VariableDeclaration[] = node.getDescendantsOfKind(
+      SyntaxKind.VariableDeclaration
+    )
+    //For all declarations
+    declNodes.forEach((declNode: VariableDeclaration) => {
+      hashCode = this.generateHashForVariableStatement(declNode)
+      syntaxTreeNodes.push(
+        this.createSyntaxTreeNode(declNode, hashCode)
+      )
+      //For expression in declarations
+      let binaryExprNode = declNode.getFirstChildByKind(SyntaxKind.BinaryExpression)
+      if (binaryExprNode) {
+        this.traverseExpressions(binaryExprNode, syntaxTreeNodes)
       }
     })
-    return syntaxTreeNodes
+  }
+
+  traverseExpressions(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
+    let hashCode: HashString = ''
+    hashCode = this.generateHashForExpression(node)
+    syntaxTreeNodes.push(
+      this.createSyntaxTreeNode(node, hashCode)
+    )
+  }
+
+  generateHashForVariableStatement(node: Node): HashString {
+    if (node) {
+      let hashCode: HashString = node.getKind().toString()
+      node.forEachChild((child_node: Node) => {
+        hashCode += DELIMITER +
+          child_node.getKind().toString()
+      })
+      console.log("hashCode for variable ", hashCode)
+      return hashCode
+    }
+  }
+
+  generateHashForExpression(node: Node): HashString {
+    let hashCode: HashString = node.getKind().toString()
+    node.forEachDescendant((child_node: Node) => {
+      if (child_node.getKind() != SyntaxKind.BinaryExpression) {
+        hashCode +=
+          DELIMITER +
+          child_node.getKind().toString()
+      }
+    })
+    console.log("hashCode for expression ", hashCode)
+    return hashCode
   }
 }
