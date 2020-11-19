@@ -25,8 +25,9 @@ function LogInPage() {
       .then((result) => {
         console.log(result, values);
         if (result.data.result) {
-          const user = { token: result.data.accessToken };
+          const user = { userToken: result.data.accessToken };
           dispatch(allActions.userActions.setUser(user));
+          localStorage.setItem('userToken', result.data.accessToken);
           history.push("/home");
         }
       })

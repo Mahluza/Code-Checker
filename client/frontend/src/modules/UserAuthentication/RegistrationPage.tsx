@@ -54,6 +54,7 @@ function RegistrationPage() {
       .then((result) => {
         const user = {token : result.data.accessToken}
         dispatch(allActions.userActions.setUser(user));
+        localStorage.setItem('userToken', result.data.accessToken);
         history.push("/home");
       })
       .catch(function (error) {
