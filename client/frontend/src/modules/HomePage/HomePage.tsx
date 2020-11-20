@@ -9,14 +9,12 @@ import UploadModal from "./subcomponents/UploadModal";
 import { homePageTableColumns, mockData } from "./constants";
 import "./homePageStyles.css";
 import "antd/dist/antd.css";
+import { RootState } from "../../redux/stateTypes";
 
 function HomePage() {
   // check if upload modal is enabled
   const [visible, setVisible] = useState(false);
-  const currentUser = useSelector(state => state);
   const dispatch = useDispatch()
-
-  console.log(currentUser)
 
   const { Title } = Typography;
 
