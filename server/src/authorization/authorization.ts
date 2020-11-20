@@ -12,8 +12,9 @@ export function authorize(req: any, res: any, next: any): void {
     req.url != '/submission/testProject' &&
     req.url != '/submission/testAST'
   ) {
-    const authHeader = req.headers.authorization
+    let authHeader = req.headers.authorization
     if (authHeader) {
+      authHeader = authHeader.split(' ')[1];
       jwt.verify(
         authHeader,
         ACCESS_TOKEN_SECRET,

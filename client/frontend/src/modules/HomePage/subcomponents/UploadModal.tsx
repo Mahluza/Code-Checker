@@ -1,6 +1,9 @@
 import { Modal, Button, Form, Input } from "antd";
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
+import axios from "axios";
+import { RootState } from "../../../redux/stateTypes";
+import { useSelector } from "react-redux";
 
 interface IUploadModalProps {
   visible: boolean;
@@ -15,9 +18,32 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 
+axios.defaults.headers.common["Authorization"] = "blurp";
+const instance = axios.create({ baseURL: "http://localhost:4000" });
+
 function UploadModal(props: IUploadModalProps) {
+  const accessToken = useSelector(
+    (state: RootState) => state.currentUser.userToken
+  );
   const onFinish = (values: any) => {
     console.log("Success:", values);
+    instance
+      .post(
+        "/project",
+        { projectName: values.projectName },
+        {
+          headers: {
+            'Authorization': "Bearer " + accessToken,
+            'Content-Type': 'application/json'
+          },
+        }
+      )
+      .then((result) => {
+        console.log(result);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -38,7 +64,7 @@ function UploadModal(props: IUploadModalProps) {
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
       >
-        <Form.Item label="Project Name" name="username">
+        <Form.Item label="Project Name" name="projectName">
           <Input />
         </Form.Item>
 
