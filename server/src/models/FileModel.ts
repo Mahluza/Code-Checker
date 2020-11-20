@@ -1,15 +1,13 @@
+import ASTProject from './ASTProject';
 import ISyntaxTreeNode from './ISyntaxTreeNode'
-import SyntaxTreeNode from './SyntaxTreeNode'
-import ComparisonModel from './ComparisonModel'
-import { HashString } from '../schema/HashString'
 import SyntaxTreeBuilder from './SyntaxTreeBuilder'
-import { Project } from 'ts-morph'
-
-var crypto = require('crypto')
 
 export default class FileModel {
+  private syntaxTree: ISyntaxTreeNode;
+
   constructor(private name: string, private content: string) {
     //TODO: file meta data
+    this.createSyntaxTree();
   }
 
   getName(): string {
@@ -20,23 +18,21 @@ export default class FileModel {
     return this.content
   }
 
-  run() {
-    const project = new Project()
-    project.addSourceFileAtPath('./src/models/exp1.ts')
-    project.addSourceFileAtPath('./src/models/suspected.ts')
-    const sourceFile = project.getSourceFileOrThrow('exp1.ts')
-    // const sourceFile2 = project.getSourceFileOrThrow('suspected.ts')
+  getSyntaxTree() {
+    return this.syntaxTree
+  }
 
-    let root1: ISyntaxTreeNode = undefined
+  createSyntaxTree() {
+    const project = ASTProject.instance()
+    const sourceFile = project.createSourceFile('__temp__.ts', this.content)
     sourceFile.fixUnusedIdentifiers()
     let syntaxBuilder1 = new SyntaxTreeBuilder();
-    root1 = syntaxBuilder1.buildSyntaxTreeNode(
+    this.syntaxTree = syntaxBuilder1.buildSyntaxTreeNode(
       sourceFile,
       '',
       syntaxBuilder1.buildAST(sourceFile)
     )
-
-    // this.printTreeNode(root1)
+    sourceFile.deleteImmediately();
   }
 
   printTreeNode(treeNode: ISyntaxTreeNode) {

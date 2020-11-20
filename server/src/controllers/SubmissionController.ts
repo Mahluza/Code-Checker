@@ -29,9 +29,11 @@ router.route('').post((req: express.Request, res: express.Response) => {
 })
 
 router.route('/test').get((req: express.Request, res: express.Response) => {
-  let fModel = new FileModel(null, null)
-  fModel.run()
-  res.status(200).send({ result: 'Success' })
+  const fs = require('fs')
+  const path = require("path");
+  const read = fs.readFileSync(path.resolve(__dirname, "../models/exp1.ts"), 'utf8');
+  let fModel = new FileModel("file1.ts", read.toString())
+  res.status(200).send({ result: 'Success', data: JSON.parse(JSON.stringify(fModel.getSyntaxTree())) })
 })
 
 router
@@ -62,4 +64,5 @@ router
     }
     res.status(200).send({ result: submission.getData() })
   })
+
 module.exports = router
