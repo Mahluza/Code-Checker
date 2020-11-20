@@ -11,8 +11,9 @@ export function authorize(req: any, res: any, next: any): void {
     req.url != '/users/validate' &&
     req.url != '/submission/test'
   ) {
-    const authHeader = req.headers.authorization
+    let authHeader = req.headers.authorization
     if (authHeader) {
+      authHeader = authHeader.split(' ')[1];
       jwt.verify(
         authHeader,
         ACCESS_TOKEN_SECRET,
