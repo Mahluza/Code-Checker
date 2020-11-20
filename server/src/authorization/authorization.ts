@@ -9,7 +9,8 @@ export function authorize(req: any, res: any, next: any): void {
   if (
     req.url != '/users' &&
     req.url != '/users/validate' &&
-    req.url != '/submission/test'
+    req.url != '/submission/testProject' &&
+    req.url != '/submission/testAST'
   ) {
     const authHeader = req.headers.authorization
     if (authHeader) {

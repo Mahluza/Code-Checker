@@ -3,6 +3,7 @@ import Builder from '../models/Builder'
 import Director from '../models/Director'
 import FileModel from '../models/fileModel'
 import IUserModel from '../models/IUserModel'
+import ProjectModel from '../models/ProjectModel'
 import UserModel from '../models/UserModel'
 import { SubmissionSchema } from '../schema/SubmissionSchema'
 
@@ -28,11 +29,24 @@ router.route('').post((req: express.Request, res: express.Response) => {
   res.status(200).send({ message: 'Submissions added to project' })
 })
 
-router.route('/test').get((req: express.Request, res: express.Response) => {
+router.route('/testProject').get((req: express.Request, res: express.Response) => {
   const fs = require('fs')
   const path = require("path");
-  const read = fs.readFileSync(path.resolve(__dirname, "../models/exp1.ts"), 'utf8');
-  let fModel = new FileModel("file1.ts", read.toString())
+  var util = require('util');
+  const file1 = fs.readFileSync(path.resolve(__dirname, "../models/exp1.ts"), 'utf8');
+  const file2 = fs.readFileSync(path.resolve(__dirname, "../models/exp2.ts"), 'utf8');
+  let project = new ProjectModel("Test Project", 2);
+  project.addToSubmission("user1", { name: "exp1.ts", content: file1.toString() })
+  project.addToSubmission("user2", { name: "exp2.ts", content: file2.toString() })
+  project.runDetection()
+  res.status(200).send({ result: 'Success', data: util.inspect(project) })
+})
+
+router.route('/testAST').get((req: express.Request, res: express.Response) => {
+  const fs = require('fs')
+  const path = require("path");
+  const file1 = fs.readFileSync(path.resolve(__dirname, "../models/exp1.ts"), 'utf8');
+  let fModel = new FileModel("file1.ts", file1.toString())
   res.status(200).send({ result: 'Success', data: JSON.parse(JSON.stringify(fModel.getSyntaxTree())) })
 })
 

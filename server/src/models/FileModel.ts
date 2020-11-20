@@ -34,19 +34,4 @@ export default class FileModel {
     )
     sourceFile.deleteImmediately();
   }
-
-  printTreeNode(treeNode: ISyntaxTreeNode) {
-    let children = treeNode.getChildren()
-    console.log('node Type->', treeNode.getNodeType())
-    if (children != null)
-      for (let i = 0; i < children.length; i++) {
-        console.log(
-          'Tree: nodetype->',
-          children[i].getNodeType(),
-          'hash->',
-          children[i].getHashCode()
-        )
-        this.printTreeNode(children[i])
-      }
-  }
 }
