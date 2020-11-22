@@ -1,7 +1,7 @@
 export type SubmissionSchema = {
-    email: string,
-    file: {
-        name: string,
-        content: string
-    }
+  email: string
+  file: {
+    name: string
+    content: string
+  }
 }

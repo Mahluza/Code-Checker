@@ -16,7 +16,7 @@ export default class SubmissionModel {
   }
 
   getFiles(): FileModel[] {
-    return this.files;
+    return this.files
   }
 
   getMetaData() {

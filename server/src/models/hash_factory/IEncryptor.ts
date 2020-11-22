@@ -1,3 +1,3 @@
 export default interface IEncryptor {
-    generateHash(str: string): string;
+  generateHash(str: string): string
 }

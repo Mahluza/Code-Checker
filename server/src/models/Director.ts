@@ -1,16 +1,24 @@
-import FileModel from './fileModel'
-import ProjectModel from './ProjectModel'
 import UserModel from './UserModel'
 
 export default class Director {
-  private static detectionMapIndex: number = 0
-  private static userModelMap: Map<string, UserModel> = new Map()
+  private static director: Director
+  private userModelMapIndex: number = 0
+  private userModelMap: Map<string, UserModel> = new Map()
 
-  static addUserModel(email: string, model: UserModel) {
+  private constructor() {}
+
+  public static instance(): Director {
+    if (!Director.director) {
+      Director.director = new Director()
+    }
+    return this.director
+  }
+
+  public addUserModel(email: string, model: UserModel) {
     this.userModelMap.set(email, model)
   }
 
-  static getUserModel(email: string): UserModel {
+  public getUserModel(email: string): UserModel {
     return this.userModelMap.get(email)
   }
 }

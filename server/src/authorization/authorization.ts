@@ -14,27 +14,23 @@ export function authorize(req: any, res: any, next: any): void {
   ) {
     let authHeader = req.headers.authorization
     if (authHeader) {
-      authHeader = authHeader.split(' ')[1];
-      jwt.verify(
-        authHeader,
-        ACCESS_TOKEN_SECRET,
-        (err: any, userDetails: any) => {
-          if (err) {
-            if (err.name === 'TokenExpiredError') {
-              return res.status(401).send({ message: 'Session Expired' })
-            } else {
-              return res.sendStatus(403)
-            }
-          }
-          let user = Director.getUserModel(userDetails.email)
-          if (user) {
-            req.body.user = user
-            next()
+      authHeader = authHeader.split(' ')[1]
+      jwt.verify(authHeader, ACCESS_TOKEN_SECRET, (err: any, userDetails: any) => {
+        if (err) {
+          if (err.name === 'TokenExpiredError') {
+            return res.status(401).send({ message: 'Session Expired' })
           } else {
-            res.sendStatus(401)
+            return res.sendStatus(403)
           }
         }
-      )
+        let user = Director.instance().getUserModel(userDetails.email)
+        if (user) {
+          req.body.user = user
+          next()
+        } else {
+          res.sendStatus(401)
+        }
+      })
     } else {
       res.sendStatus(401)
     }
@@ -45,6 +41,6 @@ export function authorize(req: any, res: any, next: any): void {
 
 export function generateToken(user: IUserModel): string {
   return jwt.sign({ email: user.getEmail(), role: 1 }, ACCESS_TOKEN_SECRET, {
-    expiresIn: '1h',
+    expiresIn: '7d',
   })
 }

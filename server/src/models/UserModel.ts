@@ -6,6 +6,7 @@ import { UserDetails } from '../schema/UserDetails'
 const bcrypt = require('bcryptjs')
 
 export default class UserModel implements IUserModel {
+  private id: number
   private firstName: string
   private lastName: string
   private institution: string
@@ -13,19 +14,18 @@ export default class UserModel implements IUserModel {
   private passwordHash: string
   private projects: Map<number, ProjectModel> = new Map()
 
-  constructor(
-    firstName: string,
-    lastName: string,
-    institution: string,
-    email: string,
-    password: string
-  ) {
+  constructor(firstName: string, lastName: string, institution: string, email: string, password: string) {
+    this.id = -1
     this.firstName = firstName
     this.lastName = lastName
     this.institution = institution
     this.email = email
     this.passwordHash = bcrypt.hashSync(password, 10)
     this.projects = new Map()
+  }
+
+  setUserId(id: number): void {
+    this.id = id
   }
 
   getFirstName(): string {
@@ -44,12 +44,17 @@ export default class UserModel implements IUserModel {
     return this.email
   }
 
+  getUserId(): number {
+    return this.id
+  }
+
   getUserDetails(): UserDetails {
     return {
+      id: this.id,
       firstName: this.firstName,
       lastName: this.lastName,
       institution: this.institution,
-      email: this.email
+      email: this.email,
     }
   }
 
@@ -57,23 +62,22 @@ export default class UserModel implements IUserModel {
     return bcrypt.compareSync(password, this.passwordHash)
   }
 
-  createProject(name: string): number{
+  createProject(name: string): number {
     let id = this.projects.size
     let projectModel = new ProjectModel(name, id)
     this.projects.set(id, projectModel)
     return id
   }
 
-  getProjects(): ProjectMetaData[]{
+  getProjects(): ProjectMetaData[] {
     let projectDetails: ProjectMetaData[] = []
     this.projects.forEach((p, id) => {
-      projectDetails.push(Object.assign({id: id}, p.getProjectMetaData()))
+      projectDetails.push(Object.assign({ id: id }, p.getProjectMetaData()))
     })
-    return projectDetails;
+    return projectDetails
   }
 
-  getProject(id: number){
-    return this.projects.get(id);
+  getProject(id: number) {
+    return this.projects.get(id)
   }
-
 }

@@ -1,13 +1,13 @@
-import ASTProject from './ASTProject';
+import ASTProject from './ASTProject'
 import ISyntaxTreeNode from './ISyntaxTreeNode'
 import SyntaxTreeBuilder from './SyntaxTreeBuilder'
 
 export default class FileModel {
-  private syntaxTree: ISyntaxTreeNode;
+  private syntaxTree: ISyntaxTreeNode
 
   constructor(private name: string, private content: string) {
     //TODO: file meta data
-    this.createSyntaxTree();
+    this.createSyntaxTree()
   }
 
   getName(): string {
@@ -26,12 +26,8 @@ export default class FileModel {
     const project = ASTProject.instance()
     const sourceFile = project.createSourceFile('__temp__.ts', this.content)
     sourceFile.fixUnusedIdentifiers()
-    let syntaxBuilder1 = new SyntaxTreeBuilder();
-    this.syntaxTree = syntaxBuilder1.buildSyntaxTreeNode(
-      sourceFile,
-      '',
-      syntaxBuilder1.buildAST(sourceFile)
-    )
-    sourceFile.deleteImmediately();
+    let syntaxBuilder1 = new SyntaxTreeBuilder()
+    this.syntaxTree = syntaxBuilder1.buildSyntaxTreeNode(sourceFile, '', syntaxBuilder1.buildAST(sourceFile))
+    sourceFile.deleteImmediately()
   }
 }

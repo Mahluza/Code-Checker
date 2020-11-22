@@ -1,4 +1,4 @@
-import { UserDetails } from "./../schema/UserDetails";
+import { UserDetails } from './../schema/UserDetails'
 
 export default interface IUserModel {
   getEmail(): string
