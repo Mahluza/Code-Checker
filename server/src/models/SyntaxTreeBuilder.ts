@@ -6,7 +6,6 @@ import SyntaxTreeNode from './SyntaxTreeNode'
 
 export default class SyntaxTreeBuilder {
     private hashBuilder: HashBuilder;
-
     constructor(encryption?: string) {
         this.hashBuilder = new HashBuilder(encryption);
     }
@@ -31,13 +30,7 @@ export default class SyntaxTreeBuilder {
             node.forEachChild((child_node: Node) => {
                 switch (child_node.getKind()) {
                     case SyntaxKind.FunctionDeclaration:
-                        let childNodes: ISyntaxTreeNode[] = []
-                        childNodes = this.buildAST(
-                            child_node.getFirstChildByKind(SyntaxKind.Block)
-                        )
-                        syntaxTreeNodes.push(
-                            this.buildSyntaxTreeNode(child_node, '', childNodes)
-                        )
+                        this.buildFunctionDeclaration(child_node, syntaxTreeNodes)
                         break
                     case SyntaxKind.VariableStatement:
                         this.buildVariableStatements(child_node, syntaxTreeNodes)
@@ -61,6 +54,19 @@ export default class SyntaxTreeBuilder {
 
             return syntaxTreeNodes
         }
+    }
+
+    buildFunctionDeclaration(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
+        let hashCode: HashString = ''
+        let childNodes: ISyntaxTreeNode[] = []
+        childNodes = this.buildAST(
+            node.getFirstChildByKind(SyntaxKind.Block)
+        )
+        hashCode = this.hashBuilder.buildHashForFunctionDeclaration(childNodes)
+        console.log("hashCode for function", hashCode)
+        syntaxTreeNodes.push(
+            this.buildSyntaxTreeNode(node, hashCode, childNodes)
+        )
     }
 
     buildVariableStatements(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {

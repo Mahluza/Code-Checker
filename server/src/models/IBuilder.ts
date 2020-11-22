@@ -1,4 +1,3 @@
-import DetectionModel from "./DetectionModel";
 import FileModel from "./fileModel";
 import UserModel from "./UserModel";
 

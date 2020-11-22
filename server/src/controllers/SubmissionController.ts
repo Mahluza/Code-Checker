@@ -35,11 +35,26 @@ router.route('/testProject').get((req: express.Request, res: express.Response) =
   var util = require('util');
   const file1 = fs.readFileSync(path.resolve(__dirname, "../models/exp1.ts"), 'utf8');
   const file2 = fs.readFileSync(path.resolve(__dirname, "../models/exp2.ts"), 'utf8');
+  let builder = new Builder()
+  builder.buildUser(
+    "firstName1",
+    "lastName1",
+    "institution",
+    "user1",
+    "password"
+  )
+  builder.buildUser(
+    "firstName2",
+    "lastName2",
+    "institution",
+    "user2",
+    "password"
+  )
   let project = new ProjectModel("Test Project", 2);
   project.addToSubmission("user1", { name: "exp1.ts", content: file1.toString() })
   project.addToSubmission("user2", { name: "exp2.ts", content: file2.toString() })
   project.runDetection()
-  res.status(200).send({ result: 'Success', data: util.inspect(project) })
+  res.status(200).send({ result: 'Success', data: JSON.parse(JSON.stringify(project.getSimilarities())) })
 })
 
 router.route('/testAST').get((req: express.Request, res: express.Response) => {

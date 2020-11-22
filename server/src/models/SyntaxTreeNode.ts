@@ -23,6 +23,10 @@ class SyntaxTreeNode implements ISyntaxTreeNode {
     this.children = children
   }
 
+  isIntermediate(): boolean {
+    return this.children != null
+  }
+
   getNodeType(): SyntaxKind {
     return this.nodeType
   }

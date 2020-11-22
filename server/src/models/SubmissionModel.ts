@@ -34,4 +34,8 @@ export default class SubmissionModel {
     })
     return submissionFiles
   }
+
+  getUser() {
+    return this.student
+  }
 }

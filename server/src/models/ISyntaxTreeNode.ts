@@ -7,6 +7,7 @@ interface ISyntaxTreeNode {
   getEndLineNumber(): number
   getHashCode(): HashString
   getChildren(): Array<ISyntaxTreeNode>
+  isIntermediate(): boolean
 }
 
 export default ISyntaxTreeNode
