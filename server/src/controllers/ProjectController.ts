@@ -34,7 +34,18 @@ router.route('/:projectId').get((req: express.Request, res: express.Response) =>
   let owner: UserModel = req.body.user
   let projectId = parseInt(req.params.projectId);
   let project: ProjectModel = owner.getProject(projectId);
-  res.status(200).send({ projectId: projectId, projectMetaData: project.getProjectMetaData(), submissions: project.getAllSubmissionInfo() })
+  res.status(200).send({ projectId: projectId, projectMetaData: project.getProjectMetaData(), submissions: project.getAllSubmissionInfo(), similarityResults: project.getSimilarities() })
+})
+
+/**
+ * Start the detection process on files in this project
+ */
+router.route('/:projectId/runDetection').post((req: express.Request, res: express.Response) => {
+  let owner: UserModel = req.body.user
+  let projectId = parseInt(req.params.projectId);
+  let project: ProjectModel = owner.getProject(projectId);
+  project.runDetection()
+  res.status(200).send({ result: "Detection Complete" })
 })
 
 module.exports = router
