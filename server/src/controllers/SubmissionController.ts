@@ -71,9 +71,13 @@ router.route('/testProject').get((req: express.Request, res: express.Response) =
     content: file2.toString(),
   })
   project.runDetection()
+  let similarities: any = []
+  project.getSimilarities().map((info) => {
+    similarities.push(project.getSimilarity(info.id))
+  })
   res.status(200).send({
     result: 'Success',
-    data: JSON.parse(JSON.stringify(project.getSimilarities())),
+    data: JSON.parse(JSON.stringify(similarities)),
   })
 })
 

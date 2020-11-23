@@ -1,13 +1,19 @@
 import { Node, SyntaxKind, VariableDeclaration } from 'ts-morph'
 import { HashString } from '../schema/HashString'
 import HashBuilder from './HashBuilder'
-import ISyntaxTreeNode from '../content/ISyntaxTreeNode'
-import SyntaxTreeNode from '../content/SyntaxTreeNode'
+import ISyntaxTreeNode from './ISyntaxTreeNode'
+import SyntaxTreeNode from './SyntaxTreeNode'
 
 export default class SyntaxTreeBuilder {
   private hashBuilder: HashBuilder
   constructor(encryption?: string) {
     this.hashBuilder = new HashBuilder(encryption)
+  }
+
+  buildRootNode(node: Node): SyntaxTreeNode {
+    let childNodes: ISyntaxTreeNode[] = this.buildAST(node)
+    let hashCode: HashString = this.hashBuilder.buildHashForRoot(childNodes)
+    return new SyntaxTreeNode(node.getKind(), node.getStartLineNumber(), node.getEndLineNumber(), hashCode, childNodes)
   }
 
   buildSyntaxTreeNode(node: Node, hashCode: HashString, childNodes: ISyntaxTreeNode[] = null): SyntaxTreeNode {
@@ -19,31 +25,45 @@ export default class SyntaxTreeBuilder {
       let syntaxTreeNodes: ISyntaxTreeNode[] = []
       node.forEachChild((child_node: Node) => {
         switch (child_node.getKind()) {
+          case SyntaxKind.ClassDeclaration:
+          case SyntaxKind.InterfaceDeclaration:
+          case SyntaxKind.TypeAliasDeclaration:
+            this.buildClassDeclaration(child_node, syntaxTreeNodes)
+            break
           case SyntaxKind.FunctionDeclaration:
+          case SyntaxKind.MethodDeclaration:
+          case SyntaxKind.Constructor:
+            //get the block and run generic hash generation for each statement
             this.buildFunctionDeclaration(child_node, syntaxTreeNodes)
             break
-          case SyntaxKind.VariableStatement:
-            this.buildVariableStatements(child_node, syntaxTreeNodes)
-            break
-          case SyntaxKind.ExpressionStatement:
-          case SyntaxKind.BinaryExpression:
-            this.buildExpressions(child_node, syntaxTreeNodes)
+          case SyntaxKind.Identifier:
+          case SyntaxKind.EndOfFileToken:
             break
           default:
-            console.log(
-              'default in AST ',
-              child_node.getText(),
-              '     ',
-              child_node.getKindName(),
-              '   ',
-              child_node.getKind()
-            )
+            this.buildGenericStatements(child_node, syntaxTreeNodes)
+            // console.log(
+            //   'default in AST ',
+            //   child_node.getText(),
+            //   '     ',
+            //   child_node.getKindName(),
+            //   '   ',
+            //   child_node.getKind()
+            // )
             break
         }
       })
 
       return syntaxTreeNodes
     }
+  }
+
+  buildClassDeclaration(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
+    let hashCode: HashString = ''
+    let childNodes: ISyntaxTreeNode[] = []
+    childNodes = this.buildAST(node)
+    hashCode = this.hashBuilder.buildHashForClassDeclaration(childNodes)
+    console.log('hashCode for class/interface', hashCode)
+    syntaxTreeNodes.push(this.buildSyntaxTreeNode(node, hashCode, childNodes))
   }
 
   buildFunctionDeclaration(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
@@ -60,19 +80,19 @@ export default class SyntaxTreeBuilder {
     let declNodes: VariableDeclaration[] = node.getDescendantsOfKind(SyntaxKind.VariableDeclaration)
     //For all declarations
     declNodes.forEach((declNode: VariableDeclaration) => {
-      hashCode = this.hashBuilder.buildHashForVariableStatement(declNode)
+      hashCode = this.hashBuilder.buildGenericHash(declNode)
       syntaxTreeNodes.push(this.buildSyntaxTreeNode(declNode, hashCode))
       //For expression in declarations
       let binaryExprNode = declNode.getFirstChildByKind(SyntaxKind.BinaryExpression)
       if (binaryExprNode) {
-        this.buildExpressions(binaryExprNode, syntaxTreeNodes)
+        this.buildGenericStatements(binaryExprNode, syntaxTreeNodes)
       }
     })
   }
 
-  buildExpressions(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
+  buildGenericStatements(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
     let hashCode: HashString = ''
-    hashCode = this.hashBuilder.buildHashForExpression(node)
+    hashCode = this.hashBuilder.buildGenericHash(node)
     syntaxTreeNodes.push(this.buildSyntaxTreeNode(node, hashCode))
   }
 }

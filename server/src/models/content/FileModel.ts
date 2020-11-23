@@ -1,6 +1,6 @@
 import ASTProject from '../core/ASTProject'
 import ISyntaxTreeNode from './ISyntaxTreeNode'
-import SyntaxTreeBuilder from '../comparision/SyntaxTreeBuilder'
+import SyntaxTreeBuilder from './SyntaxTreeBuilder'
 
 export default class FileModel {
   private syntaxTree: ISyntaxTreeNode
@@ -27,7 +27,7 @@ export default class FileModel {
     const sourceFile = project.createSourceFile('__temp__.ts', this.content)
     sourceFile.fixUnusedIdentifiers()
     let syntaxBuilder1 = new SyntaxTreeBuilder()
-    this.syntaxTree = syntaxBuilder1.buildSyntaxTreeNode(sourceFile, '', syntaxBuilder1.buildAST(sourceFile))
+    this.syntaxTree = syntaxBuilder1.buildRootNode(sourceFile)
     sourceFile.deleteImmediately()
   }
 }
