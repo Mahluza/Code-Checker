@@ -10,52 +10,27 @@ export const uploadPageTableColumns = [
     },
     {
       title: "Author",
-      dataIndex: "age",
-      key: "age",
+      dataIndex: "author",
+      key: "author",
     },
     {
       title: "Extension",
-      dataIndex: "address",
-      key: "address",
+      dataIndex: "extension",
+      key: "extension",
     },
     {
         title: "Size",
-        dataIndex: "address",
-        key: "address",
+        dataIndex: "size",
+        key: "size",
     },
       {
         title: "Created On",
-        dataIndex: "address",
-        key: "address",
+        dataIndex: "createdOn",
+        key: "createdOn",
       },
       {
         title: "Modified On",
-        dataIndex: "address",
-        key: "address",
+        dataIndex: "modifiedOn",
+        key: "modifiedOn",
       },
-  ];
-
-
-  export const mockData = [
-    {
-      key: "1",
-      name: "Homework 4",
-      age: "11/9/2020",
-      address: "11/8/2020",
-      tags: ["nice", "developer"],
-    },
-    {
-      key: "2",
-      name: "Midterm",
-      age: "10/21/2020",
-      address: "1/3/2020",
-      tags: ["error"],
-    },
-    {
-      key: "3",
-      name: "Test Assignment",
-      age: "3/14/2018",
-      address: "2/14/2018",
-      tags: ["cool", "teacher"],
-    },
   ];

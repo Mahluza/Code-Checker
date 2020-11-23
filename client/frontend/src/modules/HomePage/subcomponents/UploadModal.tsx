@@ -1,6 +1,6 @@
 import { Modal, Button, Form, Input } from "antd";
 import React, { useState } from "react";
-import { withRouter } from "react-router-dom";
+import { useHistory, withRouter } from "react-router-dom";
 import axios from "axios";
 import { RootState } from "../../../redux/stateTypes";
 import { useSelector } from "react-redux";
@@ -18,13 +18,12 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 
-axios.defaults.headers.common["Authorization"] = "blurp";
 const instance = axios.create({ baseURL: "http://localhost:4000" });
 
 function UploadModal(props: IUploadModalProps) {
-  const accessToken = useSelector(
-    (state: RootState) => state.currentUser.userToken
-  );
+  const accessToken = localStorage.getItem('userToken');
+
+  const history = useHistory();
   const onFinish = (values: any) => {
     console.log("Success:", values);
     instance
@@ -39,7 +38,7 @@ function UploadModal(props: IUploadModalProps) {
         }
       )
       .then((result) => {
-        console.log(result);
+        history.push(`/upload/${result.data.projectId}`);
       })
       .catch(function (error) {
         console.log(error);

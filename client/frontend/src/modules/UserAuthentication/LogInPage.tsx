@@ -7,7 +7,7 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons";
 // import 'antd/dist/antd.css';
 import "./loginAndRegistration.css";
 import { useDispatch } from "react-redux";
-import allActions from "../../redux/allActions";
+import allActions from "../../redux/actions/allActions";
 
 // difference between doing a class and a function?
 

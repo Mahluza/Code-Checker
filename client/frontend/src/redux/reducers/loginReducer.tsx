@@ -14,7 +14,7 @@ const currentUser = (state = initialState, action: { type: any; payload: any; })
         case "LOG_OUT":
             return {
                 ...state,
-                userToken: {},
+                userToken: null,
                 loggedIn: false
             }
         default:
