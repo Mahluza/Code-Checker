@@ -1,4 +1,4 @@
-import { findSimilarities } from '../comparision/CompareUtil'
+import { computeSimilarityPercentageBetweenSubmissions, findSimilarities } from '../comparision/CompareUtil'
 import Director from '../core/Director'
 import FileMatch from '../comparision/FileMatch'
 import FileModel from './FileModel'
@@ -53,17 +53,16 @@ export default class ProjectModel {
         let sub1: SubmissionModel = this.submissions.get(email1)
         let sub2: SubmissionModel = this.submissions.get(email2)
         let submissionMatch = new SubmissionMatch(sub1, sub2)
-        this.submissionMatches.push(submissionMatch)
         let files1: FileModel[] = sub1.getFiles()
         let files2: FileModel[] = sub2.getFiles()
         files1.forEach((file1) => {
           files2.forEach((file2) => {
-            let fileMatch: FileMatch = findSimilarities(file1, file2)
-            submissionMatch.addFileMatch(fileMatch)
+            findSimilarities(submissionMatch, file1, file2)
           })
         })
-        //TODO: Compute Similarity Percentage
-        submissionMatch.setSimilarityPercentage(100)
+        let similarityPercentage = computeSimilarityPercentageBetweenSubmissions(submissionMatch)
+        submissionMatch.setSimilarityPercentage(similarityPercentage)
+        this.submissionMatches.push(submissionMatch)
       }
     }
   }

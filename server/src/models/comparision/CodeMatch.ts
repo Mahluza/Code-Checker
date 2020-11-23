@@ -1,4 +1,5 @@
 import ISyntaxTreeNode from '../content/ISyntaxTreeNode'
+import { MatchType } from '../schema/MatchType'
 
 export default class CodeMatch {
   constructor(
@@ -8,12 +9,19 @@ export default class CodeMatch {
     private matchedLines?: Array<[number, number]>
   ) {}
 
-  getCodeMatchOfFile1(): [number, number] {
-    return [this.node1.getStartLineNumber(), this.node1.getEndLineNumber()]
-  }
-
-  getCodeMatchOfFile2(): [number, number] {
-    return [this.node2.getStartLineNumber(), this.node2.getEndLineNumber()]
+  getCodeMatch() {
+    if (this.matchedLines) {
+      return {
+        type: MatchType.CommonLines,
+        lines: this.matchedLines,
+      }
+    } else {
+      return {
+        type: MatchType.CompleteMatch,
+        rangeOfNode1: [this.node1.getStartLineNumber(), this.node1.getEndLineNumber()],
+        rangeOfNode2: [this.node2.getStartLineNumber(), this.node2.getEndLineNumber()],
+      }
+    }
   }
 
   getSimilarityPercentage(): number {

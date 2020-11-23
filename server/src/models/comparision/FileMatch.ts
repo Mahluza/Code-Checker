@@ -4,6 +4,7 @@ import FileModel from '../content/FileModel'
 export default class FileMatch {
   private codeMatches: CodeMatch[]
   private similarityPercetage: number
+  private commonLines: number
 
   constructor(private file1: FileModel, private file2: FileModel) {
     this.codeMatches = []
@@ -33,12 +34,19 @@ export default class FileMatch {
     return this.similarityPercetage
   }
 
+  setCommonLines(commonLines: number) {
+    this.commonLines = commonLines
+  }
+
+  getCommonLines(): number {
+    return this.commonLines
+  }
+
   getSimilarities() {
     return this.codeMatches.map((codeMatch, ind) => {
       return {
         id: ind,
-        codeMatch1: codeMatch.getCodeMatchOfFile1(),
-        codeMatch2: codeMatch.getCodeMatchOfFile2(),
+        codeMatch: codeMatch.getCodeMatch(),
         similarity: codeMatch.getSimilarityPercentage(),
       }
     })
