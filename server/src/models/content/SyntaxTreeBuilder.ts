@@ -19,12 +19,18 @@ export default class SyntaxTreeBuilder {
       let syntaxTreeNodes: ISyntaxTreeNode[] = []
       node.forEachChild((child_node: Node) => {
         switch (child_node.getKind()) {
+          case SyntaxKind.ClassDeclaration:
+          case SyntaxKind.InterfaceDeclaration:
+          case SyntaxKind.TypeAliasDeclaration:
+            this.buildClassDeclaration(child_node, syntaxTreeNodes)
+            break
           case SyntaxKind.FunctionDeclaration:
+          case SyntaxKind.MethodDeclaration:
+          case SyntaxKind.Constructor:
+            //get the block and run generic hash generation for each statement
             this.buildFunctionDeclaration(child_node, syntaxTreeNodes)
             break
-          case SyntaxKind.VariableStatement:
-            this.buildGenericStatements(child_node, syntaxTreeNodes)
-            break
+          case SyntaxKind.Identifier:
           case SyntaxKind.EndOfFileToken:
             break
           default:
@@ -43,6 +49,15 @@ export default class SyntaxTreeBuilder {
 
       return syntaxTreeNodes
     }
+  }
+
+  buildClassDeclaration(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
+    let hashCode: HashString = ''
+    let childNodes: ISyntaxTreeNode[] = []
+    childNodes = this.buildAST(node)
+    hashCode = this.hashBuilder.buildHashForFunctionDeclaration(childNodes)
+    console.log('hashCode for class/interface', hashCode)
+    syntaxTreeNodes.push(this.buildSyntaxTreeNode(node, hashCode, childNodes))
   }
 
   buildFunctionDeclaration(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
