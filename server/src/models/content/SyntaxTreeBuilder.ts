@@ -10,6 +10,12 @@ export default class SyntaxTreeBuilder {
     this.hashBuilder = new HashBuilder(encryption)
   }
 
+  buildRootNode(node: Node): SyntaxTreeNode {
+    let childNodes: ISyntaxTreeNode[] = this.buildAST(node)
+    let hashCode: HashString = this.hashBuilder.buildHashForRoot(childNodes)
+    return new SyntaxTreeNode(node.getKind(), node.getStartLineNumber(), node.getEndLineNumber(), hashCode, childNodes)
+  }
+
   buildSyntaxTreeNode(node: Node, hashCode: HashString, childNodes: ISyntaxTreeNode[] = null): SyntaxTreeNode {
     return new SyntaxTreeNode(node.getKind(), node.getStartLineNumber(), node.getEndLineNumber(), hashCode, childNodes)
   }
@@ -35,14 +41,14 @@ export default class SyntaxTreeBuilder {
             break
           default:
             this.buildGenericStatements(child_node, syntaxTreeNodes)
-            console.log(
-              'default in AST ',
-              child_node.getText(),
-              '     ',
-              child_node.getKindName(),
-              '   ',
-              child_node.getKind()
-            )
+            // console.log(
+            //   'default in AST ',
+            //   child_node.getText(),
+            //   '     ',
+            //   child_node.getKindName(),
+            //   '   ',
+            //   child_node.getKind()
+            // )
             break
         }
       })
@@ -55,7 +61,7 @@ export default class SyntaxTreeBuilder {
     let hashCode: HashString = ''
     let childNodes: ISyntaxTreeNode[] = []
     childNodes = this.buildAST(node)
-    hashCode = this.hashBuilder.buildHashForFunctionDeclaration(childNodes)
+    hashCode = this.hashBuilder.buildHashForClassDeclaration(childNodes)
     console.log('hashCode for class/interface', hashCode)
     syntaxTreeNodes.push(this.buildSyntaxTreeNode(node, hashCode, childNodes))
   }

@@ -5,8 +5,10 @@ import IEncryptor from '../hash_factory/IEncryptor'
 import ISyntaxTreeNode from './ISyntaxTreeNode'
 
 const DELIMITER = {
-  TOKEN: '.',
-  STATEMENT: '|',
+  TOKEN: '.', //Between tokens
+  STATEMENT: '|', //Between statements
+  CLASS: '#', //Between any thing inside a class
+  FILE: '*', //Between any thing inside a file
 }
 
 export default class HashBuilder {
@@ -34,5 +36,23 @@ export default class HashBuilder {
       })
     }
     return this.encryptor.generateHash(hashCode)
+  }
+
+  buildHashForRoot(childNodes: ISyntaxTreeNode[]): HashString {
+    return this.encryptor.generateHash(
+      childNodes
+        .map((cNode) => cNode.getHashCode())
+        .sort()
+        .join(DELIMITER.FILE)
+    )
+  }
+
+  buildHashForClassDeclaration(childNodes: ISyntaxTreeNode[]): HashString {
+    return this.encryptor.generateHash(
+      childNodes
+        .map((cNode) => cNode.getHashCode())
+        .sort()
+        .join(DELIMITER.CLASS)
+    )
   }
 }
