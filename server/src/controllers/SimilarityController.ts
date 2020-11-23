@@ -1,8 +1,8 @@
 import * as express from 'express'
 import FileMatch from '../models/comparision/FileMatch'
-import ProjectModel from '../models/ProjectModel'
-import SubmissionMatch from '../models/SubmissionMatch'
-import UserModel from '../models/UserModel'
+import ProjectModel from '../models/content/ProjectModel'
+import SubmissionMatch from '../models/comparision/SubmissionMatch'
+import UserModel from '../models/user/UserModel'
 
 let router = express.Router()
 

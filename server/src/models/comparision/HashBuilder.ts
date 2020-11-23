@@ -1,8 +1,8 @@
 import { HashString } from '../schema/HashString'
 import { Node, SyntaxKind } from 'ts-morph'
-import HashFactory from './hash_factory/HashFactory'
-import IEncryptor from './hash_factory/IEncryptor'
-import ISyntaxTreeNode from './ISyntaxTreeNode'
+import HashFactory from '../hash_factory/HashFactory'
+import IEncryptor from '../hash_factory/IEncryptor'
+import ISyntaxTreeNode from '../content/ISyntaxTreeNode'
 
 const DELIMITER = {
   TOKEN: '.',

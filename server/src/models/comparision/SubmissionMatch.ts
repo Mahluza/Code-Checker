@@ -1,5 +1,5 @@
-import FileMatch from './comparision/FileMatch'
-import SubmissionModel from './SubmissionModel'
+import FileMatch from './FileMatch'
+import SubmissionModel from '../content/SubmissionModel'
 
 export default class SubmissionMatch {
   private fileMatches: FileMatch[]

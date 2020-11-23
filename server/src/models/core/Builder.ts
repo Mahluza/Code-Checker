@@ -1,6 +1,6 @@
 import Director from './Director'
 import IBuilder from './IBuilder'
-import UserModel from './UserModel'
+import UserModel from '../user/UserModel'
 const bcrypt = require('bcryptjs')
 
 export default class DetectionBuilder implements IBuilder {

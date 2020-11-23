@@ -1,5 +1,5 @@
 import CodeMatch from './CodeMatch'
-import FileModel from '../fileModel'
+import FileModel from '../content/FileModel'
 
 export default class FileMatch {
   private codeMatches: CodeMatch[]

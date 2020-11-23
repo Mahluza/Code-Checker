@@ -1,11 +1,11 @@
-import { findSimilarities } from './comparision/CompareUtil'
-import Director from './Director'
-import FileMatch from './comparision/FileMatch'
-import FileModel from './fileModel'
-import IUserModel from './IUserModel'
-import SubmissionMatch from './SubmissionMatch'
+import { findSimilarities } from '../comparision/CompareUtil'
+import Director from '../core/Director'
+import FileMatch from '../comparision/FileMatch'
+import FileModel from './FileModel'
+import IUserModel from '../user/IUserModel'
+import SubmissionMatch from '../comparision/SubmissionMatch'
 import SubmissionModel from './SubmissionModel'
-import UserModel from './UserModel'
+import UserModel from '../user/UserModel'
 
 export default class ProjectModel {
   private createdOn: Date

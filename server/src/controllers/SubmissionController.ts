@@ -1,9 +1,9 @@
 import * as express from 'express'
-import Builder from '../models/Builder'
-import FileModel from '../models/fileModel'
-import ProjectModel from '../models/ProjectModel'
-import UserModel from '../models/UserModel'
-import { SubmissionSchema } from '../schema/SubmissionSchema'
+import Builder from '../models/core/Builder'
+import FileModel from '../models/content/FileModel'
+import ProjectModel from '../models/content/ProjectModel'
+import UserModel from '../models/user/UserModel'
+import { SubmissionSchema } from '../models/schema/SubmissionSchema'
 
 let router = express.Router()
 
@@ -56,8 +56,8 @@ router.route('/testProject').get((req: express.Request, res: express.Response) =
   const fs = require('fs')
   const path = require('path')
   var util = require('util')
-  const file1 = fs.readFileSync(path.resolve(__dirname, '../models/exp1.ts'), 'utf8')
-  const file2 = fs.readFileSync(path.resolve(__dirname, '../models/exp2.ts'), 'utf8')
+  const file1 = fs.readFileSync(path.resolve(__dirname, '../models/exp/exp1.ts'), 'utf8')
+  const file2 = fs.readFileSync(path.resolve(__dirname, '../models/exp/exp2.ts'), 'utf8')
   let builder = new Builder()
   builder.buildUser('firstName1', 'lastName1', 'institution', 'user1', 'password')
   builder.buildUser('firstName2', 'lastName2', 'institution', 'user2', 'password')
@@ -85,7 +85,7 @@ router.route('/testProject').get((req: express.Request, res: express.Response) =
 router.route('/testAST').get((req: express.Request, res: express.Response) => {
   const fs = require('fs')
   const path = require('path')
-  const file1 = fs.readFileSync(path.resolve(__dirname, '../models/exp1.ts'), 'utf8')
+  const file1 = fs.readFileSync(path.resolve(__dirname, '../models/exp/exp1.ts'), 'utf8')
   let fModel = new FileModel('file1.ts', file1.toString())
   res.status(200).send({
     result: 'Success',

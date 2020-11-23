@@ -1,6 +1,6 @@
-import FileModel from './fileModel'
-import IUserModel from './IUserModel'
-import UserModel from './UserModel'
+import FileModel from './FileModel'
+import IUserModel from '../user/IUserModel'
+import UserModel from '../user/UserModel'
 
 export default class SubmissionModel {
   student: IUserModel

@@ -1,4 +1,4 @@
-import UserModel from './UserModel'
+import UserModel from '../user/UserModel'
 
 export default class Director {
   private static director: Director

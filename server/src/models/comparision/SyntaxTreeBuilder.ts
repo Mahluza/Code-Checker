@@ -1,8 +1,8 @@
 import { Node, SyntaxKind, VariableDeclaration } from 'ts-morph'
 import { HashString } from '../schema/HashString'
 import HashBuilder from './HashBuilder'
-import ISyntaxTreeNode from './ISyntaxTreeNode'
-import SyntaxTreeNode from './SyntaxTreeNode'
+import ISyntaxTreeNode from '../content/ISyntaxTreeNode'
+import SyntaxTreeNode from '../content/SyntaxTreeNode'
 
 export default class SyntaxTreeBuilder {
   private hashBuilder: HashBuilder

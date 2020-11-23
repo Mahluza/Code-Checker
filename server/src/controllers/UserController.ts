@@ -1,6 +1,6 @@
 import * as express from 'express'
-import Builder from '../models/Builder'
-import Director from '../models/Director'
+import Builder from '../models/core/Builder'
+import Director from '../models/core/Director'
 import { generateToken } from '../authorization/authorization'
 
 let router = express.Router()

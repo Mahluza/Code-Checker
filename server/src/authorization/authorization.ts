@@ -1,5 +1,5 @@
-import IUserModel from '../models/IUserModel'
-import Director from '../models/Director'
+import IUserModel from '../models/user/IUserModel'
+import Director from '../models/core/Director'
 
 const jwt = require('jsonwebtoken')
 

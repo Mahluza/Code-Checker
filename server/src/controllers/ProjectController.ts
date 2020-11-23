@@ -1,7 +1,7 @@
 import * as express from 'express'
-import ProjectModel from '../models/ProjectModel'
-import { ProjectMetaData } from '../schema/ProjectMetaData'
-import UserModel from '../models/UserModel'
+import ProjectModel from '../models/content/ProjectModel'
+import { ProjectMetaData } from '../models/schema/ProjectMetaData'
+import UserModel from '../models/user/UserModel'
 
 let router = express.Router()
 

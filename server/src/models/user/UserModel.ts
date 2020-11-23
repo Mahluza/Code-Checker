@@ -1,5 +1,5 @@
 import IUserModel from './IUserModel'
-import ProjectModel from './ProjectModel'
+import ProjectModel from '../content/ProjectModel'
 import { ProjectMetaData } from '../schema/ProjectMetaData'
 import { UserDetails } from '../schema/UserDetails'
 
