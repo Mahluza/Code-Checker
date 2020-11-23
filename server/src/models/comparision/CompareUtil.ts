@@ -1,9 +1,9 @@
 import { SyntaxKind } from 'ts-morph'
-import { HashString } from '../schema/HashString'
+import { HashString } from '../../schema/HashString'
 import CodeMatch from './CodeMatch'
 import FileMatch from './FileMatch'
-import FileModel from './fileModel'
-import ISyntaxTreeNode from './ISyntaxTreeNode'
+import FileModel from '../fileModel'
+import ISyntaxTreeNode from '../ISyntaxTreeNode'
 
 function getHashValuesForNode(node: ISyntaxTreeNode): HashString[] {
   let hashStrings: HashString[] = []

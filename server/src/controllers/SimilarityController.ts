@@ -1,5 +1,5 @@
 import * as express from 'express'
-import FileMatch from '../models/FileMatch'
+import FileMatch from '../models/comparision/FileMatch'
 import ProjectModel from '../models/ProjectModel'
 import SubmissionMatch from '../models/SubmissionMatch'
 import UserModel from '../models/UserModel'

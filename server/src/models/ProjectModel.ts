@@ -1,6 +1,6 @@
-import { findSimilarities } from './CompareUtil'
+import { findSimilarities } from './comparision/CompareUtil'
 import Director from './Director'
-import FileMatch from './FileMatch'
+import FileMatch from './comparision/FileMatch'
 import FileModel from './fileModel'
 import IUserModel from './IUserModel'
 import SubmissionMatch from './SubmissionMatch'

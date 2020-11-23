@@ -1,4 +1,4 @@
-import ISyntaxTreeNode from './ISyntaxTreeNode'
+import ISyntaxTreeNode from '../ISyntaxTreeNode'
 
 export default class CodeMatch {
   constructor(private node1: ISyntaxTreeNode, private node2: ISyntaxTreeNode, private similarityPercetage: number) {}
