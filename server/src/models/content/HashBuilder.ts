@@ -2,7 +2,7 @@ import { HashString } from '../schema/HashString'
 import { Node, SyntaxKind } from 'ts-morph'
 import HashFactory from '../hash_factory/HashFactory'
 import IEncryptor from '../hash_factory/IEncryptor'
-import ISyntaxTreeNode from '../content/ISyntaxTreeNode'
+import ISyntaxTreeNode from './ISyntaxTreeNode'
 
 const DELIMITER = {
   TOKEN: '.',
@@ -25,25 +25,14 @@ export default class HashBuilder {
     )
   }
 
-  buildHashForVariableStatement(node: Node): HashString {
+  buildGenericHash(node: Node): HashString {
+    let hashCode: HashString = ''
     if (node) {
-      let hashCode: HashString = node.getKind().toString()
+      hashCode = node.getKind().toString()
       node.forEachChild((child_node: Node) => {
-        hashCode += DELIMITER.TOKEN + child_node.getKind().toString()
+        hashCode += DELIMITER.TOKEN + this.buildGenericHash(child_node)
       })
-      console.log('hashCode for variable ', this.encryptor.generateHash(hashCode))
-      return this.encryptor.generateHash(hashCode)
     }
-  }
-
-  buildHashForExpression(node: Node): HashString {
-    let hashCode: HashString = node.getKind().toString()
-    node.forEachDescendant((child_node: Node) => {
-      if (child_node.getKind() != SyntaxKind.BinaryExpression) {
-        hashCode += DELIMITER.TOKEN + child_node.getKind().toString()
-      }
-    })
-    console.log('hashCode for expression ', this.encryptor.generateHash(hashCode))
     return this.encryptor.generateHash(hashCode)
   }
 }

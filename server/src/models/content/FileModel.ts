@@ -1,6 +1,6 @@
 import ASTProject from '../core/ASTProject'
 import ISyntaxTreeNode from './ISyntaxTreeNode'
-import SyntaxTreeBuilder from '../comparision/SyntaxTreeBuilder'
+import SyntaxTreeBuilder from './SyntaxTreeBuilder'
 
 export default class FileModel {
   private syntaxTree: ISyntaxTreeNode
