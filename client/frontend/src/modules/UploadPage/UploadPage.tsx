@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { withRouter } from "react-router-dom";
+import { useLocation, withRouter } from "react-router-dom";
 import {
   Row,
   Col,
@@ -16,23 +16,83 @@ import { uploadPageTableColumns } from "./constants";
 import "./uploadPageStyles.css";
 import "antd/dist/antd.css";
 
+const instance = axios.create({ baseURL: "http://localhost:4000" });
+
 function UploadPage() {
   const { Title } = Typography;
   const { Dragger } = Upload;
-  const accessToken = localStorage.getItem('userToken')
+  const accessToken = localStorage.getItem("userToken");
+  let location = useLocation();
+  let projectId = location.pathname.split("/")[2];
+  const [submissionList, setSubmissionList] = useState<string[]>([]);
+  const [fileCount, setFileCount] = useState(0);
+  const [listLength, setListLength] = useState(0);
 
   const onChange = (e: any) => {
-    console.log(e);
+    if (e.event !== undefined) {
+      setListLength((listLength) => e.fileList.length);
+
+      e.fileList.forEach(function (file: any) {
+        let read = new FileReader();
+
+        read.onload = function () {
+          let res: string = read.result as string;
+          setSubmissionList((submissionList) => [...submissionList, res]);
+          setFileCount((fileCount) => fileCount + 1);
+        };
+        read.readAsText(file.originFileObj);
+      });
+    }
   };
 
-  const customRequest = (options: any) => {
-    console.log("beep", options)
-    axios.post(options.action, {}, {headers:{Authorization: ""}}).then((res: any) => {
-      options.onSuccess(res.data, options.file)
-    }).catch((err: Error) => {
-      console.log(err)
-    })
-  }
+  useEffect(() => {
+    if (fileCount === listLength) {
+      let submissions = [
+        {
+          email: "abc@neu.com",
+          file: { name: "file1.ts", content: "let a = 5; let b = 6;" },
+        },
+
+        {
+          email: "abc@neu.com",
+          file: { name: "file2.ts", content: "let d = 4;" },
+        },
+
+        {
+          email: "test2@neu.com",
+          file: { name: "file1.ts", content: "function test(){return null}" },
+        },
+
+        {
+          email: "test3",
+          file: { name: "fileb.ts", content: "function test(){return 3+2}" },
+        },
+      ];
+      let body = { projectId: projectId, submissions: submissions };
+      instance
+        .post("/submission", body, {
+          headers: {
+            Authorization: "Bearer " + accessToken,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((result) => {
+          instance
+            .get(`/${projectId}/runDetection`, {
+              headers: {
+                Authorization: "Bearer " + accessToken,
+                "Content-Type": "application/json",
+              },
+            })
+            .then((d) => {
+              console.log(d);
+            });
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  }, [fileCount]);
 
   return (
     <Row>
@@ -45,8 +105,6 @@ function UploadPage() {
               showUploadList={false}
               accept=".ts"
               onChange={onChange}
-              action={"http://localhost:4000/submission"}
-              customRequest={customRequest}
             >
               <p className="ant-upload-drag-icon">
                 <InboxOutlined />
