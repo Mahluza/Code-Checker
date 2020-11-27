@@ -1,17 +1,34 @@
 import React from 'react';
-import { Route, Switch, Redirect, useLocation, withRouter } from 'react-router-dom';
+import {
+  Route,
+  Switch,
+  Redirect,
+  useLocation,
+  withRouter,
+  useHistory,
+} from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import { FireOutlined } from '@ant-design/icons';
 import HomePage from './modules/HomePage/HomePage';
 import './App.css';
 import LogInPage from './modules/UserAuthentication/LogInPage';
 import RegistrationPage from './modules/UserAuthentication/RegistrationPage';
-import UploadPage from './modules/UploadPage/UploadPage'
+import UploadPage from './modules/UploadPage/UploadPage';
 import TestForm from './modules/UserAuthentication/TestForm';
+import StudentDash from './modules/StudentDash/StudentDash';
+import StudentDashMessage from './modules/StudentDash/StudentDash';
 
 function App() {
   // fetches the current path - used to check if the navbar should render
   let location = useLocation();
+  let history = useHistory();
+
+  const onMenuClick = (e: any) => {
+    // logout button
+    if (e.key === '3') {
+      history.push('/login');
+    }
+  };
 
   return (
     <div className="App">
@@ -24,6 +41,7 @@ function App() {
               mode="horizontal"
               defaultSelectedKeys={['1']}
               style={{ lineHeight: '64px' }}
+              onClick={onMenuClick}
             >
               <Menu.Item>
                 <span>Plagiarism Avengers</span>
@@ -43,6 +61,8 @@ function App() {
           <Route path="/home" component={HomePage} exact />
           <Route path="/upload" component={UploadPage} />
           <Route path="/test" component={TestForm} exact />
+          <Route path="/student" component={StudentDash} exact />
+          <Route path="/student/message" component={StudentDashMessage} exact />
         </Switch>
       </header>
     </div>

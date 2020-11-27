@@ -1,0 +1,53 @@
+.stu-dash-message-container {
+  height: 875px;
+  background-color: white;
+  border-radius: 10px;
+  margin: 24px;
+  text-align: center;
+}
+
+.stu-dash-display-container {
+  height: 875px;
+  background-color: white;
+  border-radius: 10px;
+  margin: 24px;
+  text-align: left;
+}
+
+.stu-dash-display-messContainer {
+  height: 500px;
+  width: 100%;
+  border: 3px solid rgb(1, 21, 40);
+  margin: 24px;
+  background-color: #e5e5e5;
+}
+
+.stu-dash-noMessContainer {
+  display: inline-flex;
+  justify-content: center;
+  align-items: 'center';
+}
+
+.follow-up-buttons {
+  padding-left: 24px;
+  padding-top: 10px;
+}
+
+.bold-icon {
+  color: rgb(1, 21, 40);
+}
+
+.faint-icon {
+  color: rgb(121, 121, 121);
+  font-size: 80px;
+}
+
+.faint-icon-text {
+  color: rgb(102, 102, 102);
+  font-size: 25px;
+}
+
+.message {
+  color: black;
+  font-size: large;
+}
