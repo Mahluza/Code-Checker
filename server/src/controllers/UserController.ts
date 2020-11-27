@@ -1,6 +1,6 @@
 import * as express from 'express'
-import Builder from '../models/Builder'
-import Director from '../models/Director'
+import Builder from '../models/core/Builder'
+import Director from '../models/core/Director'
 import { generateToken } from '../authorization/authorization'
 
 let router = express.Router()
@@ -14,13 +14,7 @@ router.route('').post((req: express.Request, res: express.Response) => {
   let builder = new Builder()
   let userModel = undefined
   try {
-    userModel = builder.buildUser(
-      firstName,
-      lastName,
-      institution,
-      email,
-      password
-    )
+    userModel = builder.buildUser(firstName, lastName, institution, email, password)
     const accessToken = generateToken(userModel)
     res.status(200).send({ accessToken: accessToken, userDetails: userModel.getUserDetails() })
   } catch (error) {
@@ -28,24 +22,20 @@ router.route('').post((req: express.Request, res: express.Response) => {
   }
 })
 
-router
-  .route('/validate')
-  .post((req: express.Request, res: express.Response) => {
-    let email = req.body.email
-    let password = req.body.password
-    let userModel = Director.getUserModel(email)
-    if (userModel) {
-      if (userModel.validate(password)) {
-        const accessToken = generateToken(userModel)
-        res.status(200).send({ accessToken: accessToken, userDetails: userModel.getUserDetails() })
-      } else {
-        res
-          .status(200)
-          .send({ errMessage: 'Incorrect email/password' })
-      }
+router.route('/validate').post((req: express.Request, res: express.Response) => {
+  let email = req.body.email
+  let password = req.body.password
+  let userModel = Director.instance().getUserModel(email)
+  if (userModel) {
+    if (userModel.validate(password)) {
+      const accessToken = generateToken(userModel)
+      res.status(200).send({ accessToken: accessToken, userDetails: userModel.getUserDetails() })
     } else {
-      res.status(200).send({ errMessage: 'User does not exist' })
+      res.status(200).send({ errMessage: 'Incorrect email/password' })
     }
-  })
+  } else {
+    res.status(200).send({ errMessage: 'User does not exist' })
+  }
+})
 
 module.exports = router

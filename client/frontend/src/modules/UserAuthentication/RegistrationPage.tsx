@@ -9,7 +9,7 @@ import { LockOutlined } from "@ant-design/icons";
 import "./loginAndRegistration.css";
 import "./RoleRadio";
 import RoleRadio from "./RoleRadio";
-import allActions from "../../redux/allActions";
+import allActions from "../../redux/actions/allActions";
 import { useDispatch } from "react-redux";
 
 const { Title } = Typography;

@@ -1,6 +1,6 @@
-import FileModel from './fileModel'
-import IUserModel from './IUserModel'
-import UserModel from './UserModel'
+import FileModel from './FileModel'
+import IUserModel from '../user/IUserModel'
+import UserModel from '../user/UserModel'
 
 export default class SubmissionModel {
   student: IUserModel
@@ -11,23 +11,31 @@ export default class SubmissionModel {
     this.files = []
   }
 
-  addFile(file: any){
+  addFile(file: any) {
     this.files.push(new FileModel(file.name, file.content))
   }
 
-  getMetaData(){
+  getFiles(): FileModel[] {
+    return this.files
+  }
+
+  getMetaData() {
     let fileNames: string[] = []
     this.files.map((file: FileModel) => {
       fileNames.push(file.getName())
     })
-    return Object.assign({files: fileNames},this.student.getUserDetails())
+    return Object.assign({ files: fileNames }, this.student.getUserDetails())
   }
 
-  getData(){
+  getData() {
     let submissionFiles: any = {}
     this.files.map((fileModel: FileModel) => {
       submissionFiles[fileModel.getName()] = fileModel.getContent()
     })
     return submissionFiles
+  }
+
+  getUser() {
+    return this.student
   }
 }
