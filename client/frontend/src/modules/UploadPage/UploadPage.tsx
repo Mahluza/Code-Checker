@@ -1,27 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, withRouter } from "react-router-dom";
-import {
-  Row,
-  Col,
-  Divider,
-  Table,
-  Button,
-  Typography,
-  Upload,
-  message,
-} from "antd";
+import { Row, Col, Table, Button, Typography, Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { uploadPageTableColumns } from "./constants";
 import "./uploadPageStyles.css";
 import "antd/dist/antd.css";
 
+axios.defaults.headers.common["Authorization"] =
+  "Bearer " + localStorage.getItem("userToken");
 const instance = axios.create({ baseURL: "http://localhost:4000" });
 
 function UploadPage() {
   const { Title } = Typography;
   const { Dragger } = Upload;
-  const accessToken = localStorage.getItem("userToken");
   let location = useLocation();
   let projectId = location.pathname.split("/")[2];
   const [submissionList, setSubmissionList] = useState<string[]>([]);
@@ -70,29 +62,23 @@ function UploadPage() {
       ];
       let body = { projectId: projectId, submissions: submissions };
       instance
-        .post("/submission", body, {
-          headers: {
-            Authorization: "Bearer " + accessToken,
-            "Content-Type": "application/json",
-          },
-        })
-        .then((result) => {
-          instance
-            .get(`/${projectId}/runDetection`, {
-              headers: {
-                Authorization: "Bearer " + accessToken,
-                "Content-Type": "application/json",
-              },
-            })
-            .then((d) => {
-              console.log(d);
-            });
-        })
+        .post("/submission", body)
+        .then((result) => {})
         .catch(function (error) {
           console.log(error);
         });
     }
   }, [fileCount]);
+
+  const runDetection = () => {
+    instance
+      .post(`project/${projectId}/runDetection`, { projectId })
+      .then((resp) => {
+        instance
+          .get(`project/${projectId}`)
+          .then((resp) => {console.log(resp)});
+      });
+  };
 
   return (
     <Row>
@@ -127,6 +113,7 @@ function UploadPage() {
             dataSource={[]}
             style={{ padding: 25 }}
           />
+          <Button onClick={runDetection}> Run Detection </Button>
         </div>
       </Col>
     </Row>
