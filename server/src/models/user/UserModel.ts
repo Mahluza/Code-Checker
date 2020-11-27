@@ -20,7 +20,11 @@ export default class UserModel implements IUserModel {
     this.lastName = lastName
     this.institution = institution
     this.email = email
-    this.passwordHash = bcrypt.hashSync(password, 10)
+    if (password) {
+      this.passwordHash = bcrypt.hashSync(password, 10)
+    } else {
+      this.passwordHash = undefined
+    }
     this.projects = new Map()
   }
 
