@@ -32,7 +32,6 @@ function HomePage() {
   };
 
   useEffect(() => {
-    console.log('here',localStorage.getItem('userToken'))
     instance
       .get("/project", {
         headers: {
