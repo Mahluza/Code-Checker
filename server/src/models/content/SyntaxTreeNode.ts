@@ -27,6 +27,10 @@ class SyntaxTreeNode implements ISyntaxTreeNode {
     return this.children != null
   }
 
+  modifyNodeType(nodeType: SyntaxKind) {
+    this.nodeType = nodeType
+  }
+
   getNodeType(): SyntaxKind {
     return this.nodeType
   }
