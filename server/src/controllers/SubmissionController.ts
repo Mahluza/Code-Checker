@@ -16,9 +16,9 @@ router.route('').post((req: express.Request, res: express.Response) => {
   if (projectId === undefined) {
     res.status(200).send({ errMessage: 'ProjectId cannot be null/undefined.' })
   }
-  let project = owner.getProject(projectId)
-  if (!project) {
-    res.status(200).send({ errMessage: 'Project does not exist with given id' })
+  let project = owner.getProject(Number(projectId))
+  if(!project){
+    res.status(200).send({ errMessage: "Project does not exist with given id" })
   }
   let submissions: SubmissionSchema[] = req.body.submissions
   submissions.map((submission: SubmissionSchema) => {

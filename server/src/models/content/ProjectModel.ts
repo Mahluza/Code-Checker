@@ -6,6 +6,7 @@ import IUserModel from '../user/IUserModel'
 import SubmissionMatch from '../comparision/SubmissionMatch'
 import SubmissionModel from './SubmissionModel'
 import UserModel from '../user/UserModel'
+import DetectionBuilder from '../core/Builder'
 
 export default class ProjectModel {
   private createdOn: Date
@@ -26,6 +27,11 @@ export default class ProjectModel {
   addToSubmission(email: string, file: any): void {
     if (!this.submissions.has(email)) {
       let student = Director.instance().getUserModel(email)
+      if (!student) {
+        let builder = new DetectionBuilder()
+        builder.buildUser(undefined, undefined, undefined, email, undefined)
+        student = Director.instance().getUserModel(email)
+      }
       // to hold all submissions of this student for this project
       this.submissions.set(email, new SubmissionModel(student))
     }

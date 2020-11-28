@@ -42,7 +42,6 @@ function HomePage() {
   // so useEffect only called once here?
   // so why use it?
   useEffect(() => {
-    console.log('here', localStorage.getItem('userToken'));
     instance
       .get('/project', {
         headers: {
