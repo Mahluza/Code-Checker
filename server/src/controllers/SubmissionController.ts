@@ -59,8 +59,8 @@ router.route('/testProject').get((req: express.Request, res: express.Response) =
   const file1 = fs.readFileSync(path.resolve(__dirname, '../models/exp/exp1.ts'), 'utf8')
   const file2 = fs.readFileSync(path.resolve(__dirname, '../models/exp/exp2.ts'), 'utf8')
   let builder = new Builder()
-  builder.buildUser('firstName1', 'lastName1', 'institution', 'user1', 'password')
-  builder.buildUser('firstName2', 'lastName2', 'institution', 'user2', 'password')
+  builder.buildUser('firstName1', 'lastName1', 'institution', 'user1', 'password', 1)
+  builder.buildUser('firstName2', 'lastName2', 'institution', 'user2', 'password', 1)
   let project = new ProjectModel('Test Project', 2)
   project.addToSubmission('user1', {
     name: 'exp1.ts',

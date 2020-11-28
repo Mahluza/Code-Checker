@@ -1,6 +1,9 @@
 import ProjectModel from '../content/ProjectModel'
 import { ProjectMetaData } from '../schema/ProjectMetaData'
+import StudentModel from './StudentModel'
 import UserModel from './UserModel'
+import Messages from '../schema/Messages'
+import SubmissionMatch from '../comparision/SubmissionMatch'
 
 export default class InstructorModel extends UserModel {
   private projects: Map<number, ProjectModel> = new Map()
@@ -26,5 +29,10 @@ export default class InstructorModel extends UserModel {
 
   getProject(id: number) {
     return this.projects.get(id)
+  }
+
+  sendMessage(student: StudentModel, messageTitle: string, messageBody: string, submissionId: SubmissionMatch) {
+    let message = new Messages(this, messageTitle, messageBody, null)
+    student.addMessage(message)
   }
 }
