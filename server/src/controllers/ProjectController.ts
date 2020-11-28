@@ -1,7 +1,7 @@
 import * as express from 'express'
 import ProjectModel from '../models/content/ProjectModel'
 import { ProjectMetaData } from '../models/schema/ProjectMetaData'
-import UserModel from '../models/user/UserModel'
+import InstructorModel from '../models/user/InstuctorModel'
 
 let router = express.Router()
 
@@ -9,7 +9,7 @@ let router = express.Router()
  * Creates a project for owner
  */
 router.route('').post((req: express.Request, res: express.Response) => {
-  let owner: UserModel = req.body.user
+  let owner: InstructorModel = req.body.user
   let name = req.body.projectName
   let projectId: number = owner.createProject(name)
   let project: ProjectModel = owner.getProject(projectId)
@@ -20,7 +20,7 @@ router.route('').post((req: express.Request, res: express.Response) => {
  * Gets all the projects belonging to owner
  */
 router.route('').get((req: express.Request, res: express.Response) => {
-  let owner: UserModel = req.body.user
+  let owner: InstructorModel = req.body.user
   let projectsInfo: ProjectMetaData[] = owner.getProjects()
   res.status(200).send({ projects: projectsInfo })
 })
@@ -29,7 +29,7 @@ router.route('').get((req: express.Request, res: express.Response) => {
  * Gets project details of given project id and the submissions belonging to it
  */
 router.route('/:projectId').get((req: express.Request, res: express.Response) => {
-  let owner: UserModel = req.body.user
+  let owner: InstructorModel = req.body.user
   let projectId = parseInt(req.params.projectId)
   let project: ProjectModel = owner.getProject(Number(projectId))
   console.log(project)
@@ -45,7 +45,7 @@ router.route('/:projectId').get((req: express.Request, res: express.Response) =>
  * Start the detection process on files in this project
  */
 router.route('/:projectId/runDetection').post((req: express.Request, res: express.Response) => {
-  let owner: UserModel = req.body.user
+  let owner: InstructorModel = req.body.user
   let projectId = parseInt(req.params.projectId)
   let project: ProjectModel = owner.getProject(projectId)
   project.runDetection()

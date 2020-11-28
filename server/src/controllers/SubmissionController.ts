@@ -2,8 +2,8 @@ import * as express from 'express'
 import Builder from '../models/core/Builder'
 import FileModel from '../models/content/FileModel'
 import ProjectModel from '../models/content/ProjectModel'
-import UserModel from '../models/user/UserModel'
 import { SubmissionSchema } from '../models/schema/SubmissionSchema'
+import InstructorModel from '../models/user/InstuctorModel'
 
 let router = express.Router()
 
@@ -11,14 +11,14 @@ let router = express.Router()
  * Adds submissions to project
  */
 router.route('').post((req: express.Request, res: express.Response) => {
-  let owner: UserModel = req.body.user
+  let owner: InstructorModel = req.body.user
   let projectId = req.body.projectId
   if (projectId === undefined) {
     res.status(200).send({ errMessage: 'ProjectId cannot be null/undefined.' })
   }
   let project = owner.getProject(Number(projectId))
-  if(!project){
-    res.status(200).send({ errMessage: "Project does not exist with given id" })
+  if (!project) {
+    res.status(200).send({ errMessage: 'Project does not exist with given id' })
   }
   let submissions: SubmissionSchema[] = req.body.submissions
   submissions.map((submission: SubmissionSchema) => {
@@ -28,7 +28,7 @@ router.route('').post((req: express.Request, res: express.Response) => {
 })
 
 router.route('/:projectId/:email').get((req: express.Request, res: express.Response) => {
-  let owner: UserModel = req.body.user
+  let owner: InstructorModel = req.body.user
   let projectId = parseInt(req.params.projectId)
   let studentEmail: string = req.params.email
   if (projectId === undefined) {
