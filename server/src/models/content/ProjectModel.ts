@@ -29,7 +29,7 @@ export default class ProjectModel {
       let student = Director.instance().getUserModel(email)
       if (!student) {
         let builder = new DetectionBuilder()
-        builder.buildUser(undefined, undefined, undefined, email, undefined)
+        builder.buildUser(undefined, undefined, undefined, email, undefined, undefined)
         student = Director.instance().getUserModel(email)
       }
       // to hold all submissions of this student for this project
@@ -82,6 +82,10 @@ export default class ProjectModel {
         similarity: subMatch.getSimilarityPercentage(),
       }
     })
+  }
+
+  getSubmissionID(): number {
+    return 0
   }
 
   getSimilarity(similarityId: number): SubmissionMatch {

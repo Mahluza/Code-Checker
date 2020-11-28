@@ -2,8 +2,8 @@ import * as express from 'express'
 import Builder from '../models/core/Builder'
 import FileModel from '../models/content/FileModel'
 import ProjectModel from '../models/content/ProjectModel'
-import UserModel from '../models/user/UserModel'
 import { SubmissionSchema } from '../models/schema/SubmissionSchema'
+import InstructorModel from '../models/user/InstuctorModel'
 
 let router = express.Router()
 
@@ -11,14 +11,14 @@ let router = express.Router()
  * Adds submissions to project
  */
 router.route('').post((req: express.Request, res: express.Response) => {
-  let owner: UserModel = req.body.user
+  let owner: InstructorModel = req.body.user
   let projectId = req.body.projectId
   if (projectId === undefined) {
     res.status(200).send({ errMessage: 'ProjectId cannot be null/undefined.' })
   }
   let project = owner.getProject(Number(projectId))
-  if(!project){
-    res.status(200).send({ errMessage: "Project does not exist with given id" })
+  if (!project) {
+    res.status(200).send({ errMessage: 'Project does not exist with given id' })
   }
   let submissions: SubmissionSchema[] = req.body.submissions
   submissions.map((submission: SubmissionSchema) => {
@@ -28,7 +28,7 @@ router.route('').post((req: express.Request, res: express.Response) => {
 })
 
 router.route('/:projectId/:email').get((req: express.Request, res: express.Response) => {
-  let owner: UserModel = req.body.user
+  let owner: InstructorModel = req.body.user
   let projectId = parseInt(req.params.projectId)
   let studentEmail: string = req.params.email
   if (projectId === undefined) {
@@ -59,8 +59,8 @@ router.route('/testProject').get((req: express.Request, res: express.Response) =
   const file1 = fs.readFileSync(path.resolve(__dirname, '../models/exp/exp1.ts'), 'utf8')
   const file2 = fs.readFileSync(path.resolve(__dirname, '../models/exp/exp2.ts'), 'utf8')
   let builder = new Builder()
-  builder.buildUser('firstName1', 'lastName1', 'institution', 'user1', 'password')
-  builder.buildUser('firstName2', 'lastName2', 'institution', 'user2', 'password')
+  builder.buildUser('firstName1', 'lastName1', 'institution', 'user1', 'password', 1)
+  builder.buildUser('firstName2', 'lastName2', 'institution', 'user2', 'password', 1)
   let project = new ProjectModel('Test Project', 2)
   project.addToSubmission('user1', {
     name: 'exp1.ts',

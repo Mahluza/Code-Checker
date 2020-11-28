@@ -1,3 +1,4 @@
+import IUserModel from '../user/IUserModel'
 import UserModel from '../user/UserModel'
 
 export default class Director {

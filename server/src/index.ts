@@ -10,6 +10,7 @@ const UserController = require('./controllers/UserController')
 const ProjectController = require('./controllers/ProjectController')
 const SubmissionController = require('./controllers/SubmissionController')
 const SimilarityController = require('./controllers/SimilarityController')
+const RootController = require('./controllers/RootController')
 
 const PORT = process.env.PORT || 4000
 
@@ -35,6 +36,7 @@ app.use('/users', UserController)
 app.use('/project', ProjectController)
 app.use('/submission', SubmissionController)
 app.use('/similarity', SimilarityController)
+//app.use('/', RootController)
 //Routes
 
 app.get('/', (req: express.Request, res: express.Response) => {})
