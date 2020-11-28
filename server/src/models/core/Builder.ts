@@ -1,6 +1,6 @@
 import Director from './Director'
 import IBuilder from './IBuilder'
-import UserModel from '../user/UserModel'
+import AbstractUserModel from '../user/AbstractUserModel'
 import InstructorModel from '../user/InstuctorModel'
 import StudentModel from '../user/StudentModel'
 const bcrypt = require('bcryptjs')
@@ -17,7 +17,7 @@ export default class DetectionBuilder implements IBuilder {
     email: string,
     password: string,
     role: number
-  ): UserModel {
+  ): AbstractUserModel {
     if (this.director.getUserModel(email)) {
       throw new Error('User already exists')
     }

@@ -1,16 +1,24 @@
-import UserModel from './UserModel'
-import Messages from '../schema/Messages'
+import AbstractUserModel from './AbstractUserModel'
+import Notification from '../schema/Notification'
 
-export default class StudentModel extends UserModel {
-  messages: Array<Messages>
+export default class StudentModel extends AbstractUserModel {
+  notifications: Array<Notification>
   constructor(firstName: string, lastName: string, institution: string, email: string, password: string) {
     super(firstName, lastName, institution, email, password)
-    this.messages = []
+    this.notifications = []
   }
-  addMessage(message: Messages) {
-    this.messages.push(message)
+  addNotification(notification: Notification) {
+    this.notifications.push(notification)
   }
-  getMessages(): Array<Messages> {
-    return this.messages
+  getNotifications(): any {
+    return this.notifications.map((notification) => {
+      return {
+        sender: notification.getSender().getUserDetails(),
+        timestamp: notification.getTimestamp(),
+        title: notification.getTitle(),
+        body: notification.getBody(),
+        submissionId: notification.getSubmission(),
+      }
+    })
   }
 }

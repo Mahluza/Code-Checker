@@ -1,5 +1,5 @@
 import FileModel from '../content/FileModel'
-import UserModel from '../user/UserModel'
+import AbstractUserModel from '../user/AbstractUserModel'
 
 export default interface IBuilder {
   buildUser(
@@ -9,5 +9,5 @@ export default interface IBuilder {
     email: string,
     password: string,
     role: number
-  ): UserModel
+  ): AbstractUserModel
 }

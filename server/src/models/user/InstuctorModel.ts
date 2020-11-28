@@ -1,11 +1,11 @@
 import ProjectModel from '../content/ProjectModel'
 import { ProjectMetaData } from '../schema/ProjectMetaData'
 import StudentModel from './StudentModel'
-import UserModel from './UserModel'
-import Messages from '../schema/Messages'
+import AbstractUserModel from './AbstractUserModel'
+import Notification from '../schema/Notification'
 import SubmissionMatch from '../comparision/SubmissionMatch'
 
-export default class InstructorModel extends UserModel {
+export default class InstructorModel extends AbstractUserModel {
   private projects: Map<number, ProjectModel> = new Map()
   constructor(firstName: string, lastName: string, institution: string, email: string, password: string) {
     super(firstName, lastName, institution, email, password)
@@ -31,8 +31,8 @@ export default class InstructorModel extends UserModel {
     return this.projects.get(id)
   }
 
-  sendMessage(student: StudentModel, messageTitle: string, messageBody: string, submissionId: SubmissionMatch) {
-    let message = new Messages(this, messageTitle, messageBody, null)
-    student.addMessage(message)
+  notifyStudent(student: StudentModel, messageTitle: string, messageBody: string, submissionId: SubmissionMatch) {
+    let notification = new Notification(this, messageTitle, messageBody, null)
+    student.addNotification(notification)
   }
 }

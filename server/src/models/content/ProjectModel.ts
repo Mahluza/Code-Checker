@@ -5,7 +5,7 @@ import FileModel from './FileModel'
 import IUserModel from '../user/IUserModel'
 import SubmissionMatch from '../comparision/SubmissionMatch'
 import SubmissionModel from './SubmissionModel'
-import UserModel from '../user/UserModel'
+import AbstractUserModel from '../user/AbstractUserModel'
 import DetectionBuilder from '../core/Builder'
 
 export default class ProjectModel {

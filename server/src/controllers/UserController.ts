@@ -4,7 +4,6 @@ import Director from '../models/core/Director'
 import { generateToken } from '../authorization/authorization'
 import StudentModel from '../models/user/StudentModel'
 import InstructorModel from '../models/user/InstuctorModel'
-import IUserModel from '../models/user/IUserModel'
 
 let router = express.Router()
 
@@ -14,7 +13,10 @@ router.route('').post((req: express.Request, res: express.Response) => {
   let institution = req.body.institution
   let email = req.body.email
   let password = req.body.password
-  let role = parseInt(req.body.role)
+  let role = 2 //default to student
+  if (req.body.role) {
+    role = parseInt(req.body.role)
+  }
   let builder = new Builder()
   let userModel = undefined
   try {
@@ -42,19 +44,23 @@ router.route('/validate').post((req: express.Request, res: express.Response) => 
   }
 })
 
-router.route('/message').post((req: express.Request, res: express.Response) => {
+router.route('/notification').post((req: express.Request, res: express.Response) => {
   let messageBody = req.body.messageBody
   let messageTitle = req.body.messageTitle
   let owner: InstructorModel = req.body.user
   let submissionId: number = req.body.submissionId
   let studentEmail: string = req.body.studentEmail
   let student: any = Director.instance().getUserModel(studentEmail)
-  owner.sendMessage(student, messageTitle, messageBody, null)
+  if (!student) {
+    res.status(200).send({ errMessage: 'Student does not exist' })
+  }
+  owner.notifyStudent(student, messageTitle, messageBody, null)
   res.status(200).send({ result: 'success' })
 })
 
-router.route('/message').get((req: express.Request, res: express.Response) => {
+router.route('/notification').get((req: express.Request, res: express.Response) => {
   let loggedUser: StudentModel = req.body.user
-  res.status(200).send({ messages: loggedUser.getMessages() })
+  res.status(200).send({ notifications: loggedUser.getNotifications() })
 })
+
 module.exports = router
