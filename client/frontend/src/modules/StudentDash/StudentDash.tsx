@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Row, Col, Divider, Table, Button, Typography } from 'antd';
 import { MailOutlined } from '@ant-design/icons';
@@ -7,8 +7,24 @@ import './stuDash.css';
 import MessageDisplay from './MessageDisplay';
 
 const { Title } = Typography;
+const instance = axios.create({ baseURL: 'http://localhost:4000' });
 
 export default function StudentDash() {
+  const [emailList, setEmails] = useState([]);
+  const accessToken = localStorage.getItem('userToken');
+  // second arg doesn't appear to be necessary
+  // what exactly does this header do?
+  // what is localStorage
+  useEffect(() => {
+    instance
+      .get('/emails', {
+        headers: {
+          Authorization: 'Bearer' + accessToken,
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((result) => {});
+  });
   return (
     //<div></div>
     <Row>

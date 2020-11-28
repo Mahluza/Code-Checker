@@ -1,22 +1,7 @@
-const currentUser = (state = {}, action: { type: any; payload: any }) => {
-  switch (action.type) {
-    case 'SET_USER':
-      return {
-        ...state,
-        user: action.payload,
-        loggedIn: true,
-      };
-    case 'LOG_OUT':
-      return {
-        ...state,
-        user: {},
-        loggedIn: false,
-      };
-    default:
-      return state;
-  }
+const initialState = {
+  userToken: localStorage.getItem('userToken'),
+  loggedIn: false,
 };
-
 const currentUser = (
   state = initialState,
   action: { type: any; payload: any }

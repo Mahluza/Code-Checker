@@ -63,7 +63,7 @@ class MessageDisplay extends React.Component {
           style={{ paddingTop: 30 }}
         >
           <Col>
-            <PaperClipOutlined className="clip-icon" />
+            <PaperClipOutlined className="bold-icon" />
           </Col>
           <Col style={{ paddingTop: 8 }}>
             <Title level={4}>Report-Project1-Student1</Title>
