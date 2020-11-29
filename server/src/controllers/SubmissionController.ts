@@ -89,7 +89,7 @@ router.route('/testProject').get((req: express.Request, res: express.Response) =
 router.route('/testAST').get((req: express.Request, res: express.Response) => {
   const fs = require('fs')
   const path = require('path')
-  const file1 = fs.readFileSync(path.resolve(__dirname, '../models/exp/exp1.ts'), 'utf8')
+  const file1 = fs.readFileSync(path.resolve(__dirname, '../models/exp/exp2.ts'), 'utf8')
   let fModel = new FileModel('file1.ts', file1.toString())
   res.status(200).send({
     result: 'Success',

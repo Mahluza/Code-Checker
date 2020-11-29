@@ -7,6 +7,8 @@ import SyntaxTreeNode from './SyntaxTreeNode'
 
 const INDICATOR = {
   ITERATION_STATEMENT: 'ITERATION_STATEMENT ',
+  IF_STATEMENT: 'IF_STATEMENT ',
+  ELSE_STATEMENT: 'ELSE_STATEMENT ',
 }
 
 export default class SyntaxTreeBuilder {
@@ -86,6 +88,9 @@ export default class SyntaxTreeBuilder {
           case SyntaxKind.DoStatement:
             this.buildLoopStatements(child_node, syntaxTreeNodes)
             break
+          case SyntaxKind.IfStatement:
+            this.buildIfStatement(child_node, syntaxTreeNodes)
+            break
           default:
             this.buildGenericStatements(child_node, syntaxTreeNodes)
             // console.log(
@@ -134,6 +139,36 @@ export default class SyntaxTreeBuilder {
         this.buildGenericStatements(binaryExprNode, syntaxTreeNodes)
       }
     })
+  }
+
+  buildIfStatement(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
+    let hashCode: HashString = ''
+    let childNodes: ISyntaxTreeNode[] = []
+    let prefix: HashString = INDICATOR.IF_STATEMENT
+    let expressionForIf = node.getFirstChildByKind(SyntaxKind.BinaryExpression)
+    prefix = this.hashBuilder.buildGenericHash(expressionForIf, prefix, DELIMITER.IF_EXPR)
+    let blocks = node.getChildrenOfKind(SyntaxKind.Block)
+    if (blocks) {
+      childNodes.push(...this.buildAST(blocks[0]))
+    }
+    hashCode = this.hashBuilder.buildHashForBlock(childNodes, prefix)
+    syntaxTreeNodes.push(this.buildSyntaxTreeNode(node, hashCode, childNodes))
+    //If there is a if - else if ....for the else if part
+    let elseIfNode = node.getFirstChildByKind(SyntaxKind.IfStatement)
+    if (elseIfNode) {
+      //calling the same recursively to store all if else if's data at one level
+      //to identify some plagiarisms
+      this.buildIfStatement(elseIfNode, syntaxTreeNodes)
+    }
+    //If there is a if - else .....for the else part
+    if (blocks.length > 1) {
+      let hashCodeElse: HashString = ''
+      let childNodesElse: ISyntaxTreeNode[] = []
+      let prefixElse: HashString = INDICATOR.ELSE_STATEMENT
+      childNodesElse.push(...this.buildAST(blocks[1]))
+      hashCodeElse = this.hashBuilder.buildHashForBlock(childNodesElse, prefixElse)
+      syntaxTreeNodes.push(this.buildSyntaxTreeNode(blocks[1], hashCodeElse, childNodesElse))
+    }
   }
 
   buildLoopStatements(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {

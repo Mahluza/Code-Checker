@@ -10,6 +10,7 @@ export const DELIMITER = {
   PREFIX: '^', //Between prefix and codes
   CLASS: '#', //Between any thing inside a class
   FILE: '*', //Between any thing inside a file
+  IF_EXPR: '()', //for expression in if
 }
 
 export default class HashBuilder {
