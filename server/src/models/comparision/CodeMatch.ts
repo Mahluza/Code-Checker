@@ -17,6 +17,8 @@ export default class CodeMatch {
       }
     } else {
       return {
+        node1: this.node1,
+        node2: this.node2,
         type: MatchType.CompleteMatch,
         rangeOfNode1: [this.node1.getStartLineNumber(), this.node1.getEndLineNumber()],
         rangeOfNode2: [this.node2.getStartLineNumber(), this.node2.getEndLineNumber()],

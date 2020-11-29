@@ -1,149 +1,229 @@
 "use strict";
 /*
-  Note: Treating a blockset, BSet (Block Set) as an array
-        of blocks, keeping mind not to add duplicates.
-        It may be worthwhile to wrap it in a class, or
-        there may be some JS stuff for sets already.
+  Note: A BSet (Block Set) is an set of blocks
 */
 exports.__esModule = true;
-let data = require("./data");
-let block = require("./block");
-let consts = require("./consts");
-// does blockset bs contain b?
+var data = require("./data");
+var block = require("./block");
+var consts = require("./consts");
+
+/**
+ * Checks if a blockset contians a block
+ * @param bs block set
+ * @param b the block which is being checked
+ * @returns {boolean} truw iff the blockset contains the block
+ */
 function blocksContains(bs, b) {
-    for (let i = 0; i < blocksCount(bs); i++) {
+    for (var i = 0; i < blocksCount(bs); i++) {
         if (block.blocksEqual(b, bs[i]))
             return true;
     }
     return false;
 }
-// is blockset bs1 a subset of blockset 2?
+exports.blocksContains = blocksContains;
+
+/**
+ * Checks if a blockset is a subset of another block set
+ * @param bs1 a blockset
+ * @param bs2 another blockset
+ * @returns {boolean} true iff the blockset is a subset of the other blockset
+ */
 function isBlocksSubset(bs1, bs2) {
-    for (let i = 0; i < blocksCount(bs1); i++) {
+    for (var i = 0; i < blocksCount(bs1); i++) {
         if (!blocksContains(bs2, bs1[i]))
             return false;
     }
     return true;
 }
-// are blocksets bs1 and bs2 equal?
+exports.isBlocksSubset = isBlocksSubset;
+
+/**
+ * Checks if two blocksets are equal
+ * @param bs1 a blockset
+ * @param bs2 another blockset
+ * @returns {boolean} true iff the 2 blocksets are equal
+ */
 function blockSetsEqual(bs1, bs2) {
     return isBlocksSubset(bs1, bs2) && isBlocksSubset(bs2, bs1);
 }
-// return bs1 intersect bs2
+exports.blockSetsEqual = blockSetsEqual;
+
+
+/**
+ * Computes the intersection of 2 blocksets
+ * @param bs1 a bloackset
+ * @param bs2 another blockset
+ * @returns {Array} the intersection of the two blocksets
+ */
 function blocksIntersect(bs1, bs2) {
-    let r = [];
-    for (let i = 0; i < blocksCount(bs1); i++) {
+    var r = [];
+    for (var i = 0; i < blocksCount(bs1); i++) {
         if (blocksContains(bs2, bs1[i])) {
             r.push(bs1[i]);
         }
     }
     return r;
 }
-// how many blocks in blockset
+exports.blocksIntersect = blocksIntersect;
+
+/**
+ * Returns size of a blockset
+ * @param bs the blockset
+ * @returns {number} The size of the blockset
+ */
 function blocksCount(bs) {
-    return bs.length; // TODO: What is this, depends on what
-    //       a blockset is...
+    return bs.length;
 }
-// move each block in blockset by diven displacement
+exports.blocksCount = blocksCount;
+
+/**
+ * Move each block in blockset by the given displacement
+ * @param dx x displacement
+ * @param dy y displacement
+ * @param bs the bloackset
+ */
 function blocksMove(dx, dy, bs) {
-    for (let i = 0; i < blocksCount(bs); i++) {
+    for (var i = 0; i < blocksCount(bs); i++) {
         bs[i] = block.blockMove(dx, dy, bs[i]);
     }
 }
-// rotate all blocks ccw
+exports.blocksMove = blocksMove;
+
+/**
+ * Rotate blocks counterclockwise
+ * @param c
+ * @param bs blockset
+ */
 function blocksRotateCCW(c, bs) {
-    for (let i = 0; i < blocksCount(bs); i++) {
+    for (var i = 0; i < blocksCount(bs); i++) {
         bs[i] = block.blockRotateCCW(c, bs[i]);
     }
 }
-// rotate all blocks cw
+exports.blocksRotateCCW = blocksRotateCCW;
+
+/**
+ * Rotate all blocks counterclockwise
+ * @param c
+ * @param bs the blockset
+ */
 function blocksRotateCW(c, bs) {
-    for (let i = 0; i < blocksCount(bs); i++) {
+    for (var i = 0; i < blocksCount(bs); i++) {
         bs[i] = block.blockRotateCW(c, bs[i]);
     }
 }
-// change color of all blocks
-// c: Color, bs: BlockSet
+exports.blocksRotateCW = blocksRotateCW;
+
+/**
+ * Change color of blockset
+ * @param bs blockset
+ * @param c color
+ */
 function blocksChangeColor(bs, c) {
-    for (let i = 0; i < blocksCount(bs); i++) {
+    for (var i = 0; i < blocksCount(bs); i++) {
         bs[i] = { x: bs[i].x, y: bs[i].y, color: data.colorCopy(c) };
     }
 }
-// return all blocks in a row
+exports.blocksChangeColor = blocksChangeColor;
+
+/**
+ * Fetch the blocks in a row
+ * @param bs blockset
+ * @param i row number
+ * @returns {Array} the blocks in row i
+ */
 function blocksRow(bs, i) {
-    let r = [];
-    for (let k = 0; i < blocksCount(bs); i++) {
-        if (bs[k].x === i)
+    var r = [];
+    for (var k = 0; i < blocksCount(bs); i++) {
+        if (bs[k].x == i)
             r.push(bs[k]);
     }
     return r;
 }
-// produce true if there are boardWidth number of blocks
-// in a row
+exports.blocksRow = blocksRow;
+
+/**
+ * Check if a row is full (boardWidth number of blocks in a row)
+ * @param bs blockset
+ * @param i row number
+ * @returns {boolean} true iff the row is full
+ */
 function isFullRow(bs, i) {
-    return blocksRow(bs, i).length === consts.boardWidth;
+    return blocksRow(bs, i).length == consts.boardWidth;
 }
-// are there blocks above the board?
+exports.isFullRow = isFullRow;
+/**
+ * Checks if there are blocks above the board
+ * @param bs the blockset
+ * @returns {boolean} true iff there are blocks above the board
+ */
 function isBlocksOverflow(bs) {
-    for (let i = 0; i < blocksCount(bs); i++) {
+    for (var i = 0; i < blocksCount(bs); i++) {
         if (bs[i].y <= 0)
             return true;
     }
     return false;
 }
+exports.isBlocksOverflow = isBlocksOverflow;
+
 // union two block sets
+/**
+ * Computes union of 2 blocksets
+ * @param bs1 blockset
+ * @param bs2 another blockset
+ * @returns {blockset} union of the two blocksets
+ */
 function blocksUnion(bs1, bs2) {
-    let r = bs1;
-    for (let i = 0; i < blocksCount(bs2); i++) {
+    var r = bs1;
+    for (var i = 0; i < blocksCount(bs2); i++) {
         if (!blocksContains(r, bs2[i])) {
             r.push(bs2[i]);
         }
     }
     return r;
 }
-// return max y of board bs, or 0 if bs is empty
+exports.blocksUnion = blocksUnion;
+
+/**
+ * Gets max y in blockset
+ * @param bs the blockset
+ * @returns {number} the max y in given blockset, 0 if empty set
+ */
 function blocksMaxY(bs) {
-    let maxY = blocksCount(bs) === 0 ? 0 : bs[0].y;
-    for (let i = 0; i < blocksCount(bs); i++) {
+    var maxY = blocksCount(bs) == 0 ? 0 : bs[0].y;
+    for (var i = 0; i < blocksCount(bs); i++) {
         if (bs[i].y > maxY)
             maxY = bs[i].y;
     }
     return maxY;
 }
-// return min x of board bs, or boardWidth if bs empty
+exports.blocksMaxY = blocksMaxY;
+
+/**
+ * Fetches minimum x of blockset
+ * @param bs the blockset
+ * @returns {number} the min x of blockset, boardWidth if empty set
+ */
 function blocksMinX(bs) {
-    let minX = blocksCount(bs) === 0 ? consts.boardWidth : bs[0].x;
-    for (let i = 0; i < blocksCount(bs); i++) {
+    var minX = blocksCount(bs) == 0 ? consts.boardWidth : bs[0].x;
+    for (var i = 0; i < blocksCount(bs); i++) {
         if (bs[i].x < minX)
             minX = bs[i].x;
     }
     return minX;
 }
-// return max x of board bs, or 0 if bs is empty
+exports.blocksMinX = blocksMinX;
+
+/**
+ * Fetches maximum x of blockset
+ * @param bs the blockset
+ * @returns {number} the max x of blockset, 0 if empty set
+ */
 function blocksMaxX(bs) {
-    let maxX = blocksCount(bs) === 0 ? 0 : bs[0].x;
-    for (let i = 0; i < blocksCount(bs); i++) {
+    var maxX = blocksCount(bs) == 0 ? 0 : bs[0].x;
+    for (var i = 0; i < blocksCount(bs); i++) {
         if (bs[i].x > maxX)
             maxX = bs[i].x;
     }
     return maxX;
 }
-
-export {
-    blocksContains,
-    isBlocksSubset,
-    blockSetsEqual,
-    blocksIntersect,
-    blocksCount,
-    blocksMove,
-    blocksRotateCCW,
-    blocksRotateCW,
-    blocksChangeColor,
-    blocksRow,
-    isFullRow,
-    isBlocksOverflow,
-    blocksUnion,
-    blocksMaxY,
-    blocksMinX,
-    blocksMaxX
-};
+exports.blocksMaxX = blocksMaxX;

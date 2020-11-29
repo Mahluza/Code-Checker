@@ -135,41 +135,6 @@ function blocksMinX(bs) {
 }
 exports.blocksMinX = blocksMinX;
 // return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
-// return max x of board bs, or 0 if bs is empty
 function blocksMaxX(bs) {
     var maxX = blocksCount(bs) == 0 ? 0 : bs[0].x;
     for (var i = 0; i < blocksCount(bs); i++) {

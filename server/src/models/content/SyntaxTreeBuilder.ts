@@ -1,4 +1,3 @@
-import { Hash } from 'crypto'
 import { Node, SyntaxKind, VariableDeclaration } from 'ts-morph'
 import { HashString } from '../schema/HashString'
 import HashBuilder from './HashBuilder'
@@ -19,11 +18,45 @@ export default class SyntaxTreeBuilder {
   buildRootNode(node: Node): SyntaxTreeNode {
     let childNodes: ISyntaxTreeNode[] = this.buildAST(node)
     let hashCode: HashString = this.hashBuilder.buildHashForRoot(childNodes)
-    return new SyntaxTreeNode(node.getKind(), node.getStartLineNumber(), node.getEndLineNumber(), hashCode, childNodes)
+    return new SyntaxTreeNode(
+      node.getKind(),
+      node.getStartLineNumber(),
+      node.getEndLineNumber(),
+      hashCode,
+      childNodes,
+      this.getCommentsInNode(node)
+    )
+  }
+
+  getCommentsInNode(file: Node): Array<number> {
+    let nComments: Array<number> = []
+    file.getDescendantsOfKind(SyntaxKind.JSDocComment).map((c) => {
+      for (let i = c.getStartLineNumber(); i <= c.getEndLineNumber(); i++) {
+        nComments.push(i)
+      }
+    })
+    file.getDescendantsOfKind(SyntaxKind.MultiLineCommentTrivia).map((c) => {
+      for (let i = c.getStartLineNumber(); i <= c.getEndLineNumber(); i++) {
+        nComments.push(i)
+      }
+    })
+    file.getDescendantsOfKind(SyntaxKind.SingleLineCommentTrivia).map((c) => {
+      for (let i = c.getStartLineNumber(); i <= c.getEndLineNumber(); i++) {
+        nComments.push(i)
+      }
+    })
+    return nComments
   }
 
   buildSyntaxTreeNode(node: Node, hashCode: HashString, childNodes: ISyntaxTreeNode[] = null): SyntaxTreeNode {
-    return new SyntaxTreeNode(node.getKind(), node.getStartLineNumber(), node.getEndLineNumber(), hashCode, childNodes)
+    return new SyntaxTreeNode(
+      node.getKind(),
+      node.getStartLineNumber(),
+      node.getEndLineNumber(),
+      hashCode,
+      childNodes,
+      this.getCommentsInNode(node)
+    )
   }
 
   buildAST(node: Node): ISyntaxTreeNode[] {
@@ -43,6 +76,9 @@ export default class SyntaxTreeBuilder {
             this.buildFunctionDeclaration(child_node, syntaxTreeNodes)
             break
           case SyntaxKind.Identifier:
+          case SyntaxKind.MultiLineCommentTrivia:
+          case SyntaxKind.SingleLineCommentTrivia:
+          case SyntaxKind.JSDocComment:
           case SyntaxKind.EndOfFileToken:
             break
           case SyntaxKind.ForStatement:

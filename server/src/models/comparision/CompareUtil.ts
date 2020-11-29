@@ -92,12 +92,18 @@ function getCommonLines(fileMatch: FileMatch): [Set<number>, Set<number>] {
         commonLines[1].add(matched_line[1])
       })
     } else {
+      let commentLinesIn1 = match.node1.getCommentLinesInNode()
+      let commentLinesIn2 = match.node2.getCommentLinesInNode()
       //if a block is matched store info about all lines
       for (let i = match.rangeOfNode1[0]; i <= match.rangeOfNode1[1]; i++) {
-        commonLines[0].add(i)
+        if (!commentLinesIn1.includes(i)) {
+          commonLines[0].add(i)
+        }
       }
       for (let i = match.rangeOfNode2[0]; i <= match.rangeOfNode2[1]; i++) {
-        commonLines[1].add(i)
+        if (!commentLinesIn2.includes(i)) {
+          commonLines[1].add(i)
+        }
       }
     }
   })
