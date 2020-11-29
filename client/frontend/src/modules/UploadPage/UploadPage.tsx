@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation, withRouter } from "react-router-dom";
+import { useHistory, useLocation, withRouter } from "react-router-dom";
 import { Row, Col, Table, Button, Typography, Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { uploadPageTableColumns } from "./constants";
@@ -11,56 +11,36 @@ axios.defaults.headers.common["Authorization"] =
   "Bearer " + localStorage.getItem("userToken");
 const instance = axios.create({ baseURL: "http://localhost:4000" });
 
+export interface ISimilarityResult {
+  id: number;
+  similarity: number;
+  user1: string;
+  user2: string;
+}
+
 function UploadPage() {
-  const { Title } = Typography;
   const { Dragger } = Upload;
   let location = useLocation();
+  let history = useHistory();
   let projectId = location.pathname.split("/")[2];
-  const [submissionList, setSubmissionList] = useState<string[]>([]);
-  const [fileCount, setFileCount] = useState(0);
-  const [listLength, setListLength] = useState(0);
-
-  const onChange = (e: any) => {
-    if (e.event !== undefined) {
-      setListLength((listLength) => e.fileList.length);
-
-      e.fileList.forEach(function (file: any) {
-        let read = new FileReader();
-
-        read.onload = function () {
-          let res: string = read.result as string;
-          setSubmissionList((submissionList) => [...submissionList, res]);
-          setFileCount((fileCount) => fileCount + 1);
-        };
-        read.readAsText(file.originFileObj);
-      });
-    }
-  };
+  const [submissionList, setSubmissionList] = useState<[string, string][]>([]);
+  const [similarityPairs, setSimilarityPairs] = useState<ISimilarityResult[]>([]);
+  const [readyToUpload, setReadyToUpload] = useState<boolean>(false);
 
   useEffect(() => {
-    if (fileCount === listLength) {
-      let submissions = [
-        {
-          email: "abc@neu.com",
-          file: { name: "file1.ts", content: "let a = 5; let b = 6;" },
-        },
+    if (readyToUpload) {
+      let submissionData = [];
 
-        {
-          email: "abc@neu.com",
-          file: { name: "file2.ts", content: "let d = 4;" },
-        },
-
-        {
-          email: "test2@neu.com",
-          file: { name: "file1.ts", content: "function test(){return null}" },
-        },
-
-        {
-          email: "test3",
-          file: { name: "fileb.ts", content: "function test(){return 3+2}" },
-        },
-      ];
-      let body = { projectId: projectId, submissions: submissions };
+      for (var i = 0; i < submissionList.length; i++) {
+        var fileData = submissionList[i];
+        var submission = {
+          email: `student${i}@gmail.com`,
+          file: { name: fileData[1], content: fileData[0] },
+        };
+        submissionData.push(submission);
+      }
+      console.log(submissionData);
+      let body = { projectId: projectId, submissions: submissionData };
       instance
         .post("/submission", body)
         .then((result) => {})
@@ -68,16 +48,42 @@ function UploadPage() {
           console.log(error);
         });
     }
-  }, [fileCount]);
+  }, [readyToUpload]);
 
   const runDetection = () => {
     instance
       .post(`project/${projectId}/runDetection`, { projectId })
       .then((resp) => {
-        instance
-          .get(`project/${projectId}`)
-          .then((resp) => {console.log(resp)});
+        instance.get(`project/${projectId}`).then((resp: any) => {
+          console.log(resp)
+          setSimilarityPairs(resp.data.similarityResults);
+          setReadyToUpload(false);
+        });
       });
+  };
+
+  const dummyRequest = (option: any) => {
+    const { onSuccess, file } = option;
+    console.log(option);
+
+    let read = new FileReader();
+
+    read.onload = function () {
+      let res: string = read.result as string;
+      setSubmissionList((submissionList) => [
+        ...submissionList,
+        [res, file.name],
+      ]);
+    };
+    read.readAsText(file);
+
+    setTimeout(() => {
+      onSuccess("ok");
+    }, 0);
+
+    setTimeout(() => {
+      setReadyToUpload(true);
+    }, 1000);
   };
 
   return (
@@ -88,9 +94,9 @@ function UploadPage() {
             <Dragger
               multiple={true}
               directory={true}
-              showUploadList={false}
               accept=".ts"
-              onChange={onChange}
+              customRequest={dummyRequest}
+              style={{height:"auto"}}
             >
               <p className="ant-upload-drag-icon">
                 <InboxOutlined />
@@ -110,10 +116,22 @@ function UploadPage() {
         <div className="upload-page-container">
           <Table
             columns={uploadPageTableColumns}
-            dataSource={[]}
+            dataSource={similarityPairs}
             style={{ padding: 25 }}
+            onRow={(record, rowIndex) => {
+              return {
+                onClick: event => {history.push(`/similarity/${projectId}/${similarityPairs[rowIndex as number].id}`);}
+              };
+            }}
           />
-          <Button onClick={runDetection}> Run Detection </Button>
+          <Button
+            type="primary"
+            onClick={runDetection}
+            disabled={!readyToUpload}
+          >
+            {" "}
+            Run Detection{" "}
+          </Button>
         </div>
       </Col>
     </Row>

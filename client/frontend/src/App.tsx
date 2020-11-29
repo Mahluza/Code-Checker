@@ -6,7 +6,8 @@ import HomePage from './modules/HomePage/HomePage';
 import './App.css';
 import LogInPage from './modules/UserAuthentication/LogInPage';
 import RegistrationPage from './modules/UserAuthentication/RegistrationPage';
-import UploadPage from './modules/UploadPage/UploadPage'
+import UploadPage from './modules/UploadPage/UploadPage';
+import AnalysisPage from './modules/AnalysisPage/AnalysisPage';
 import TestForm from './modules/UserAuthentication/TestForm';
 
 function App() {
@@ -55,6 +56,7 @@ function App() {
           <Route path="/register" component={RegistrationPage} />
           <Route path="/home" component={HomePage} exact />
           <Route path="/upload" component={UploadPage} />
+          <Route path="/similarity" component={AnalysisPage} />
           <Route path="/test" component={TestForm} exact />
         </Switch>
       </header>

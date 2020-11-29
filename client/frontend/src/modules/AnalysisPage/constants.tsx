@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Tag, Space } from "antd";
 
-export const uploadPageTableColumns = [
+export const analysisPageTableColumns = [
     {
-      title: "Student One",
-      dataIndex: "user1",
+      title: "File One",
+      dataIndex: "file1",
       key: "user1",
     },
     {
-      title: "Student Two",
-      dataIndex: "user2",
+      title: "File Two",
+      dataIndex: "file2",
       key: "user2",
     },
     {
