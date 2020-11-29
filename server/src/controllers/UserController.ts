@@ -13,7 +13,7 @@ router.route('').post((req: express.Request, res: express.Response) => {
   let institution = req.body.institution
   let email = req.body.email
   let password = req.body.password
-  let role = 2 //default to student
+  let role = 1 //default to professor
   if (req.body.role) {
     role = parseInt(req.body.role)
   }
