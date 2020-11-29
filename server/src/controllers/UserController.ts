@@ -2,6 +2,8 @@ import * as express from 'express'
 import Builder from '../models/core/Builder'
 import Director from '../models/core/Director'
 import { generateToken } from '../authorization/authorization'
+import StudentModel from '../models/user/StudentModel'
+import InstructorModel from '../models/user/InstuctorModel'
 
 let router = express.Router()
 
@@ -11,10 +13,14 @@ router.route('').post((req: express.Request, res: express.Response) => {
   let institution = req.body.institution
   let email = req.body.email
   let password = req.body.password
+  let role = 2 //default to student
+  if (req.body.role) {
+    role = parseInt(req.body.role)
+  }
   let builder = new Builder()
   let userModel = undefined
   try {
-    userModel = builder.buildUser(firstName, lastName, institution, email, password)
+    userModel = builder.buildUser(firstName, lastName, institution, email, password, role)
     const accessToken = generateToken(userModel)
     res.status(200).send({ accessToken: accessToken, userDetails: userModel.getUserDetails() })
   } catch (error) {
@@ -36,6 +42,25 @@ router.route('/validate').post((req: express.Request, res: express.Response) => 
   } else {
     res.status(200).send({ errMessage: 'User does not exist' })
   }
+})
+
+router.route('/notification').post((req: express.Request, res: express.Response) => {
+  let messageBody = req.body.messageBody
+  let messageTitle = req.body.messageTitle
+  let owner: InstructorModel = req.body.user
+  let submissionId: number = req.body.submissionId
+  let studentEmail: string = req.body.studentEmail
+  let student: any = Director.instance().getUserModel(studentEmail)
+  if (!student) {
+    res.status(200).send({ errMessage: 'Student does not exist' })
+  }
+  owner.notifyStudent(student, messageTitle, messageBody, null)
+  res.status(200).send({ result: 'success' })
+})
+
+router.route('/notification').get((req: express.Request, res: express.Response) => {
+  let loggedUser: StudentModel = req.body.user
+  res.status(200).send({ notifications: loggedUser.getNotifications() })
 })
 
 module.exports = router

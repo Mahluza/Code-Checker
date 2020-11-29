@@ -1,25 +1,32 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useHistory, withRouter } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import allActions from "../../redux/actions/allActions";
-import { Row, Col, Divider, Table, Button, Typography } from "antd";
-import { PlusCircleOutlined } from "@ant-design/icons";
-import UploadModal from "./subcomponents/UploadModal";
-import { homePageTableColumns } from "./constants";
-import "./homePageStyles.css";
-import "antd/dist/antd.css";
-import { RootState } from "../../redux/stateTypes";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useHistory, withRouter } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import allActions from '../../redux/actions/allActions';
+import { Row, Col, Divider, Table, Button, Typography } from 'antd';
+import { PlusCircleOutlined } from '@ant-design/icons';
+import UploadModal from './subcomponents/UploadModal';
+import { homePageTableColumns } from './constants';
+import './homePageStyles.css';
+import 'antd/dist/antd.css';
+import { RootState } from '../../redux/stateTypes';
 
-const instance = axios.create({ baseURL: "http://localhost:4000" });
+const instance = axios.create({ baseURL: 'http://localhost:4000' });
 
 function HomePage() {
   // check if upload modal is enabled
   const [visible, setVisible] = useState(false);
+  // projectList is part of state of HomePage?
+  // setProjectList is method for updating it?
+  // useState argument is the state variable's initial value?
+  // how come there isn't a useEffect for visible. Is it because it's not linked to a post or get method?
+  // look into props argument
+  // does useDispatch puto something into the redux store? if so, what does it set it as?
+
   const [projectsList, setProjectsList] = useState([]);
   const dispatch = useDispatch();
   const history = useHistory();
-  const accessToken = localStorage.getItem('userToken')
+  const accessToken = localStorage.getItem('userToken');
 
   const { Title } = Typography;
 
@@ -31,12 +38,15 @@ function HomePage() {
     setVisible(false);
   };
 
+  // renders whenver an effect is called. effect is called whenver second arg is updated.
+  // so useEffect only called once here?
+  // so why use it?
   useEffect(() => {
     instance
-      .get("/project", {
+      .get('/project', {
         headers: {
-          Authorization: "Bearer " + accessToken,
-          "Content-Type": "application/json",
+          Authorization: 'Bearer ' + accessToken,
+          'Content-Type': 'application/json',
         },
       })
       .then((result) => {
@@ -72,12 +82,12 @@ function HomePage() {
               type="primary"
               shape="round"
               icon={<PlusCircleOutlined />}
-              size={"large"}
+              size={'large'}
               style={{ marginLeft: 25, marginTop: 15 }}
               onClick={showModal}
             >
-              {" "}
-              Start New Project{" "}
+              {' '}
+              Start New Project{' '}
             </Button>
             <UploadModal
               visible={visible}
@@ -90,7 +100,9 @@ function HomePage() {
             style={{ padding: 25 }}
             onRow={(record, rowIndex) => {
               return {
-                onClick: event => {history.push(`/upload/${rowIndex}`);}
+                onClick: (event) => {
+                  history.push(`/upload/${rowIndex}`);
+                },
               };
             }}
           />

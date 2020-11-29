@@ -1,9 +1,9 @@
-import UserModel from '../user/UserModel'
+import IUserModel from '../user/IUserModel'
 
 export default class Director {
   private static director: Director
   private userModelMapIndex: number = 0
-  private userModelMap: Map<string, UserModel> = new Map()
+  private userModelMap: Map<string, IUserModel> = new Map()
 
   private constructor() {}
 
@@ -14,11 +14,11 @@ export default class Director {
     return this.director
   }
 
-  public addUserModel(email: string, model: UserModel) {
+  public addUserModel(email: string, model: IUserModel) {
     this.userModelMap.set(email, model)
   }
 
-  public getUserModel(email: string): UserModel {
+  public getUserModel(email: string): IUserModel {
     return this.userModelMap.get(email)
   }
 }
