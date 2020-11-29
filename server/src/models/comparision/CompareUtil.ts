@@ -14,20 +14,52 @@ import { LINE_THRESHOLD_FOR_CODEMATCH, PERCENTAGE_THRESHOLD_FOR_CODEMATCH } from
  * @param submissionMatch SubmissionMatch holding matches between two user submissions
  */
 export function computeSimilarityPercentageBetweenSubmissions(submissionMatch: SubmissionMatch) {
-  let overallCommonLines: number = 0
-  let overallFileLines: number = 0
+  let filesDetails: [Map<string, number>, Map<string, number>] = [new Map(), new Map()]
+  let commonlineDetails: [Map<string, Set<number>>, Map<string, Set<number>>] = [new Map(), new Map()]
   submissionMatch.getFileMatches().map((fileMatch) => {
-    overallCommonLines += fileMatch.getCommonLines()
-    let file1 = fileMatch.getFile1().getSyntaxTree()
-    let file2 = fileMatch.getFile2().getSyntaxTree()
-    let linesInFile1 = file1.getEndLineNumber() - file1.getStartLineNumber() + 1
-    let linesInFile2 = file2.getEndLineNumber() - file2.getStartLineNumber() + 1
-    overallFileLines += Math.min(linesInFile1, linesInFile2)
+    let file1 = fileMatch.getFile1()
+    let file2 = fileMatch.getFile2()
+    if (!filesDetails[0].has(file1.getName())) {
+      filesDetails[0].set(file1.getName(), file1.getNumberOfStatements())
+    }
+    if (!filesDetails[1].has(file2.getName())) {
+      filesDetails[1].set(file2.getName(), file2.getNumberOfStatements())
+    }
+    let commonLines: [Set<number>, Set<number>] = getCommonLines(fileMatch)
+    updateCommonLines(commonlineDetails[0], file1.getName(), commonLines[0])
+    updateCommonLines(commonlineDetails[1], file2.getName(), commonLines[1])
   })
-  if (overallCommonLines === 0) {
+  let user1TotalLines = Array.from(filesDetails[0].values()).reduce((acc, v) => acc + v, 0)
+  let user2TotalLines = Array.from(filesDetails[1].values()).reduce((acc, v) => acc + v, 0)
+  let commonLinesInUser1 = Array.from(commonlineDetails[0].values()).reduce((acc, v) => acc + v.size, 0)
+  let commonLinesInUser2 = Array.from(commonlineDetails[1].values()).reduce((acc, v) => acc + v.size, 0)
+  return computeSimilarityPercentage(user1TotalLines, user2TotalLines, commonLinesInUser1, commonLinesInUser2)
+}
+
+function computeSimilarityPercentage(
+  overallLines1: number,
+  overallLines2: number,
+  commonLines1: number,
+  commonLines2: number
+): number {
+  if (commonLines1 === 0) {
     return 0
   }
-  return Math.ceil((overallCommonLines / overallFileLines) * 100)
+  //whichever file has less number of lines using that as reference
+  if (overallLines1 < overallLines2) {
+    return Math.ceil((commonLines1 / overallLines1) * 100)
+  } else {
+    return Math.ceil((commonLines2 / overallLines2) * 100)
+  }
+}
+
+function updateCommonLines(mapping: Map<string, Set<number>>, name: string, commonLines: Set<number>) {
+  if (mapping.has(name)) {
+    let updatedCommonLines: Set<number> = new Set([...mapping.get(name), ...commonLines])
+    mapping.set(name, updatedCommonLines)
+  } else {
+    mapping.set(name, commonLines)
+  }
 }
 
 /**
@@ -49,32 +81,46 @@ export function findSimilarities(submissionMatch: SubmissionMatch, file1: FileMo
   return fileMatch
 }
 
+function getCommonLines(fileMatch: FileMatch): [Set<number>, Set<number>] {
+  let commonLines: [Set<number>, Set<number>] = [new Set(), new Set()]
+  fileMatch.getCodeMatches().map((codeMatch) => {
+    let match = codeMatch.getCodeMatch()
+    if (match.type === MatchType.CommonLines) {
+      //only if few lines matched
+      match.lines.map((matched_line) => {
+        commonLines[0].add(matched_line[0])
+        commonLines[1].add(matched_line[1])
+      })
+    } else {
+      //if a block is matched store info about all lines
+      for (let i = match.rangeOfNode1[0]; i <= match.rangeOfNode1[1]; i++) {
+        commonLines[0].add(i)
+      }
+      for (let i = match.rangeOfNode2[0]; i <= match.rangeOfNode2[1]; i++) {
+        commonLines[1].add(i)
+      }
+    }
+  })
+  return commonLines
+}
+
 /**
  * To compute similarity for file match
  *
  * @param fileMatch FileMatch
  */
 function setSimilarlyPercentageForFile(fileMatch: FileMatch): void {
-  let commonLines: number = 0
-  fileMatch.getCodeMatches().map((codeMatch) => {
-    let matches = codeMatch.getCodeMatch()
-    if (matches.type === MatchType.CommonLines) {
-      commonLines += matches.lines.length
-    } else {
-      commonLines += matches.rangeOfNode1[1] - matches.rangeOfNode1[0]
-    }
-  })
-  fileMatch.setCommonLines(commonLines)
-  if (commonLines === 0) {
-    //If nothing in common between files
-    fileMatch.setSimilarityPercentage(0)
-    return
-  }
-  let file1 = fileMatch.getFile1().getSyntaxTree()
-  let file2 = fileMatch.getFile2().getSyntaxTree()
-  let linesInFile1 = file1.getEndLineNumber() - file1.getStartLineNumber() + 1
-  let linesInFile2 = file2.getEndLineNumber() - file2.getStartLineNumber() + 1
-  fileMatch.setSimilarityPercentage(computeSimilarityPercentage(commonLines, linesInFile1, linesInFile2))
+  let commonLines: [Set<number>, Set<number>] = getCommonLines(fileMatch)
+  let linesInFile = []
+  linesInFile[0] = fileMatch.getFile1().getNumberOfStatements()
+  linesInFile[1] = fileMatch.getFile2().getNumberOfStatements()
+  let similarityPercentage = computeSimilarityPercentage(
+    linesInFile[0],
+    linesInFile[1],
+    commonLines[0].size,
+    commonLines[1].size
+  )
+  fileMatch.setSimilarityPercentage(similarityPercentage)
 }
 
 /**
@@ -84,7 +130,11 @@ function setSimilarlyPercentageForFile(fileMatch: FileMatch): void {
  * @param linesInNode1 Number of lines in node 1
  * @param linesInNode2 Number of lines in node 2
  */
-function computeSimilarityPercentage(commonLines: number, linesInNode1: number, linesInNode2: number): number {
+function computeSimilarityPercentageForCodeBlock(
+  commonLines: number,
+  linesInNode1: number,
+  linesInNode2: number
+): number {
   if (commonLines === 0) {
     //not even single match
     return 0
@@ -143,7 +193,7 @@ function checkMatch(fileMatch: FileMatch, node1: ISyntaxTreeNode, node2: ISyntax
       let linesIn2 = innerNodes2.filter(
         (innerNode2) => innerNode2.getStartLineNumber() === innerNode2.getEndLineNumber()
       ).length
-      let similarityPercentage = computeSimilarityPercentage(matchedLines.length, linesIn1, linesIn2)
+      let similarityPercentage = computeSimilarityPercentageForCodeBlock(matchedLines.length, linesIn1, linesIn2)
       //If similarity is high enough as per our config then add to file match else ignore
       if (similarityPercentage > PERCENTAGE_THRESHOLD_FOR_CODEMATCH) {
         fileMatch.addCodeMatch(new CodeMatch(node1, node2, similarityPercentage, matchedLines))
