@@ -18,6 +18,8 @@ function AnalysisPage() {
   let similarityId = location.pathname.split("/")[3];
   const [similarities, setSimilarities] = useState([]);
   const [fileDiff, setFileDiff] = useState(["num", "num"]);
+  const [file1Highlight, setFile1HightLight] = useState("");
+  const [file2Highlight, setFile2HightLight] = useState("");
 
   useEffect(() => {
     instance.get(`/similarity/${projectId}/${similarityId}`).then((resp) => {
