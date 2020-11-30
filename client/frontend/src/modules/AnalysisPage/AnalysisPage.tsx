@@ -3,7 +3,7 @@ import axios from "axios";
 import { useHistory, useLocation, withRouter } from "react-router-dom";
 import { CodeBlock, atomOneDark } from "react-code-blocks";
 import { Row, Col, Table, Button, Typography, Upload } from "antd";
-import { analysisPageTableColumns } from "./constants";
+import { analysisPageTableColumns, codeBlockStyle } from "./constants";
 import "./analysisPageStyles.css";
 import "antd/dist/antd.css";
 
@@ -92,26 +92,14 @@ function AnalysisPage() {
             text={fileDiff[0]}
             language={"typescript"}
             theme={atomOneDark}
-            customStyle={{
-              overflow: "scroll",
-              fontSize: "1rem",
-              width: "45%",
-              marginTop: "24px",
-              marginBottom: "24px"
-            }}
+            customStyle={codeBlockStyle}
             highlight={file1Highlight}
           />
           <CodeBlock
             text={fileDiff[1]}
             language={"typescript"}
             theme={atomOneDark}
-            customStyle={{
-              overflow: "scroll",
-              fontSize: "1rem",
-              width: "45%",
-              marginTop: "24px",
-              marginBottom: "24px"
-            }}
+            customStyle={codeBlockStyle}
             highlight={file2Highlight}
           />
         </div>

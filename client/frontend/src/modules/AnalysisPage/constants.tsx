@@ -18,3 +18,10 @@ export const analysisPageTableColumns = [
       key: "similarity",
     }
   ];
+export const codeBlockStyle = {
+  overflow: "scroll",
+  fontSize: "1rem",
+  width: "45%",
+  marginTop: "24px",
+  marginBottom: "24px"
+}

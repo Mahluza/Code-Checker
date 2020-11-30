@@ -83,20 +83,19 @@ function UploadPage() {
 
     setTimeout(() => {
       setReadyToUpload(true);
-    }, 1000);
+    }, 700);
   };
 
   return (
     <Row>
       <Col span={8}>
-        <div className="upload-page-container">
-          <Row>
+        <div className="upload-page-left-container">
             <Dragger
               multiple={true}
               directory={true}
               accept=".ts"
               customRequest={dummyRequest}
-              style={{height:"auto"}}
+              style={{height:"200px"}}
             >
               <p className="ant-upload-drag-icon">
                 <InboxOutlined />
@@ -109,11 +108,10 @@ function UploadPage() {
                 submissions.
               </p>
             </Dragger>
-          </Row>
         </div>
       </Col>
       <Col span={16}>
-        <div className="upload-page-container">
+        <div className="upload-page-right-container">
           <Table
             columns={uploadPageTableColumns}
             dataSource={similarityPairs}
