@@ -7,8 +7,8 @@ import SyntaxTreeNode from './SyntaxTreeNode'
 
 const INDICATOR = {
   ITERATION_STATEMENT: 'ITERATION_STATEMENT ',
-  IF_STATEMENT: 'IF_STATEMENT ',
-  ELSE_STATEMENT: 'ELSE_STATEMENT ',
+  CONDITIONAL_IF_STATEMENT: 'CONDITIONAL_STATEMENT ',
+  CONDITIONAL_ELSE_STATEMENT: 'CONDITIONAL_ELSE_STATEMENT ',
 }
 
 export default class SyntaxTreeBuilder {
@@ -61,7 +61,7 @@ export default class SyntaxTreeBuilder {
     )
   }
 
-  buildAST(node: Node): ISyntaxTreeNode[] {
+  buildAST(node: Node, ignoreBreak: boolean = false): ISyntaxTreeNode[] {
     if (node) {
       let syntaxTreeNodes: ISyntaxTreeNode[] = []
       node.forEachChild((child_node: Node) => {
@@ -91,7 +91,13 @@ export default class SyntaxTreeBuilder {
           case SyntaxKind.IfStatement:
             this.buildIfStatement(child_node, syntaxTreeNodes)
             break
+          case SyntaxKind.SwitchStatement:
+            this.buildSwitchStatement(child_node, syntaxTreeNodes)
+            break
           default:
+            if (ignoreBreak && child_node.getKind() === SyntaxKind.BreakStatement) {
+              break
+            }
             this.buildGenericStatements(child_node, syntaxTreeNodes)
             // console.log(
             //   'default in AST ',
@@ -141,11 +147,34 @@ export default class SyntaxTreeBuilder {
     })
   }
 
+  buildSwitchStatement(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
+    let identifierOfSwitch = node.getFirstChildByKind(SyntaxKind.Identifier)
+    let caseBlock = node.getFirstChildByKind(SyntaxKind.CaseBlock)
+    if (caseBlock) {
+      caseBlock.getChildrenOfKind(SyntaxKind.CaseClause).map((case_node) => {
+        let prefix: HashString = INDICATOR.CONDITIONAL_IF_STATEMENT
+        let expressionForIf = case_node.getChildAtIndex(1)
+        prefix = this.hashBuilder.buildHashForSwitchCondn(identifierOfSwitch, expressionForIf, prefix)
+        let blockNode = case_node.getFirstChildByKind(SyntaxKind.Block)
+        if (blockNode) {
+          let childNodes = this.buildAST(blockNode, true)
+          let hashCode = this.hashBuilder.buildHashForBlock(childNodes, prefix)
+          let syntaxTreeNode = this.buildSyntaxTreeNode(node, hashCode, childNodes)
+          syntaxTreeNodes.push(syntaxTreeNode)
+          syntaxTreeNode.modifyNodeType(SyntaxKind.IfStatement)
+        }
+      })
+      let defaultBlock = caseBlock.getFirstChildByKind(SyntaxKind.DefaultClause)
+      if (defaultBlock) {
+      }
+    }
+  }
+
   buildIfStatement(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
     let hashCode: HashString = ''
     let childNodes: ISyntaxTreeNode[] = []
-    let prefix: HashString = INDICATOR.IF_STATEMENT
-    let expressionForIf = node.getFirstChildByKind(SyntaxKind.BinaryExpression)
+    let prefix: HashString = INDICATOR.CONDITIONAL_IF_STATEMENT
+    let expressionForIf = node.getChildAtIndex(2)
     prefix = this.hashBuilder.buildGenericHash(expressionForIf, prefix, DELIMITER.IF_EXPR)
     let blocks = node.getChildrenOfKind(SyntaxKind.Block)
     if (blocks) {
@@ -164,7 +193,7 @@ export default class SyntaxTreeBuilder {
     if (blocks.length > 1) {
       let hashCodeElse: HashString = ''
       let childNodesElse: ISyntaxTreeNode[] = []
-      let prefixElse: HashString = INDICATOR.ELSE_STATEMENT
+      let prefixElse: HashString = INDICATOR.CONDITIONAL_ELSE_STATEMENT
       childNodesElse.push(...this.buildAST(blocks[1]))
       hashCodeElse = this.hashBuilder.buildHashForBlock(childNodesElse, prefixElse)
       syntaxTreeNodes.push(this.buildSyntaxTreeNode(blocks[1], hashCodeElse, childNodesElse))
