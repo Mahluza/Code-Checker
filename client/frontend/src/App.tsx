@@ -14,6 +14,7 @@ import './App.css';
 import LogInPage from './modules/UserAuthentication/LogInPage';
 import RegistrationPage from './modules/UserAuthentication/RegistrationPage';
 import UploadPage from './modules/UploadPage/UploadPage';
+import AnalysisPage from './modules/AnalysisPage/AnalysisPage';
 import TestForm from './modules/UserAuthentication/TestForm';
 import StudentDash from './modules/StudentDash/StudentDash';
 import StudentDashMessage from './modules/StudentDash/StudentDash';
@@ -64,6 +65,7 @@ function App() {
           <Route path="/register" component={RegistrationPage} />
           <Route path="/home" component={HomePage} exact />
           <Route path="/upload" component={UploadPage} />
+          <Route path="/similarity" component={AnalysisPage} />
           <Route path="/test" component={TestForm} exact />
           <Route path="/student" component={StudentDash} exact />
         </Switch>

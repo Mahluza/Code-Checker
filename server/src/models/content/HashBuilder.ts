@@ -10,6 +10,7 @@ export const DELIMITER = {
   PREFIX: '^', //Between prefix and codes
   CLASS: '#', //Between any thing inside a class
   FILE: '*', //Between any thing inside a file
+  IF_EXPR: '()', //for expression in if
 }
 
 export default class HashBuilder {
@@ -57,5 +58,23 @@ export default class HashBuilder {
         .sort()
         .join(DELIMITER.CLASS)
     )
+  }
+
+  buildHashForSwitchCondn(
+    condn: Node,
+    expressionForIf: Node,
+    prefix: HashString,
+    prefix_delimiter: HashString = ''
+  ): HashString {
+    let hashCode: HashString = prefix + prefix_delimiter
+    if (condn) {
+      hashCode += SyntaxKind.BinaryExpression.toString()
+      hashCode += this.encryptor.generateHash(DELIMITER.TOKEN + this.encryptor.generateHash(condn.getKind().toString()))
+      hashCode += this.encryptor.generateHash(
+        DELIMITER.TOKEN + this.encryptor.generateHash(SyntaxKind.EqualsEqualsEqualsToken.toString())
+      )
+      hashCode += this.encryptor.generateHash(DELIMITER.TOKEN + this.buildGenericHash(expressionForIf))
+    }
+    return this.encryptor.generateHash(hashCode)
   }
 }

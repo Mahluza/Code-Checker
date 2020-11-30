@@ -33,7 +33,13 @@ router.route('/:projectId/:submissionMatchId/:similarityId').get((req: express.R
   let project: ProjectModel = owner.getProject(projectId)
   let submissionMatch: SubmissionMatch = project.getSimilarity(submissionMatchId)
   let fileMatch: FileMatch = submissionMatch.getSimilarity(similarityId)
-  res.status(200).send({ similarities: fileMatch.getSimilarities() })
+  res
+    .status(200)
+    .send({
+      similarities: fileMatch.getSimilarities(),
+      file1: fileMatch.getFile1().getContent(),
+      file2: fileMatch.getFile2().getContent(),
+    })
 })
 
 module.exports = router

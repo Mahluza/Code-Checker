@@ -32,7 +32,6 @@ router.route('/:projectId').get((req: express.Request, res: express.Response) =>
   let owner: InstructorModel = req.body.user
   let projectId = parseInt(req.params.projectId)
   let project: ProjectModel = owner.getProject(Number(projectId))
-  console.log(project)
   res.status(200).send({
     projectId: projectId,
     projectMetaData: project.getProjectMetaData(),

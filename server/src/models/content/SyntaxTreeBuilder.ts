@@ -1,4 +1,3 @@
-import { Hash } from 'crypto'
 import { Node, SyntaxKind, VariableDeclaration } from 'ts-morph'
 import { HashString } from '../schema/HashString'
 import HashBuilder from './HashBuilder'
@@ -8,6 +7,8 @@ import SyntaxTreeNode from './SyntaxTreeNode'
 
 const INDICATOR = {
   ITERATION_STATEMENT: 'ITERATION_STATEMENT ',
+  CONDITIONAL_IF_STATEMENT: 'CONDITIONAL_STATEMENT ',
+  CONDITIONAL_ELSE_STATEMENT: 'CONDITIONAL_ELSE_STATEMENT ',
 }
 
 export default class SyntaxTreeBuilder {
@@ -19,14 +20,48 @@ export default class SyntaxTreeBuilder {
   buildRootNode(node: Node): SyntaxTreeNode {
     let childNodes: ISyntaxTreeNode[] = this.buildAST(node)
     let hashCode: HashString = this.hashBuilder.buildHashForRoot(childNodes)
-    return new SyntaxTreeNode(node.getKind(), node.getStartLineNumber(), node.getEndLineNumber(), hashCode, childNodes)
+    return new SyntaxTreeNode(
+      node.getKind(),
+      node.getStartLineNumber(),
+      node.getEndLineNumber(),
+      hashCode,
+      childNodes,
+      this.getCommentsInNode(node)
+    )
+  }
+
+  getCommentsInNode(file: Node): Array<number> {
+    let nComments: Array<number> = []
+    file.getDescendantsOfKind(SyntaxKind.JSDocComment).map((c) => {
+      for (let i = c.getStartLineNumber(); i <= c.getEndLineNumber(); i++) {
+        nComments.push(i)
+      }
+    })
+    file.getDescendantsOfKind(SyntaxKind.MultiLineCommentTrivia).map((c) => {
+      for (let i = c.getStartLineNumber(); i <= c.getEndLineNumber(); i++) {
+        nComments.push(i)
+      }
+    })
+    file.getDescendantsOfKind(SyntaxKind.SingleLineCommentTrivia).map((c) => {
+      for (let i = c.getStartLineNumber(); i <= c.getEndLineNumber(); i++) {
+        nComments.push(i)
+      }
+    })
+    return nComments
   }
 
   buildSyntaxTreeNode(node: Node, hashCode: HashString, childNodes: ISyntaxTreeNode[] = null): SyntaxTreeNode {
-    return new SyntaxTreeNode(node.getKind(), node.getStartLineNumber(), node.getEndLineNumber(), hashCode, childNodes)
+    return new SyntaxTreeNode(
+      node.getKind(),
+      node.getStartLineNumber(),
+      node.getEndLineNumber(),
+      hashCode,
+      childNodes,
+      this.getCommentsInNode(node)
+    )
   }
 
-  buildAST(node: Node): ISyntaxTreeNode[] {
+  buildAST(node: Node, ignoreBreak: boolean = false): ISyntaxTreeNode[] {
     if (node) {
       let syntaxTreeNodes: ISyntaxTreeNode[] = []
       node.forEachChild((child_node: Node) => {
@@ -43,6 +78,9 @@ export default class SyntaxTreeBuilder {
             this.buildFunctionDeclaration(child_node, syntaxTreeNodes)
             break
           case SyntaxKind.Identifier:
+          case SyntaxKind.MultiLineCommentTrivia:
+          case SyntaxKind.SingleLineCommentTrivia:
+          case SyntaxKind.JSDocComment:
           case SyntaxKind.EndOfFileToken:
             break
           case SyntaxKind.ForStatement:
@@ -50,7 +88,16 @@ export default class SyntaxTreeBuilder {
           case SyntaxKind.DoStatement:
             this.buildLoopStatements(child_node, syntaxTreeNodes)
             break
+          case SyntaxKind.IfStatement:
+            this.buildIfStatement(child_node, syntaxTreeNodes)
+            break
+          case SyntaxKind.SwitchStatement:
+            this.buildSwitchStatement(child_node, syntaxTreeNodes)
+            break
           default:
+            if (ignoreBreak && child_node.getKind() === SyntaxKind.BreakStatement) {
+              break
+            }
             this.buildGenericStatements(child_node, syntaxTreeNodes)
             // console.log(
             //   'default in AST ',
@@ -98,6 +145,59 @@ export default class SyntaxTreeBuilder {
         this.buildGenericStatements(binaryExprNode, syntaxTreeNodes)
       }
     })
+  }
+
+  buildSwitchStatement(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
+    let identifierOfSwitch = node.getFirstChildByKind(SyntaxKind.Identifier)
+    let caseBlock = node.getFirstChildByKind(SyntaxKind.CaseBlock)
+    if (caseBlock) {
+      caseBlock.getChildrenOfKind(SyntaxKind.CaseClause).map((case_node) => {
+        let prefix: HashString = INDICATOR.CONDITIONAL_IF_STATEMENT
+        let expressionForIf = case_node.getChildAtIndex(1)
+        prefix = this.hashBuilder.buildHashForSwitchCondn(identifierOfSwitch, expressionForIf, prefix)
+        let blockNode = case_node.getFirstChildByKind(SyntaxKind.Block)
+        if (blockNode) {
+          let childNodes = this.buildAST(blockNode, true)
+          let hashCode = this.hashBuilder.buildHashForBlock(childNodes, prefix)
+          let syntaxTreeNode = this.buildSyntaxTreeNode(node, hashCode, childNodes)
+          syntaxTreeNodes.push(syntaxTreeNode)
+          syntaxTreeNode.modifyNodeType(SyntaxKind.IfStatement)
+        }
+      })
+      let defaultBlock = caseBlock.getFirstChildByKind(SyntaxKind.DefaultClause)
+      if (defaultBlock) {
+      }
+    }
+  }
+
+  buildIfStatement(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
+    let hashCode: HashString = ''
+    let childNodes: ISyntaxTreeNode[] = []
+    let prefix: HashString = INDICATOR.CONDITIONAL_IF_STATEMENT
+    let expressionForIf = node.getChildAtIndex(2)
+    prefix = this.hashBuilder.buildGenericHash(expressionForIf, prefix, DELIMITER.IF_EXPR)
+    let blocks = node.getChildrenOfKind(SyntaxKind.Block)
+    if (blocks) {
+      childNodes.push(...this.buildAST(blocks[0]))
+    }
+    hashCode = this.hashBuilder.buildHashForBlock(childNodes, prefix)
+    syntaxTreeNodes.push(this.buildSyntaxTreeNode(node, hashCode, childNodes))
+    //If there is a if - else if ....for the else if part
+    let elseIfNode = node.getFirstChildByKind(SyntaxKind.IfStatement)
+    if (elseIfNode) {
+      //calling the same recursively to store all if else if's data at one level
+      //to identify some plagiarisms
+      this.buildIfStatement(elseIfNode, syntaxTreeNodes)
+    }
+    //If there is a if - else .....for the else part
+    if (blocks.length > 1) {
+      let hashCodeElse: HashString = ''
+      let childNodesElse: ISyntaxTreeNode[] = []
+      let prefixElse: HashString = INDICATOR.CONDITIONAL_ELSE_STATEMENT
+      childNodesElse.push(...this.buildAST(blocks[1]))
+      hashCodeElse = this.hashBuilder.buildHashForBlock(childNodesElse, prefixElse)
+      syntaxTreeNodes.push(this.buildSyntaxTreeNode(blocks[1], hashCodeElse, childNodesElse))
+    }
   }
 
   buildLoopStatements(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {

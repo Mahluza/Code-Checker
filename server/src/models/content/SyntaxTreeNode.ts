@@ -5,6 +5,7 @@ import { HashString } from '../schema/HashString'
 class SyntaxTreeNode implements ISyntaxTreeNode {
   private startLineNumber: number
   private endLineNumber: number
+  private commentLines: Array<number>
   private nodeType: SyntaxKind
   private children: Array<ISyntaxTreeNode>
   private hashCode: HashString
@@ -14,13 +15,15 @@ class SyntaxTreeNode implements ISyntaxTreeNode {
     startLine: number,
     endLine: number,
     hashCode: HashString,
-    children: Array<ISyntaxTreeNode> = null
+    children: Array<ISyntaxTreeNode> = null,
+    commentLines: Array<number> = []
   ) {
     this.nodeType = nodeType
     this.startLineNumber = startLine
     this.endLineNumber = endLine
     this.hashCode = hashCode
     this.children = children
+    this.commentLines = commentLines
   }
 
   isIntermediate(): boolean {
@@ -49,6 +52,10 @@ class SyntaxTreeNode implements ISyntaxTreeNode {
 
   getChildren(): Array<ISyntaxTreeNode> {
     return this.children
+  }
+
+  getCommentLinesInNode(): Array<number> {
+    return this.commentLines
   }
 }
 

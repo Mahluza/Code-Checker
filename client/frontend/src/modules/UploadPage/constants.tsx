@@ -3,34 +3,18 @@ import { Tag, Space } from "antd";
 
 export const uploadPageTableColumns = [
     {
-      title: "File Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text: React.ReactNode) => <a>{text}</a>,
+      title: "Student One",
+      dataIndex: "user1",
+      key: "user1",
     },
     {
-      title: "Author",
-      dataIndex: "author",
-      key: "author",
+      title: "Student Two",
+      dataIndex: "user2",
+      key: "user2",
     },
     {
-      title: "Extension",
-      dataIndex: "extension",
-      key: "extension",
-    },
-    {
-        title: "Size",
-        dataIndex: "size",
-        key: "size",
-    },
-      {
-        title: "Created On",
-        dataIndex: "createdOn",
-        key: "createdOn",
-      },
-      {
-        title: "Modified On",
-        dataIndex: "modifiedOn",
-        key: "modifiedOn",
-      },
+      title: "Similarity Rating",
+      dataIndex: "similarity",
+      key: "similarity",
+    }
   ];
