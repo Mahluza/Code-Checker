@@ -12,7 +12,6 @@ export const studentDashColumns = [
     title: 'Subject',
     dataIndex: 'sub',
     key: 'sub',
-    render: (text: React.ReactNode) => <a>{text}</a>,
   },
   {
     title: 'Sent On',

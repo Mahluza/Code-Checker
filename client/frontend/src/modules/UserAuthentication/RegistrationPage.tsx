@@ -1,20 +1,20 @@
-import React from "react";
-import axios from "axios";
-import { useHistory } from "react-router-dom";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 // import { withRouter } from "react-router-dom";
-import { Radio, Select, Col, Row, Form, Input, Button, Typography } from "antd";
+import { Radio, Select, Col, Row, Form, Input, Button, Typography } from 'antd';
 //import Login from 'antd'; //'ant-design-pro/lib/Login';
-import { LockOutlined } from "@ant-design/icons";
+import { LockOutlined } from '@ant-design/icons';
 // import 'antd/dist/antd.css';
-import "./loginAndRegistration.css";
-import "./RoleRadio";
-import RoleRadio from "./RoleRadio";
-import allActions from "../../redux/actions/allActions";
-import { useDispatch } from "react-redux";
+import './loginAndRegistration.css';
+import './RoleRadio';
+import RoleRadio from './RoleRadio';
+import allActions from '../../redux/actions/allActions';
+import { useDispatch } from 'react-redux';
 
 const { Title } = Typography;
 const { Option } = Select;
-const instance = axios.create({ baseURL: "http://localhost:4000" });
+const instance = axios.create({ baseURL: 'http://localhost:4000' });
 
 /*
 How make when doing function and not class
@@ -33,31 +33,39 @@ function RegistrationPage() {
     value: null,
   };
 
+  const [errMessage, setErr] = useState('');
+
   let institution: string;
 
   let history = useHistory();
   let dispatch = useDispatch();
 
   const onRoleChange = (values: any) => {
-    console.log("chosen value is,", values);
+    console.log('chosen value is,', values);
     state.value = values;
   };
 
   const onInstitutionChange = (ins: any) => {
-    console.log("selected institution is: ", ins);
+    console.log('selected institution is: ', ins);
     institution = ins;
   };
 
   const onFinish = (values: any) => {
     instance
-      .post("/users", values)
+      .post('/users', values)
       .then((result) => {
-        const user = {token : result.data.accessToken}
-        dispatch(allActions.userActions.setUser(user));
-        localStorage.setItem('userToken', result.data.accessToken);
-        history.push("/home");
+        if (result.data.accessToken) {
+          console.log('result', result);
+          const user = { token: result.data.accessToken };
+          dispatch(allActions.userActions.setUser(user));
+          localStorage.setItem('userToken', result.data.accessToken);
+          history.push('/login');
+        } else {
+          setErr(result.data.errMessage);
+        }
       })
       .catch(function (error) {
+        //setErr(errMessage);
         console.log(error);
       });
   };
@@ -67,7 +75,7 @@ function RegistrationPage() {
     // and Form.Item as a class or method within Form
 
     <div className="center-div">
-      <Row align="bottom" justify="center" style={{ minHeight: "30vh" }}>
+      <Row align="bottom" justify="center" style={{ minHeight: '30vh' }}>
         <Title>Registration</Title>
       </Row>
 
@@ -76,7 +84,7 @@ function RegistrationPage() {
           <Row align="bottom" justify="center">
             <h6>Register for a CodeChecker Account</h6>
           </Row>
-          <Row style={{ minHeight: "30vh" }}>
+          <Row style={{ minHeight: '30vh' }}>
             <Form
               name="registration"
               className="login-form"
@@ -89,7 +97,7 @@ function RegistrationPage() {
                     rules={[
                       {
                         required: true,
-                        message: "Please enter your first name!",
+                        message: 'Required',
                       },
                     ]}
                   >
@@ -102,7 +110,7 @@ function RegistrationPage() {
                     rules={[
                       {
                         required: true,
-                        message: "Please enter your last name!",
+                        message: 'Required',
                       },
                     ]}
                   >
@@ -111,7 +119,7 @@ function RegistrationPage() {
                 </Col>
               </Row>
 
-              <Row gutter={[0, 24]}>
+              <Row gutter={[0, 24]} style={{ paddingTop: 3 }}>
                 {/*
                 <Form.Item>
                   <Input
@@ -122,7 +130,7 @@ function RegistrationPage() {
                 */}
                 <Select
                   placeholder="Institution"
-                  style={{ width: "170%" }}
+                  style={{ width: '170%' }}
                   onChange={onInstitutionChange}
                 >
                   <Option value="other">Other</Option>
@@ -142,8 +150,16 @@ function RegistrationPage() {
                   </Radio.Group>
                 </Col>
               </Row>
-              <Row gutter={[0, 0]}>
-                <Form.Item name="email">
+              <Row>
+                <Form.Item
+                  name="email"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Required',
+                    },
+                  ]}
+                >
                   <Input placeholder="Email" className="full-length"></Input>
                 </Form.Item>
               </Row>
@@ -154,11 +170,12 @@ function RegistrationPage() {
                     rules={[
                       {
                         required: true,
-                        message: "Please input your username!",
+                        message: 'Required',
                       },
                     ]}
                   >
-                    <Input
+                    <Input.Password
+                      visibilityToggle={false}
                       prefix={<LockOutlined className="site-form-item-icon" />}
                       placeholder="Password"
                     />
@@ -170,11 +187,12 @@ function RegistrationPage() {
                     rules={[
                       {
                         required: true,
-                        message: "Please input your username!",
+                        message: 'Required',
                       },
                     ]}
                   >
-                    <Input
+                    <Input.Password
+                      visibilityToggle={false}
                       prefix={<LockOutlined className="site-form-item-icon" />}
                       placeholder="Confirm Password"
                     />
@@ -182,13 +200,13 @@ function RegistrationPage() {
                 </Col>
               </Row>
 
-              <Row justify="start" gutter={[0, 40]}>
+              <Row gutter={[0, 18]}>
                 <text> - 8 or more chatacters</text>
               </Row>
-              <Row justify="start" gutter={[0, 40]}>
+              <Row gutter={[0, 18]}>
                 <text> - mix of letters, numbers, & symbols</text>
               </Row>
-              <Row>
+              <Row style={{ paddingTop: 10, height: 80 }}>
                 <Form.Item>
                   <Button
                     type="primary"
@@ -201,6 +219,9 @@ function RegistrationPage() {
                     Log in instead
                   </a>
                 </Form.Item>
+              </Row>
+              <Row className="err-message-row-registration">
+                <div className="alertDiv">{errMessage}</div>
               </Row>
             </Form>
           </Row>

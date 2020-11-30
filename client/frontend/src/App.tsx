@@ -66,7 +66,6 @@ function App() {
           <Route path="/upload" component={UploadPage} />
           <Route path="/test" component={TestForm} exact />
           <Route path="/student" component={StudentDash} exact />
-          <Route path="/student/message" component={StudentDashMessage} exact />
         </Switch>
       </header>
     </div>

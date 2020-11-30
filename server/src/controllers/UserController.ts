@@ -21,6 +21,7 @@ router.route('').post((req: express.Request, res: express.Response) => {
   let userModel = undefined
   try {
     userModel = builder.buildUser(firstName, lastName, institution, email, password, role)
+    console.log('role', role)
     const accessToken = generateToken(userModel)
     res.status(200).send({ accessToken: accessToken, userDetails: userModel.getUserDetails() })
   } catch (error) {
@@ -51,6 +52,7 @@ router.route('/notification').post((req: express.Request, res: express.Response)
   let submissionId: number = req.body.submissionId
   let studentEmail: string = req.body.studentEmail
   let student: any = Director.instance().getUserModel(studentEmail)
+  //console.log(student)
   if (!student) {
     res.status(200).send({ errMessage: 'Student does not exist' })
   }
@@ -60,6 +62,7 @@ router.route('/notification').post((req: express.Request, res: express.Response)
 
 router.route('/notification').get((req: express.Request, res: express.Response) => {
   let loggedUser: StudentModel = req.body.user
+  console.log('what seems to be the problem')
   res.status(200).send({ notifications: loggedUser.getNotifications() })
 })
 

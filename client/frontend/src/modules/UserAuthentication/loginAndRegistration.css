@@ -18,7 +18,7 @@ Why is this on Ant Design page: https://ant.design/components/form/#components-f
 }
 
 .login-form-button1 {
-  width: 152%;
+  width: 220px;
 }
 
 .register-form-button {
@@ -30,7 +30,7 @@ Why is this on Ant Design page: https://ant.design/components/form/#components-f
   background-color: rgb(1, 21, 40);
   border-radius: 10px;
   width: 400px;
-  height: 325px;
+  height: 300px;
 }
 
 .register-form-container {
@@ -57,7 +57,7 @@ div {
 }
 */
 .full-length {
-  width: 175%;
+  width: 300px;
 }
 
 text {
@@ -69,3 +69,32 @@ text {
   color: white;
 }
 /*RGB 1,21,40 */
+
+.alertDiv {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  --antd-wave-shadow-color: #1890ff;
+  --scroll-bar: 0;
+  -webkit-font-smoothing: antialiased;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  font-variant: tabular-nums;
+  list-style: none;
+  font-feature-settings: 'tnum', 'tnum';
+  font-size: 14px;
+  line-height: 1.5715;
+  color: #ff4d4f;
+  height: 20px;
+}
+
+.err-message-row-login {
+  justify-content: center;
+  padding-top: 20px;
+}
+
+.err-message-row-registration {
+  justify-content: center;
+}
+
+.formRow {
+}

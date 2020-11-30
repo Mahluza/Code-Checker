@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { withRouter, useHistory } from 'react-router-dom';
 import { Row, Form, Input, Button, Typography } from 'antd';
@@ -19,16 +19,24 @@ function LogInPage() {
   let history = useHistory();
   let dispatch = useDispatch();
 
+  // set state of empty errMessage
+  // if err message has something in it render it
+  const [errMessage, setErr] = useState('');
+
   const onFinish = (values: any) => {
     instance
       .post('/users/validate', values)
       .then((result) => {
         console.log(result, values);
+
         if (result.data.accessToken) {
           const user = { userToken: result.data.accessToken };
           dispatch(allActions.userActions.setUser(user));
           localStorage.setItem('userToken', result.data.accessToken);
           history.push('/home');
+        } else {
+          setErr(result.data.errMessage);
+          console.log('errMessage', errMessage);
         }
       })
       .catch(function (error) {
@@ -45,12 +53,12 @@ function LogInPage() {
         <Title>CodeChecker</Title>
       </Row>
 
-      <Row align="middle" style={{ minHeight: '35vh' }}>
+      <Row>
         <div className="login-form-container">
-          <Row align="bottom" justify="center" style={{ minHeight: '8vh' }}>
+          <Row align="bottom" justify="center">
             <h6>Log in to CodeChecker</h6>
           </Row>
-          <Row gutter={[0, 50]} align="middle" style={{ minHeight: '30vh' }}>
+          <Row>
             <Form name="login" className="login-form" onFinish={onFinish}>
               <Form.Item
                 name="email"
@@ -60,7 +68,7 @@ function LogInPage() {
               >
                 <Input
                   prefix={<UserOutlined className="site-form-item-icon" />}
-                  placeholder="email"
+                  placeholder="Email"
                 />
               </Form.Item>
               <Form.Item
@@ -69,12 +77,12 @@ function LogInPage() {
                   { required: true, message: 'Please input your username!' },
                 ]}
               >
-                <Input
+                <Input.Password
                   prefix={<LockOutlined className="site-form-item-icon" />}
                   placeholder="Password"
                 />
               </Form.Item>
-              <Row>
+              <Row style={{ height: 35 }}>
                 <Form.Item>
                   <Button
                     type="primary"
@@ -83,10 +91,15 @@ function LogInPage() {
                   >
                     Log in
                   </Button>
-                  <a href="/register" className="alt-action">
-                    Register
-                  </a>
                 </Form.Item>
+              </Row>
+              <Row style={{}}>
+                <a href="/register" className="alt-action">
+                  Register
+                </a>
+              </Row>
+              <Row className="err-message-row-login">
+                <div className="alertDiv">{errMessage}</div>
               </Row>
             </Form>
           </Row>
