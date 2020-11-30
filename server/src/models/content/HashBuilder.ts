@@ -59,4 +59,22 @@ export default class HashBuilder {
         .join(DELIMITER.CLASS)
     )
   }
+
+  buildHashForSwitchCondn(
+    condn: Node,
+    expressionForIf: Node,
+    prefix: HashString,
+    prefix_delimiter: HashString = ''
+  ): HashString {
+    let hashCode: HashString = prefix + prefix_delimiter
+    if (condn) {
+      hashCode += SyntaxKind.BinaryExpression.toString()
+      hashCode += this.encryptor.generateHash(DELIMITER.TOKEN + this.encryptor.generateHash(condn.getKind().toString()))
+      hashCode += this.encryptor.generateHash(
+        DELIMITER.TOKEN + this.encryptor.generateHash(SyntaxKind.EqualsEqualsEqualsToken.toString())
+      )
+      hashCode += this.encryptor.generateHash(DELIMITER.TOKEN + this.buildGenericHash(expressionForIf))
+    }
+    return this.encryptor.generateHash(hashCode)
+  }
 }

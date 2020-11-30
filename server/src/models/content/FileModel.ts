@@ -50,7 +50,7 @@ export default class FileModel {
     let numOfStatements = sourceFile.getEndLineNumber()
     numOfStatements -= this.getCommentsInNode(sourceFile)
     this.numOfStatements = numOfStatements
-    let syntaxBuilder1 = new SyntaxTreeBuilder()
+    let syntaxBuilder1 = new SyntaxTreeBuilder('sha256')
     this.syntaxTree = syntaxBuilder1.buildRootNode(sourceFile)
     sourceFile.deleteImmediately()
   }
