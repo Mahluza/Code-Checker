@@ -155,6 +155,7 @@ export default class SyntaxTreeBuilder {
         let prefix: HashString = INDICATOR.CONDITIONAL_IF_STATEMENT
         let expressionForIf = case_node.getChildAtIndex(1)
         prefix = this.hashBuilder.buildHashForSwitchCondn(identifierOfSwitch, expressionForIf, prefix)
+        console.log('prefix in switch.... ', prefix)
         let blockNode = case_node.getFirstChildByKind(SyntaxKind.Block)
         if (blockNode) {
           let childNodes = this.buildAST(blockNode, true)
@@ -166,6 +167,13 @@ export default class SyntaxTreeBuilder {
       })
       let defaultBlock = caseBlock.getFirstChildByKind(SyntaxKind.DefaultClause)
       if (defaultBlock) {
+        let prefix: HashString = INDICATOR.CONDITIONAL_ELSE_STATEMENT
+        let blockNode = defaultBlock.getFirstChildByKind(SyntaxKind.Block)
+        let childNodes = this.buildAST(blockNode, true)
+        let hashCode = this.hashBuilder.buildHashForBlock(childNodes, prefix)
+        let syntaxTreeNode = this.buildSyntaxTreeNode(node, hashCode, childNodes)
+        syntaxTreeNodes.push(syntaxTreeNode)
+        syntaxTreeNode.modifyNodeType(blockNode.getKind())
       }
     }
   }
@@ -176,8 +184,9 @@ export default class SyntaxTreeBuilder {
     let prefix: HashString = INDICATOR.CONDITIONAL_IF_STATEMENT
     let expressionForIf = node.getChildAtIndex(2)
     prefix = this.hashBuilder.buildGenericHash(expressionForIf, prefix, DELIMITER.IF_EXPR)
+    console.log('prefix in if.... ', prefix)
     let blocks = node.getChildrenOfKind(SyntaxKind.Block)
-    if (blocks) {
+    if (blocks && blocks.length) {
       childNodes.push(...this.buildAST(blocks[0]))
     }
     hashCode = this.hashBuilder.buildHashForBlock(childNodes, prefix)

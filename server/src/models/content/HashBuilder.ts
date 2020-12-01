@@ -39,6 +39,7 @@ export default class HashBuilder {
         hashCode += DELIMITER.TOKEN + this.buildGenericHash(child_node)
       })
     }
+    let h = this.encryptor.generateHash(hashCode)
     return this.encryptor.generateHash(hashCode)
   }
 
@@ -60,21 +61,72 @@ export default class HashBuilder {
     )
   }
 
+  // buildHashForSwitchCondn(
+  //   condn: Node,
+  //   expressionForIf: Node,
+  //   prefix: HashString,
+  //   prefix_delimiter: HashString = ''
+  // ): HashString {
+  //   let hashCode: HashString = prefix + DELIMITER.IF_EXPR
+  //   if (condn) {
+  //     hashCode = hashCode + SyntaxKind.BinaryExpression.toString()
+  //     hashCode = this.encryptor.generateHash(
+  //       hashCode + DELIMITER.TOKEN + this.encryptor.generateHash(condn.getKind().toString())
+  //     )
+  //     hashCode = this.encryptor.generateHash(
+  //       hashCode + DELIMITER.TOKEN + this.encryptor.generateHash(SyntaxKind.EqualsEqualsEqualsToken.toString())
+  //     )
+  //     hashCode = this.encryptor.generateHash(hashCode + DELIMITER.TOKEN + this.buildGenericHash(expressionForIf))
+  //   }
+  //   return this.encryptor.generateHash(hashCode)
+  // }
+
+  // buildHashForSwitchCondn(
+  //   condn: Node,
+  //   expressionForIf: Node,
+  //   prefix: HashString,
+  //   prefix_delimiter: HashString = ''
+  // ): HashString {
+  //   let hashCode: HashString = ''
+  //   if (condn) {
+  //     hashCode = this.encryptor.generateHash(DELIMITER.TOKEN + this.buildGenericHash(expressionForIf) + hashCode)
+  //     hashCode = this.encryptor.generateHash(
+  //       this.encryptor.generateHash(DELIMITER.TOKEN + SyntaxKind.EqualsEqualsEqualsToken.toString() + hashCode)
+  //     )
+  //     hashCode = this.encryptor.generateHash(
+  //       this.encryptor.generateHash(DELIMITER.TOKEN + condn.getKind().toString()) + hashCode
+  //     )
+  //     hashCode = prefix + DELIMITER.IF_EXPR + SyntaxKind.BinaryExpression.toString() + hashCode
+  //   }
+  //   return this.encryptor.generateHash(hashCode)
+  // }
+
   buildHashForSwitchCondn(
     condn: Node,
     expressionForIf: Node,
     prefix: HashString,
     prefix_delimiter: HashString = ''
   ): HashString {
-    let hashCode: HashString = prefix + prefix_delimiter
+    let hashCode: HashString = ''
     if (condn) {
-      hashCode += SyntaxKind.BinaryExpression.toString()
-      hashCode += this.encryptor.generateHash(DELIMITER.TOKEN + this.encryptor.generateHash(condn.getKind().toString()))
-      hashCode += this.encryptor.generateHash(
-        DELIMITER.TOKEN + this.encryptor.generateHash(SyntaxKind.EqualsEqualsEqualsToken.toString())
-      )
-      hashCode += this.encryptor.generateHash(DELIMITER.TOKEN + this.buildGenericHash(expressionForIf))
+      let childHashCode3 = this.buildGenericHash(expressionForIf)
+      console.log(childHashCode3)
+      let childHashCode2 = this.encryptor.generateHash(SyntaxKind.EqualsEqualsEqualsToken.toString())
+      console.log(childHashCode2)
+      let childHashCode1 = this.encryptor.generateHash(condn.getKind().toString())
+      console.log(childHashCode1)
+      hashCode =
+        prefix +
+        DELIMITER.IF_EXPR +
+        SyntaxKind.BinaryExpression.toString() +
+        DELIMITER.TOKEN +
+        childHashCode1 +
+        DELIMITER.TOKEN +
+        childHashCode2 +
+        DELIMITER.TOKEN +
+        childHashCode3
     }
+    console.log(this.encryptor.generateHash(hashCode))
     return this.encryptor.generateHash(hashCode)
   }
 }

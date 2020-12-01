@@ -5,13 +5,15 @@ const bcrypt = require('bcryptjs')
 
 export default abstract class AbstractUserModel implements IUserModel {
   private id: number
-  private firstName: string
-  private lastName: string
-  private institution: string
-  private email: string
   private passwordHash: string
 
-  constructor(firstName: string, lastName: string, institution: string, email: string, password: string) {
+  constructor(
+    private firstName: string,
+    private lastName: string,
+    private institution: string,
+    private email: string,
+    password: string
+  ) {
     this.id = -1
     this.firstName = firstName
     this.lastName = lastName
