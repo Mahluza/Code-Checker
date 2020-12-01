@@ -26,8 +26,8 @@ function App() {
 
   const onMenuClick = (e: any) => {
     // home button
-    if (e.key === "0" || e.key === "1") {
-      history.push("/home");
+    if (e.key === '0' || e.key === '1') {
+      history.push('/home');
     }
     // logout button
     if (e.key === '3') {

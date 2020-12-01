@@ -2,7 +2,17 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 // import { withRouter } from "react-router-dom";
-import { Radio, Select, Col, Row, Form, Input, Button, Typography } from 'antd';
+import {
+  Radio,
+  Select,
+  Col,
+  Row,
+  Form,
+  Input,
+  Button,
+  Typography,
+  Divider,
+} from 'antd';
 //import Login from 'antd'; //'ant-design-pro/lib/Login';
 import { LockOutlined } from '@ant-design/icons';
 // import 'antd/dist/antd.css';
@@ -16,23 +26,9 @@ const { Title } = Typography;
 const { Option } = Select;
 const instance = axios.create({ baseURL: 'http://localhost:4000' });
 
-/*
-How make when doing function and not class
-
-onChange = e => {
-    console.log('radio checked', e.target.value);
-    this.setState({
-      value: e.target.value,
-    });
-  };
-  */
-
 function RegistrationPage() {
-  // what's the difference between
-  let state = {
-    value: null,
-  };
-
+  const [roleVal, setRole] = useState(1);
+  const [insVal, setInstitution] = useState(null);
   const [errMessage, setErr] = useState('');
 
   let institution: string;
@@ -41,16 +37,18 @@ function RegistrationPage() {
   let dispatch = useDispatch();
 
   const onRoleChange = (values: any) => {
-    console.log('chosen value is,', values);
-    state.value = values;
+    setRole(values);
   };
 
   const onInstitutionChange = (ins: any) => {
-    console.log('selected institution is: ', ins);
-    institution = ins;
+    setInstitution(ins);
   };
-
+  const loginClick = () => {
+    history.push('/login');
+  };
   const onFinish = (values: any) => {
+    values.role = roleVal;
+    values.institution = insVal;
     instance
       .post('/users', values)
       .then((result) => {
@@ -65,7 +63,6 @@ function RegistrationPage() {
         }
       })
       .catch(function (error) {
-        //setErr(errMessage);
         console.log(error);
       });
   };
@@ -75,7 +72,7 @@ function RegistrationPage() {
     // and Form.Item as a class or method within Form
 
     <div className="center-div">
-      <Row align="bottom" justify="center" style={{ minHeight: '30vh' }}>
+      <Row align="bottom" justify="center" style={{ minHeight: '20vh' }}>
         <Title>Registration</Title>
       </Row>
 
@@ -144,7 +141,11 @@ function RegistrationPage() {
                   <text>Role:</text>
                 </Col>
                 <Col>
-                  <Radio.Group name="role" onChange={onRoleChange}>
+                  <Radio.Group
+                    name="role"
+                    onChange={onRoleChange}
+                    defaultValue={1}
+                  >
                     <Radio value={1}>Instructor</Radio>
                     <Radio value={2}>Student</Radio>
                   </Radio.Group>
@@ -206,7 +207,7 @@ function RegistrationPage() {
               <Row gutter={[0, 18]}>
                 <text> - mix of letters, numbers, & symbols</text>
               </Row>
-              <Row style={{ paddingTop: 10, height: 80 }}>
+              <Row style={{ paddingTop: 10, height: 40 }}>
                 <Form.Item>
                   <Button
                     type="primary"
@@ -215,10 +216,22 @@ function RegistrationPage() {
                   >
                     Register
                   </Button>
-                  <a href="/login" className="alt-action">
-                    Log in instead
-                  </a>
                 </Form.Item>
+              </Row>
+              <Row style={{ height: 45 }}>
+                <Divider className="divider" />
+              </Row>
+              <Row justify="center">
+                {/* <a href="/register" className="alt-action">
+                  Register
+                </a> */}
+                <Button
+                  type="primary"
+                  className="register-form-button-login alt-button"
+                  onClick={loginClick}
+                >
+                  Log in instead
+                </Button>
               </Row>
               <Row className="err-message-row-registration">
                 <div className="alertDiv">{errMessage}</div>

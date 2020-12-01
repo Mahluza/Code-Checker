@@ -16,14 +16,9 @@ const instance = axios.create({ baseURL: 'http://localhost:4000' });
 function HomePage() {
   // check if upload modal is enabled
   const [visible, setVisible] = useState(false);
-  // projectList is part of state of HomePage?
-  // setProjectList is method for updating it?
-  // useState argument is the state variable's initial value?
-  // how come there isn't a useEffect for visible. Is it because it's not linked to a post or get method?
-  // look into props argument
-  // does useDispatch puto something into the redux store? if so, what does it set it as?
 
   const [projectsList, setProjectsList] = useState([]);
+  const [activeProjects, setActiveProjects] = useState(0);
   const dispatch = useDispatch();
   const history = useHistory();
   const accessToken = localStorage.getItem('userToken');
@@ -38,9 +33,6 @@ function HomePage() {
     setVisible(false);
   };
 
-  // renders whenver an effect is called. effect is called whenver second arg is updated.
-  // so useEffect only called once here?
-  // so why use it?
   useEffect(() => {
     instance
       .get('/project', {
@@ -60,55 +52,52 @@ function HomePage() {
   }, []);
 
   return (
-    <Row>
-      <Col span={8}>
-        <div className="home-page-container">
-          <Row justify="center">
-            <Divider orientation="center" style={{ marginTop: 15 }}>
-              Instructor
-            </Divider>
-            <Col>
-              <Title level={5}>Professor Fauci</Title>
-              <Title level={5}> Active Projects: {1}</Title>
-            </Col>
-          </Row>
-        </div>
-      </Col>
-      <Col span={16}>
-        <div className="home-page-container">
-          <Row>
-            <Divider orientation="left">Plagiarism Detection Projects</Divider>
-            <Button
-              type="primary"
-              shape="round"
-              icon={<PlusCircleOutlined />}
-              size={'large'}
-              style={{ marginLeft: 25, marginTop: 15 }}
-              onClick={showModal}
-            >
-              {' '}
-              Start New Project{' '}
-            </Button>
-            <UploadModal
-              visible={visible}
-              handleCancel={handleCancel}
-            ></UploadModal>
-          </Row>
-          <Table
-            columns={homePageTableColumns}
-            dataSource={projectsList}
-            style={{ padding: 25 }}
-            onRow={(record, rowIndex) => {
-              return {
-                onClick: (event) => {
-                  history.push(`/upload/${rowIndex}`);
-                },
-              };
-            }}
-          />
-        </div>
-      </Col>
-    </Row>
+    <div className="home-page-container">
+      <Row style={{ height: 30 }}>
+        <text className="welcome-text" style={{ marginLeft: 15, marginTop: 5 }}>
+          Welcome Professor Fauci
+        </text>
+      </Row>
+      <Row>
+        <Divider orientation="left">Plagiarism Detection Projects</Divider>
+      </Row>
+      <Row>
+        <text className="project-stats-text" style={{ marginLeft: 30 }}>
+          {' '}
+          Active: {activeProjects}
+        </text>
+      </Row>
+      <Row>
+        <Button
+          type="primary"
+          shape="round"
+          icon={<PlusCircleOutlined />}
+          size={'large'}
+          style={{ marginLeft: 25, marginTop: 15 }}
+          onClick={showModal}
+        >
+          {' '}
+          Start New Project{' '}
+        </Button>
+
+        <UploadModal
+          visible={visible}
+          handleCancel={handleCancel}
+        ></UploadModal>
+      </Row>
+      <Table
+        columns={homePageTableColumns}
+        dataSource={projectsList}
+        style={{ padding: 25 }}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {
+              history.push(`/upload/${rowIndex}`);
+            },
+          };
+        }}
+      />
+    </div>
   );
 }
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { withRouter, useHistory } from 'react-router-dom';
-import { Row, Form, Input, Button, Typography } from 'antd';
+import { Row, Form, Input, Button, Typography, Divider } from 'antd';
 //import Login from 'antd'; //'ant-design-pro/lib/Login';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 // import 'antd/dist/antd.css';
@@ -19,6 +19,9 @@ function LogInPage() {
   let history = useHistory();
   let dispatch = useDispatch();
 
+  const registerClick = () => {
+    history.push('/register');
+  };
   // set state of empty errMessage
   // if err message has something in it render it
   const [errMessage, setErr] = useState('');
@@ -87,16 +90,26 @@ function LogInPage() {
                   <Button
                     type="primary"
                     htmlType="submit"
-                    className="login-form-button1"
+                    className="login-form-button"
                   >
                     Log in
                   </Button>
                 </Form.Item>
               </Row>
-              <Row style={{}}>
-                <a href="/register" className="alt-action">
+              <Row style={{ height: 45 }}>
+                <Divider className="divider" />
+              </Row>
+              <Row justify="center">
+                {/* <a href="/register" className="alt-action">
                   Register
-                </a>
+                </a> */}
+                <Button
+                  type="primary"
+                  className="login-form-button-register alt-button"
+                  onClick={registerClick}
+                >
+                  Register
+                </Button>
               </Row>
               <Row className="err-message-row-login">
                 <div className="alertDiv">{errMessage}</div>

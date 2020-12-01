@@ -43,3 +43,14 @@ app.use(function (req, res, next) {
 What does this do?
 app.use('/users', UserController)
 - I think it's mapping '/users' to '' in userController
+
+  // projectList is part of state of HomePage?
+  // setProjectList is method for updating it?
+  // useState argument is the state variable's initial value?
+  // how come there isn't a useEffect for visible. Is it because it's not linked to a post or get method?
+  // look into props argument
+  // does useDispatch puto something into the redux store? if so, what does it set it as?
+
+    // renders whenver an effect is called. effect is called whenver second arg is updated.
+  // so useEffect only called once here?
+  // so why use it?

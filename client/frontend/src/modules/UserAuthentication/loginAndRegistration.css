@@ -17,27 +17,39 @@ Why is this on Ant Design page: https://ant.design/components/form/#components-f
   float: left;
 }
 
-.login-form-button1 {
+.login-form-button {
   width: 220px;
 }
 
+.login-form-button-register {
+  width: 190px;
+  background-color: rgb(0, 187, 0);
+  border-color: rgb(0, 187, 0);
+}
+
 .register-form-button {
-  /*152*/
-  width: 170%;
+  width: 300px;
+}
+
+.register-form-button-login {
+  width: 260px;
+  background-color: rgb(0, 187, 0);
+
+  border-color: rgb(0, 187, 0);
 }
 
 .login-form-container {
   background-color: rgb(1, 21, 40);
   border-radius: 10px;
   width: 400px;
-  height: 300px;
+  height: 350px;
 }
 
 .register-form-container {
   background-color: rgb(1, 21, 40);
   border-radius: 10px;
   width: 500px;
-  height: 475px;
+  height: 530px;
   text-align: left;
 }
 
@@ -89,12 +101,19 @@ text {
 
 .err-message-row-login {
   justify-content: center;
-  padding-top: 20px;
+  padding-top: 25px;
 }
 
 .err-message-row-registration {
   justify-content: center;
+  padding-top: 18px;
 }
 
-.formRow {
+.divider {
+  border-top: 1px solid #bfbfbf47;
+}
+
+.alt-button:hover {
+  border-color: rgb(0, 205, 0);
+  background-color: rgb(0, 205, 0);
 }
