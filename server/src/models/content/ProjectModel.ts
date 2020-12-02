@@ -17,13 +17,21 @@ export default class ProjectModel {
     this.submissionMatches = []
   }
 
-  getProjectMetaData() {
+  /**
+   * Returns the metadata of the project
+   */
+  getProjectMetaData(): { name: string; createdOn: Date } {
     return { name: this.name, createdOn: this.createdOn }
   }
 
+  /**
+   * Adds the submission file to the user of email
+   */
   addToSubmission(email: string, file: any): void {
+    //if user already had submission in this project append file to it
     if (!this.submissions.has(email)) {
       let student = Director.instance().getUserModel(email)
+      //if student not registered into system
       if (!student) {
         let builder = new DetectionBuilder()
         builder.buildUser(undefined, undefined, undefined, email, undefined, undefined)
@@ -33,22 +41,30 @@ export default class ProjectModel {
       this.submissions.set(email, new SubmissionModel(student))
     }
     let submission = this.submissions.get(email)
+    //add the file to user submission
     submission.addFile(file)
   }
 
+  /**
+   * Gets the submission of user email provided
+   */
   getSubmission(email: string): SubmissionModel {
     return this.submissions.get(email)
   }
 
+  /**
+   * Gets info about all submissions in the project
+   */
   getAllSubmissionInfo() {
     let submissionsInfo: any = {}
     this.submissions.forEach((submission, email) => {
       submissionsInfo[email] = submission.getMetaData()
     })
+    return submissionsInfo
   }
 
   /**
-   * Starts detection process
+   * Starts detection process on the submissions present in this project
    */
   runDetection() {
     let emails = Array.from(this.submissions.keys())
@@ -70,7 +86,9 @@ export default class ProjectModel {
             findSimilarities(submissionMatch, file1, file2)
           })
         })
+        //computing similarity percentage
         let similarityPercentage = computeSimilarityPercentageBetweenSubmissions(submissionMatch)
+        //only add if its greater than 0 else no match
         if (similarityPercentage > 0) {
           submissionMatch.setSimilarityPercentage(similarityPercentage)
           this.submissionMatches.push(submissionMatch)
@@ -79,7 +97,10 @@ export default class ProjectModel {
     }
   }
 
-  getSimilarities() {
+  /**
+   * Gets info about all similarities among the submissions in the project
+   */
+  getSimilarities(): Array<{ id: number; user1: string; user2: string; similarity: number }> {
     return this.submissionMatches.map((subMatch, ind) => {
       return {
         id: ind,
@@ -90,6 +111,9 @@ export default class ProjectModel {
     })
   }
 
+  /**
+   * Gets submission match for the given similarity id
+   */
   getSimilarity(similarityId: number): SubmissionMatch {
     return this.submissionMatches[similarityId]
   }
