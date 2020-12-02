@@ -42,6 +42,9 @@ export default class FileModel {
     return nComments
   }
 
+  /**
+   * Creates a syntax tree for a file name provided
+   */
   createSyntaxTree() {
     const project: Project = ASTProject.instance()
     const sourceFile: SourceFile = project.createSourceFile('__temp__.ts', this.content)
