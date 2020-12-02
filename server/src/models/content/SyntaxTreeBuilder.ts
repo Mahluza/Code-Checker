@@ -136,21 +136,6 @@ export default class SyntaxTreeBuilder {
     syntaxTreeNodes.push(this.buildSyntaxTreeNode(node, hashCode, childNodes))
   }
 
-  private buildVariableStatements(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
-    let hashCode: HashString = ''
-    let declNodes: VariableDeclaration[] = node.getDescendantsOfKind(SyntaxKind.VariableDeclaration)
-    //For all declarations
-    declNodes.forEach((declNode: VariableDeclaration) => {
-      hashCode = this.hashBuilder.buildGenericHash(declNode)
-      syntaxTreeNodes.push(this.buildSyntaxTreeNode(declNode, hashCode))
-      //For expression in declarations
-      let binaryExprNode = declNode.getFirstChildByKind(SyntaxKind.BinaryExpression)
-      if (binaryExprNode) {
-        this.buildGenericStatements(binaryExprNode, syntaxTreeNodes)
-      }
-    })
-  }
-
   private buildSwitchStatement(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
     let identifierOfSwitch = node.getFirstChildByKind(SyntaxKind.Identifier)
     let caseBlock = node.getFirstChildByKind(SyntaxKind.CaseBlock)
