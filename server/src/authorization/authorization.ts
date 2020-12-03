@@ -10,6 +10,7 @@ export function authorize(req: any, res: any, next: any): void {
     req.url != '/users' &&
     req.url != '/users/validate' &&
     req.url != '/submission/testProject' &&
+    req.url != '/submission/testProject2' &&
     req.url != '/submission/testAST'
   ) {
     let authHeader = req.headers.authorization
