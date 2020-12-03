@@ -23,7 +23,7 @@ function UploadPage() {
   let location = useLocation();
   let history = useHistory();
   let projectId = location.pathname.split("/")[2];
-  const [mapping, setMapping] = useState({});
+  const [mapping, setMapping] = useState<Record<string, string>>({});
   const [submissionList, setSubmissionList] = useState<
     [string, string, string][]
   >([]);
@@ -46,7 +46,7 @@ function UploadPage() {
       for (var i = 0; i < submissionList.length; i++) {
         var fileData = submissionList[i];
         var submission = {
-          email: fileData[2].split("/")[1],
+          email: mapping[fileData[2].split("/")[1]+"\r"],
           file: { name: fileData[1], content: fileData[0] },
         };
         submissionData.push(submission);
@@ -88,9 +88,12 @@ function UploadPage() {
           let line = lines.shift();
           if (line) {
             let split = line.split(",");
-            let newMap: any = Object.assign({}, mapping);
-            newMap[split[1]] = split[0];
-            setMapping(newMap);
+            setMapping((mapping) => {
+              let newMapping = Object.assign({}, mapping);
+              newMapping[split[1]] = split[0];
+              console.log("hi", newMapping)
+              return newMapping;
+            });
           }
         }
       } else {
@@ -111,7 +114,7 @@ function UploadPage() {
       setReadyToUpload(true);
     }, 700);
   };
-
+console.log(similarityPairs)
   return (
     <Row>
       <Col span={8}>
