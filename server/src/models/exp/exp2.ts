@@ -1,13 +1,7 @@
-function worldKeyMove(w, k) {
-  if (k === 'left') {
-    worldMove(aux.neg1, 0, w)
-  } else if (k === 'right') {
-    worldMove(1, 0, w)
-  } else if (k === 'down') {
-    worldJumpDown(w)
-  } else if (k === 'a') {
-    worldRotateCCW(w)
-  } else if (k === 's') {
-    worldRotateCW(w)
+function blocksMinX(bs) {
+  var i = 0
+  while (i < blocksCount(bs)) {
+    if (bs[i].x < minX) minX = bs[i].x
+    i++
   }
 }

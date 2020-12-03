@@ -22,7 +22,12 @@ router.route('').post((req: express.Request, res: express.Response) => {
   }
   let submissions: SubmissionSchema[] = req.body.submissions
   submissions.map((submission: SubmissionSchema) => {
-    project.addToSubmission(submission.email, submission.file)
+    let split: string[] = submission.file.name.split('.')
+    let ext = split[split.length - 1]
+    //only processing ts or js files
+    if (['ts', 'js'].includes(ext)) {
+      project.addToSubmission(submission.email, submission.file)
+    }
   })
   res.status(200).send({ message: 'Submissions added to project' })
 })

@@ -1,28 +1,5 @@
-function worldKeyMove(w, k) {
-  switch (k) {
-    case 'left': {
-      worldMove(aux.neg1, 0, w)
-      break
-    }
-    case 'right': {
-      worldMove(1, 0, w)
-      break
-    }
-    case 'down': {
-      worldJumpDown(w)
-      break
-    }
-    case 'a': {
-      worldRotateCCW(w)
-      break
-    }
-    case 's': {
-      worldRotateCW(w)
-      break
-    }
-    default: {
-      // do nothing
-      break
-    }
+function blocksMinX(bs) {
+  for (var i = 0; i < blocksCount(bs); i++) {
+    if (bs[i].x < minX) minX = bs[i].x
   }
 }
