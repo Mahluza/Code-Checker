@@ -93,13 +93,15 @@ export default class HashBuilder {
       hashCode =
         prefix +
         DELIMITER.IF_EXPR +
-        SyntaxKind.BinaryExpression.toString() +
-        DELIMITER.TOKEN +
-        childHashCode1 +
-        DELIMITER.TOKEN +
-        childHashCode2 +
-        DELIMITER.TOKEN +
-        childHashCode3
+        this.encryptor.generateHash(
+          SyntaxKind.BinaryExpression.toString() +
+            DELIMITER.TOKEN +
+            childHashCode1 +
+            DELIMITER.TOKEN +
+            childHashCode2 +
+            DELIMITER.TOKEN +
+            childHashCode3
+        )
     }
     return this.encryptor.generateHash(hashCode)
   }
