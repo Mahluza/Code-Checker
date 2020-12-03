@@ -23,7 +23,7 @@ function UploadPage() {
   let location = useLocation();
   let history = useHistory();
   let projectId = location.pathname.split("/")[2];
-  const [mapping, setMapping] = useState<any>({});
+  const [mapping, setMapping] = useState({});
   const [submissionList, setSubmissionList] = useState<
     [string, string, string][]
   >([]);
@@ -33,14 +33,20 @@ function UploadPage() {
   const [readyToUpload, setReadyToUpload] = useState<boolean>(false);
 
   useEffect(() => {
+    instance.get(`project/${projectId}`).then((resp: any) => {
+      console.log(resp);
+      setSimilarityPairs(resp.data.similarityResults);
+      setReadyToUpload(false);
+    });
+  },[]);
+
+  useEffect(() => {
     if (readyToUpload) {
       let submissionData = [];
-      console.log("------------mapping", mapping.mapping);
       for (var i = 0; i < submissionList.length; i++) {
         var fileData = submissionList[i];
-        console.log("------------fileData", fileData);
         var submission = {
-          email: mapping.mapping[fileData[2]],
+          email: fileData[2].split("/")[1],
           file: { name: fileData[1], content: fileData[0] },
         };
         submissionData.push(submission);
@@ -75,25 +81,19 @@ function UploadPage() {
     let read = new FileReader();
 
     read.onload = function () {
-      console.log("file.name", file.name);
       if (file.name === "mapping.csv") {
         let res: string = read.result as string;
-        //https://stackoverflow.com/questions/49098369/reading-a-csv-file-in-javascript-line-by-line-and-put-it-into-an-array-using-a
         let lines = res.split("\n");
         while (typeof lines[0] !== "undefined") {
           let line = lines.shift();
           if (line) {
             let split = line.split(",");
-            console.log("split ", split);
-            setMapping((prevState: { mapping: any }) => {
-              let mapping = Object.assign({}, prevState.mapping);
-              mapping[split[1]] = split[0];
-              return { mapping };
-            });
+            let newMap: any = Object.assign({}, mapping);
+            newMap[split[1]] = split[0];
+            setMapping(newMap);
           }
         }
       } else {
-        console.log("file***", file);
         let res: string = read.result as string;
         setSubmissionList((submissionList) => [
           ...submissionList,

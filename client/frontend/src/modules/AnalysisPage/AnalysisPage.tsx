@@ -46,15 +46,18 @@ function AnalysisPage() {
         }
       }
     }
-
-  }
+  };
 
   useEffect(() => {
     instance.get(`/similarity/${projectId}/${similarityId}`).then((resp) => {
       console.log(resp);
       setSimilarities(resp.data.similarities);
-      instance.get(`/similarity/${projectId}/${similarityId}/${similarityId}`).then(
-        (data) => setFileDiff([data.data.file1, data.data.file2]))
+      instance
+        .get(`/similarity/${projectId}/${similarityId}/0`)
+        .then((data) => {
+          setFileDiff([data.data.file1, data.data.file2]);
+          highlightProcess(data.data.similarities);
+        });
     });
   }, []);
 
@@ -70,14 +73,12 @@ function AnalysisPage() {
               return {
                 onClick: (event) => {
                   instance
-                    .get(
-                      `/similarity/${projectId}/${similarityId}/${similarityId}`
-                    )
+                    .get(`/similarity/${projectId}/${similarityId}/${rowIndex}`)
                     .then((resp) => {
                       console.log(resp);
                       let file1: string = resp.data.file1;
                       let file2: string = resp.data.file2;
-                      highlightProcess(resp.data.similarities)
+                      highlightProcess(resp.data.similarities);
                       setFileDiff([file1, file2]);
                     });
                 },
