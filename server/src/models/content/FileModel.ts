@@ -64,8 +64,6 @@ export default class FileModel {
     const project: Project = ASTProject.instance()
     //temp file creation for getting AST
     const sourceFile: SourceFile = project.createSourceFile('__temp__.ts', this.content)
-    //removing unused identifiers
-    sourceFile.fixUnusedIdentifiers()
     let numOfStatements = sourceFile.getEndLineNumber()
     numOfStatements -= this.getCommentsInNode(sourceFile)
     this.numOfStatements = numOfStatements
