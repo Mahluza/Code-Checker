@@ -38,14 +38,16 @@ export default class HashBuilder {
    * Generic hashcode generation for any node
    */
   buildGenericHash(node: Node, prefix: HashString = '', prefix_delimiter: HashString = ''): HashString {
-    let hashCode: HashString = prefix + prefix_delimiter
+    let hashCode: HashString = ''
     if (node) {
       hashCode += node.getKind().toString()
       node.forEachChild((child_node: Node) => {
         hashCode += DELIMITER.TOKEN + this.buildGenericHash(child_node)
       })
+      if (prefix != '') {
+        hashCode = prefix + prefix_delimiter + this.encryptor.generateHash(hashCode)
+      }
     }
-    let h = this.encryptor.generateHash(hashCode)
     return this.encryptor.generateHash(hashCode)
   }
 
@@ -91,13 +93,15 @@ export default class HashBuilder {
       hashCode =
         prefix +
         DELIMITER.IF_EXPR +
-        SyntaxKind.BinaryExpression.toString() +
-        DELIMITER.TOKEN +
-        childHashCode1 +
-        DELIMITER.TOKEN +
-        childHashCode2 +
-        DELIMITER.TOKEN +
-        childHashCode3
+        this.encryptor.generateHash(
+          SyntaxKind.BinaryExpression.toString() +
+            DELIMITER.TOKEN +
+            childHashCode1 +
+            DELIMITER.TOKEN +
+            childHashCode2 +
+            DELIMITER.TOKEN +
+            childHashCode3
+        )
     }
     return this.encryptor.generateHash(hashCode)
   }

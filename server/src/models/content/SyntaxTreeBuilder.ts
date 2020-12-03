@@ -167,7 +167,6 @@ export default class SyntaxTreeBuilder {
     let prefix: HashString = INDICATOR.CONDITIONAL_IF_STATEMENT
     let expressionForIf = node.getChildAtIndex(2)
     prefix = this.hashBuilder.buildGenericHash(expressionForIf, prefix, DELIMITER.IF_EXPR)
-    console.log('prefix in if.... ', prefix)
     let blocks = node.getChildrenOfKind(SyntaxKind.Block)
     if (blocks && blocks.length) {
       childNodes.push(...this.buildAST(blocks[0]))
@@ -203,12 +202,13 @@ export default class SyntaxTreeBuilder {
       //declarations in for loop might be attempted to declare outside when using while
       //appending variable statement to match with normal declaration and adding to block
       variableDecls.map((variableDecl) => {
-        this.buildGenericStatements(
+        let hashCode_variable_decl: HashString = ''
+        hashCode_variable_decl = this.hashBuilder.buildGenericHash(
           variableDecl,
-          syntaxTreeNodes,
           SyntaxKind.VariableStatement.toString(),
           DELIMITER.TOKEN
         )
+        syntaxTreeNodes.push(this.buildSyntaxTreeNode(variableDecl, hashCode_variable_decl))
       })
       //expression condition can be moved inside the block hence moving it and appending prefix
       expressionInFor = node.getChildAtIndex(6)

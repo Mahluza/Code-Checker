@@ -1,5 +1,6 @@
 import * as express from 'express'
 import { authorize } from './authorization/authorization'
+import Builder from './models/core/Builder'
 
 const app = express()
 const bodyParser = require('body-parser')
@@ -43,4 +44,7 @@ app.get('/', (req: express.Request, res: express.Response) => {})
 
 app.listen(PORT, () => {
   console.log(`Started listening on port ${PORT}`)
+  //TODO: Remove in submission
+  let builder = new Builder()
+  builder.buildUser('firstName', 'lastName', 'institution', 'aaa', 'aaa', 1)
 })
