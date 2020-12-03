@@ -190,7 +190,6 @@ describe('tests for SyntaxTreeBuilder', () => {
       []
     )
     let actual = syntaxBuilder1.buildRootNode(sourceFile)
-    console.log(JSON.stringify(actual))
     sourceFile.deleteImmediately()
     expect(actual).to.deep.equal(expectedSyntaxTree)
   })
