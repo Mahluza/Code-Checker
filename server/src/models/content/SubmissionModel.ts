@@ -16,7 +16,7 @@ export default class SubmissionModel {
    * @param file file is an object holding name and content strings
    */
   addFile(file: { name: string; content: string }): void {
-    this.files.push(new FileModel(file.name, file.content))
+    this.files.push(new FileModel(file.name, file.content, ''))
   }
 
   /**
