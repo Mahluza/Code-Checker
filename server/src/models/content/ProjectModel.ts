@@ -67,6 +67,7 @@ export default class ProjectModel {
    * Starts detection process on the submissions present in this project
    */
   runDetection() {
+    this.submissionMatches = []
     let emails = Array.from(this.submissions.keys())
     //For all possible combination of users
     for (let ind1 = 0; ind1 < emails.length - 1; ind1++) {
