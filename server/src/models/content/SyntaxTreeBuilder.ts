@@ -104,14 +104,6 @@ export default class SyntaxTreeBuilder {
               break
             }
             this.buildGenericStatements(child_node, syntaxTreeNodes)
-            // console.log(
-            //   'default in AST ',
-            //   child_node.getText(),
-            //   '     ',
-            //   child_node.getKindName(),
-            //   '   ',
-            //   child_node.getKind()
-            // )
             break
         }
       })
@@ -144,7 +136,6 @@ export default class SyntaxTreeBuilder {
         let prefix: HashString = INDICATOR.CONDITIONAL_IF_STATEMENT
         let expressionForIf = case_node.getChildAtIndex(1)
         prefix = this.hashBuilder.buildHashForSwitchCondn(identifierOfSwitch, expressionForIf, prefix)
-        console.log('prefix in switch.... ', prefix)
         let blockNode = case_node.getFirstChildByKind(SyntaxKind.Block)
         if (blockNode) {
           let childNodes = this.buildAST(blockNode, true)
@@ -159,10 +150,13 @@ export default class SyntaxTreeBuilder {
         let prefix: HashString = INDICATOR.CONDITIONAL_ELSE_STATEMENT
         let blockNode = defaultBlock.getFirstChildByKind(SyntaxKind.Block)
         let childNodes = this.buildAST(blockNode, true)
-        let hashCode = this.hashBuilder.buildHashForBlock(childNodes, prefix)
-        let syntaxTreeNode = this.buildSyntaxTreeNode(node, hashCode, childNodes)
-        syntaxTreeNodes.push(syntaxTreeNode)
-        syntaxTreeNode.modifyNodeType(blockNode.getKind())
+        //if the default case has any statements other than break then only add.
+        if (childNodes.length > 0) {
+          let hashCode = this.hashBuilder.buildHashForBlock(childNodes, prefix)
+          let syntaxTreeNode = this.buildSyntaxTreeNode(node, hashCode, childNodes)
+          syntaxTreeNodes.push(syntaxTreeNode)
+          syntaxTreeNode.modifyNodeType(blockNode.getKind())
+        }
       }
     }
   }
