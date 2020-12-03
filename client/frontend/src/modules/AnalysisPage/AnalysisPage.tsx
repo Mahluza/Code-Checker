@@ -46,6 +46,7 @@ function AnalysisPage() {
         setFile2HightLight((file2H) => {
           let newMapping: Record<string, string> = Object.assign({}, file2H);
           for (var i = range2[0]; i <= range2[1]; i++) {
+            
             newMapping[i] = "#" + randomColor;
           }
           return newMapping;
@@ -58,7 +59,8 @@ function AnalysisPage() {
           let line = lines[j];
           setFile1HightLight((file1H) => {
             let newMapping = Object.assign({}, file1H);
-            newMapping[line[1]] = "#" + randomColor;
+            console.log(line)
+            newMapping[line[0]] = "#" + randomColor;
             return newMapping;
           });
           setFile2HightLight((file2H) => {
