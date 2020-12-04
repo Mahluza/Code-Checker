@@ -45,8 +45,20 @@ function UploadPage() {
       let submissionData = [];
       for (var i = 0; i < submissionList.length; i++) {
         var fileData = submissionList[i];
+        var key = "";
+        var splitKey = fileData[2].split("/");
+        for (var k = 0; k < splitKey.length; k++) {
+          if (k > 0) {
+            key+= splitKey[k]
+            if (k !== splitKey.length - 1) {
+              key+="/"
+            }
+          }
+        }
+        console.log(mapping, key)
+        key+="\r";
         var submission = {
-          email: mapping[fileData[2].split("/")[1]+"\r"],
+          email: mapping[key],
           file: { name: fileData[1], content: fileData[0] },
         };
         submissionData.push(submission);

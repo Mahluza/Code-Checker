@@ -19,7 +19,7 @@ function AnalysisPage() {
   let projectId = location.pathname.split("/")[2];
   let similarityId = location.pathname.split("/")[3];
   const [similarities, setSimilarities] = useState([]);
-  const [fileDiff, setFileDiff] = useState(["num", "num"]);
+  const [fileDiff, setFileDiff] = useState(["Loading...", "Loading..."]);
   const [file1Highlight, setFile1HightLight] = useState<Record<string, string>>(
     {}
   );
@@ -29,7 +29,8 @@ function AnalysisPage() {
     for (var i = 0; i < similarities.length; i++) {
       let match: any = similarities[i].codeMatch;
       let matchType: string = match.type;
-      var randomColor = Math.floor(Math.random() * 16777215).toString(16);
+      var o = Math.round, r = Math.random, s = 255;
+      var randColor = 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',0.4)';
 
       if (matchType === "COMPLETE_MATCH") {
         let range1 = match.rangeOfNode1;
@@ -38,7 +39,7 @@ function AnalysisPage() {
         setFile1HightLight((file1H) => {
           let newMapping = Object.assign({}, file1H);
           for (var i = range1[0]; i <= range1[1]; i++) {
-            newMapping[i] = "#" + randomColor;
+            newMapping[i] = randColor;
           }
           return newMapping;
         });
@@ -47,7 +48,7 @@ function AnalysisPage() {
           let newMapping: Record<string, string> = Object.assign({}, file2H);
           for (var i = range2[0]; i <= range2[1]; i++) {
             
-            newMapping[i] = "#" + randomColor;
+            newMapping[i] = randColor;
           }
           return newMapping;
         });
@@ -60,12 +61,12 @@ function AnalysisPage() {
           setFile1HightLight((file1H) => {
             let newMapping = Object.assign({}, file1H);
             console.log(line)
-            newMapping[line[0]] = "#" + randomColor;
+            newMapping[line[0]] = randColor;
             return newMapping;
           });
           setFile2HightLight((file2H) => {
             let newMapping: Record<string, string> = Object.assign({}, file2H);
-            newMapping[line[1]] = "#" + randomColor;
+            newMapping[line[1]] = randColor;
             return newMapping;
           });
         }
@@ -114,7 +115,7 @@ function AnalysisPage() {
       </Col>
       <Col span={16}>
         <div className="analysis-page-code-container">
-          <div style={{ width: "45%" }}>
+          <div className="code-block">
             <SyntaxHighlighter
               language="typescript"
               style={docco}
@@ -133,7 +134,7 @@ function AnalysisPage() {
               {fileDiff[0]}
             </SyntaxHighlighter>
           </div>
-          <div style={{ width: "45%" }}>
+          <div className="code-block">
             <SyntaxHighlighter
               language="typescript"
               style={docco}
