@@ -36,7 +36,9 @@ function LogInPage() {
           const user = { userToken: result.data.accessToken };
           dispatch(allActions.userActions.setUser(user));
           localStorage.setItem('userToken', result.data.accessToken);
-          history.push('/home');
+          localStorage.setItem('userRole', result.data.userDetails.role);
+          if (result.data.userDetails.role === 1) history.push('/home');
+          else history.push('/student');
         } else {
           setErr(result.data.errMessage);
           console.log('errMessage', errMessage);
@@ -77,7 +79,7 @@ function LogInPage() {
               <Form.Item
                 name="password"
                 rules={[
-                  { required: true, message: 'Please input your username!' },
+                  { required: true, message: 'Please input your password!' },
                 ]}
               >
                 <Input.Password

@@ -22,8 +22,8 @@ export default class DetectionBuilder implements IBuilder {
       throw new Error('User already exists')
     }
     let userModel
-    if (role == 1) userModel = new InstructorModel(firstName, lastName, institution, email, password)
-    else userModel = new StudentModel(firstName, lastName, institution, email, password)
+    if (role == 1) userModel = new InstructorModel(firstName, lastName, institution, email, password, role)
+    else userModel = new StudentModel(firstName, lastName, institution, email, password, role)
 
     this.director.addUserModel(email, userModel)
     return userModel

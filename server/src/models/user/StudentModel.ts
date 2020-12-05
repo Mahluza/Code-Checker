@@ -4,8 +4,8 @@ import { NotificationSchema } from '../schema/NotificationSchema'
 
 export default class StudentModel extends AbstractUserModel {
   notifications: Array<Notification>
-  constructor(firstName: string, lastName: string, institution: string, email: string, password: string) {
-    super(firstName, lastName, institution, email, password)
+  constructor(firstName: string, lastName: string, institution: string, email: string, password: string, role: number) {
+    super(firstName, lastName, institution, email, role, password)
     this.notifications = []
   }
   addNotification(notification: Notification) {

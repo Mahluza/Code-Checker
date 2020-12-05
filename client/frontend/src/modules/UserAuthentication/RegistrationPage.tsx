@@ -37,7 +37,7 @@ function RegistrationPage() {
   let dispatch = useDispatch();
 
   const onRoleChange = (values: any) => {
-    setRole(values);
+    setRole(values.target.value);
   };
 
   const onInstitutionChange = (ins: any) => {
@@ -48,6 +48,7 @@ function RegistrationPage() {
   };
   const onFinish = (values: any) => {
     values.role = roleVal;
+    console.log('role value =', roleVal);
     values.institution = insVal;
     instance
       .post('/users', values)

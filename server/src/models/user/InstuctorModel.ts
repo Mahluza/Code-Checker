@@ -7,8 +7,8 @@ import SubmissionMatch from '../comparision/SubmissionMatch'
 
 export default class InstructorModel extends AbstractUserModel {
   private projects: Map<number, ProjectModel> = new Map()
-  constructor(firstName: string, lastName: string, institution: string, email: string, password: string) {
-    super(firstName, lastName, institution, email, password)
+  constructor(firstName: string, lastName: string, institution: string, email: string, password: string, role: number) {
+    super(firstName, lastName, institution, email, role, password)
     this.projects = new Map()
   }
 

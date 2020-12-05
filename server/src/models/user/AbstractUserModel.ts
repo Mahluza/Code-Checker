@@ -12,6 +12,7 @@ export default abstract class AbstractUserModel implements IUserModel {
     private lastName: string,
     private institution: string,
     private email: string,
+    private role: number,
     password: string
   ) {
     this.id = -1
@@ -19,6 +20,7 @@ export default abstract class AbstractUserModel implements IUserModel {
     this.lastName = lastName
     this.institution = institution
     this.email = email
+    this.role = role
     if (password) {
       this.passwordHash = bcrypt.hashSync(password, 10)
     } else {
@@ -50,6 +52,10 @@ export default abstract class AbstractUserModel implements IUserModel {
     return this.id
   }
 
+  getRole(): number {
+    return this.role
+  }
+
   getUserDetails(): UserDetails {
     return {
       id: this.id,
@@ -57,6 +63,7 @@ export default abstract class AbstractUserModel implements IUserModel {
       lastName: this.lastName,
       institution: this.institution,
       email: this.email,
+      role: this.role,
     }
   }
 
