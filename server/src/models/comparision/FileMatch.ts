@@ -7,6 +7,7 @@ export default class FileMatch {
 
   constructor(private file1: FileModel, private file2: FileModel) {
     this.codeMatches = []
+    this.similarityPercetage = 0
   }
 
   getFile1(): FileModel {

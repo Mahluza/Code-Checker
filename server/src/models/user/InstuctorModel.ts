@@ -31,7 +31,7 @@ export default class InstructorModel extends AbstractUserModel {
     return this.projects.get(id)
   }
 
-  notifyStudent(student: StudentModel, messageTitle: string, messageBody: string, submissionId: SubmissionMatch) {
+  notifyStudent(student: StudentModel, messageTitle: string, messageBody: string, submissionMatch: SubmissionMatch) {
     let notification = new Notification(this, messageTitle, messageBody, null)
     student.addNotification(notification)
   }

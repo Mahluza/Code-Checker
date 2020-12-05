@@ -23,18 +23,42 @@ function UploadPage() {
   let location = useLocation();
   let history = useHistory();
   let projectId = location.pathname.split("/")[2];
-  const [submissionList, setSubmissionList] = useState<[string, string][]>([]);
-  const [similarityPairs, setSimilarityPairs] = useState<ISimilarityResult[]>([]);
+  const [mapping, setMapping] = useState<Record<string, string>>({});
+  const [submissionList, setSubmissionList] = useState<
+    [string, string, string][]
+  >([]);
+  const [similarityPairs, setSimilarityPairs] = useState<ISimilarityResult[]>(
+    []
+  );
   const [readyToUpload, setReadyToUpload] = useState<boolean>(false);
+
+  useEffect(() => {
+    instance.get(`project/${projectId}`).then((resp: any) => {
+      console.log(resp);
+      setSimilarityPairs(resp.data.similarityResults);
+      setReadyToUpload(false);
+    });
+  },[]);
 
   useEffect(() => {
     if (readyToUpload) {
       let submissionData = [];
-
       for (var i = 0; i < submissionList.length; i++) {
         var fileData = submissionList[i];
+        var key = "";
+        var splitKey = fileData[2].split("/");
+        for (var k = 0; k < splitKey.length; k++) {
+          if (k > 0) {
+            key+= splitKey[k]
+            if (k !== splitKey.length - 1) {
+              key+="/"
+            }
+          }
+        }
+        console.log(mapping, key)
+        key+="\r";
         var submission = {
-          email: `student${i}@gmail.com`,
+          email: mapping[key],
           file: { name: fileData[1], content: fileData[0] },
         };
         submissionData.push(submission);
@@ -55,7 +79,7 @@ function UploadPage() {
       .post(`project/${projectId}/runDetection`, { projectId })
       .then((resp) => {
         instance.get(`project/${projectId}`).then((resp: any) => {
-          console.log(resp)
+          console.log(resp);
           setSimilarityPairs(resp.data.similarityResults);
           setReadyToUpload(false);
         });
@@ -64,16 +88,33 @@ function UploadPage() {
 
   const dummyRequest = (option: any) => {
     const { onSuccess, file } = option;
-    console.log(option);
+    console.log("option", option);
 
     let read = new FileReader();
 
     read.onload = function () {
-      let res: string = read.result as string;
-      setSubmissionList((submissionList) => [
-        ...submissionList,
-        [res, file.name],
-      ]);
+      if (file.name === "mapping.csv") {
+        let res: string = read.result as string;
+        let lines = res.split("\n");
+        while (typeof lines[0] !== "undefined") {
+          let line = lines.shift();
+          if (line) {
+            let split = line.split(",");
+            setMapping((mapping) => {
+              let newMapping = Object.assign({}, mapping);
+              newMapping[split[1]] = split[0];
+              console.log("hi", newMapping)
+              return newMapping;
+            });
+          }
+        }
+      } else {
+        let res: string = read.result as string;
+        setSubmissionList((submissionList) => [
+          ...submissionList,
+          [res, file.name, file.webkitRelativePath],
+        ]);
+      }
     };
     read.readAsText(file);
 
@@ -85,29 +126,29 @@ function UploadPage() {
       setReadyToUpload(true);
     }, 700);
   };
-
+console.log(similarityPairs)
   return (
     <Row>
       <Col span={8}>
         <div className="upload-page-left-container">
-            <Dragger
-              multiple={true}
-              directory={true}
-              accept=".ts"
-              customRequest={dummyRequest}
-              style={{height:"200px"}}
-            >
-              <p className="ant-upload-drag-icon">
-                <InboxOutlined />
-              </p>
-              <p className="ant-upload-text">
-                Click or drag directory of files to this area to upload
-              </p>
-              <p className="ant-upload-hint">
-                Support for directories containing one or more student
-                submissions.
-              </p>
-            </Dragger>
+          <Dragger
+            multiple={true}
+            directory={true}
+            accept=".ts"
+            customRequest={dummyRequest}
+            style={{ height: "200px" }}
+          >
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">
+              Click or drag directory of files to this area to upload
+            </p>
+            <p className="ant-upload-hint">
+              Support for directories containing one or more student
+              submissions.
+            </p>
+          </Dragger>
         </div>
       </Col>
       <Col span={16}>
@@ -118,7 +159,13 @@ function UploadPage() {
             style={{ padding: 25 }}
             onRow={(record, rowIndex) => {
               return {
-                onClick: event => {history.push(`/similarity/${projectId}/${similarityPairs[rowIndex as number].id}`);}
+                onClick: (event) => {
+                  history.push(
+                    `/similarity/${projectId}/${
+                      similarityPairs[rowIndex as number].id
+                    }`
+                  );
+                },
               };
             }}
           />

@@ -20,6 +20,9 @@ export default class HashBuilder {
     this.encryptor = new HashFactory(encryption).createEncryptor()
   }
 
+  /**
+   * Generate hashcode for nodes of block type
+   */
   buildHashForBlock(childNodes: ISyntaxTreeNode[], prefix: HashString = ''): HashString {
     return this.encryptor.generateHash(
       prefix +
@@ -31,18 +34,26 @@ export default class HashBuilder {
     )
   }
 
+  /**
+   * Generic hashcode generation for any node
+   */
   buildGenericHash(node: Node, prefix: HashString = '', prefix_delimiter: HashString = ''): HashString {
-    let hashCode: HashString = prefix + prefix_delimiter
+    let hashCode: HashString = ''
     if (node) {
       hashCode += node.getKind().toString()
       node.forEachChild((child_node: Node) => {
         hashCode += DELIMITER.TOKEN + this.buildGenericHash(child_node)
       })
+      if (prefix != '') {
+        hashCode = prefix + prefix_delimiter + this.encryptor.generateHash(hashCode)
+      }
     }
-    let h = this.encryptor.generateHash(hashCode)
     return this.encryptor.generateHash(hashCode)
   }
 
+  /**
+   * Generate hashcode for root for the Syntax tree
+   */
   buildHashForRoot(childNodes: ISyntaxTreeNode[]): HashString {
     return this.encryptor.generateHash(
       childNodes
@@ -52,6 +63,9 @@ export default class HashBuilder {
     )
   }
 
+  /**
+   * Generate hashcode for nodes of type class
+   */
   buildHashForClassDeclaration(childNodes: ISyntaxTreeNode[]): HashString {
     return this.encryptor.generateHash(
       childNodes
@@ -61,46 +75,9 @@ export default class HashBuilder {
     )
   }
 
-  // buildHashForSwitchCondn(
-  //   condn: Node,
-  //   expressionForIf: Node,
-  //   prefix: HashString,
-  //   prefix_delimiter: HashString = ''
-  // ): HashString {
-  //   let hashCode: HashString = prefix + DELIMITER.IF_EXPR
-  //   if (condn) {
-  //     hashCode = hashCode + SyntaxKind.BinaryExpression.toString()
-  //     hashCode = this.encryptor.generateHash(
-  //       hashCode + DELIMITER.TOKEN + this.encryptor.generateHash(condn.getKind().toString())
-  //     )
-  //     hashCode = this.encryptor.generateHash(
-  //       hashCode + DELIMITER.TOKEN + this.encryptor.generateHash(SyntaxKind.EqualsEqualsEqualsToken.toString())
-  //     )
-  //     hashCode = this.encryptor.generateHash(hashCode + DELIMITER.TOKEN + this.buildGenericHash(expressionForIf))
-  //   }
-  //   return this.encryptor.generateHash(hashCode)
-  // }
-
-  // buildHashForSwitchCondn(
-  //   condn: Node,
-  //   expressionForIf: Node,
-  //   prefix: HashString,
-  //   prefix_delimiter: HashString = ''
-  // ): HashString {
-  //   let hashCode: HashString = ''
-  //   if (condn) {
-  //     hashCode = this.encryptor.generateHash(DELIMITER.TOKEN + this.buildGenericHash(expressionForIf) + hashCode)
-  //     hashCode = this.encryptor.generateHash(
-  //       this.encryptor.generateHash(DELIMITER.TOKEN + SyntaxKind.EqualsEqualsEqualsToken.toString() + hashCode)
-  //     )
-  //     hashCode = this.encryptor.generateHash(
-  //       this.encryptor.generateHash(DELIMITER.TOKEN + condn.getKind().toString()) + hashCode
-  //     )
-  //     hashCode = prefix + DELIMITER.IF_EXPR + SyntaxKind.BinaryExpression.toString() + hashCode
-  //   }
-  //   return this.encryptor.generateHash(hashCode)
-  // }
-
+  /**
+   * Generate hashcode for nodes of type switch
+   */
   buildHashForSwitchCondn(
     condn: Node,
     expressionForIf: Node,
@@ -109,24 +86,23 @@ export default class HashBuilder {
   ): HashString {
     let hashCode: HashString = ''
     if (condn) {
+      // explicit expression generation similar to if statement
       let childHashCode3 = this.buildGenericHash(expressionForIf)
-      console.log(childHashCode3)
       let childHashCode2 = this.encryptor.generateHash(SyntaxKind.EqualsEqualsEqualsToken.toString())
-      console.log(childHashCode2)
       let childHashCode1 = this.encryptor.generateHash(condn.getKind().toString())
-      console.log(childHashCode1)
       hashCode =
         prefix +
         DELIMITER.IF_EXPR +
-        SyntaxKind.BinaryExpression.toString() +
-        DELIMITER.TOKEN +
-        childHashCode1 +
-        DELIMITER.TOKEN +
-        childHashCode2 +
-        DELIMITER.TOKEN +
-        childHashCode3
+        this.encryptor.generateHash(
+          SyntaxKind.BinaryExpression.toString() +
+            DELIMITER.TOKEN +
+            childHashCode1 +
+            DELIMITER.TOKEN +
+            childHashCode2 +
+            DELIMITER.TOKEN +
+            childHashCode3
+        )
     }
-    console.log(this.encryptor.generateHash(hashCode))
     return this.encryptor.generateHash(hashCode)
   }
 }

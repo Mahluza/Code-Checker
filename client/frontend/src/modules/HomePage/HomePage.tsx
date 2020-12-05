@@ -18,7 +18,6 @@ function HomePage() {
   const [visible, setVisible] = useState(false);
 
   const [projectsList, setProjectsList] = useState([]);
-  const [activeProjects, setActiveProjects] = useState(0);
   const dispatch = useDispatch();
   const history = useHistory();
   const accessToken = localStorage.getItem('userToken');
@@ -64,7 +63,7 @@ function HomePage() {
       <Row>
         <text className="project-stats-text" style={{ marginLeft: 30 }}>
           {' '}
-          Active: {activeProjects}
+          Active: {projectsList.length}
         </text>
       </Row>
       <Row>
