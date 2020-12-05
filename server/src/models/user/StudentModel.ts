@@ -1,5 +1,6 @@
 import AbstractUserModel from './AbstractUserModel'
 import Notification from '../schema/Notification'
+import { NotificationSchema } from '../schema/NotificationSchema'
 
 export default class StudentModel extends AbstractUserModel {
   notifications: Array<Notification>
@@ -10,14 +11,14 @@ export default class StudentModel extends AbstractUserModel {
   addNotification(notification: Notification) {
     this.notifications.push(notification)
   }
-  getNotifications(): any {
+  getNotifications(): NotificationSchema[] {
     return this.notifications.map((notification) => {
       return {
         sender: notification.getSender().getUserDetails(),
         timestamp: notification.getTimestamp(),
         title: notification.getTitle(),
         body: notification.getBody(),
-        submissionId: notification.getSubmission(),
+        submission: notification.getSubmission(),
       }
     })
   }

@@ -1,5 +1,7 @@
 import { expect } from 'chai'
+import InstructorModel from '../src/models/user/InstuctorModel'
 import StudentModel from '../src/models/user/StudentModel'
+import Notification from '../src/models/schema/Notification'
 
 describe('tests for StudentModel', () => {
   let student1: StudentModel = new StudentModel('Thomas', 'George', 'Neu', 'Thomas.George@gmail.com', '12345')
@@ -46,5 +48,26 @@ describe('tests for StudentModel', () => {
   it('getUserId gets the user id', () => {
     student1.setUserId(1)
     expect(student1.getUserId()).to.equal(1)
+  })
+
+  it('getNotifications to get the messages sent by Instructor', () => {
+    let instructor1: InstructorModel = new InstructorModel('aaa', 'aaaa', 'Neu', 'aaa.aaaa@gmail.com', '12345')
+    instructor1.createProject('MachineLearning')
+    instructor1.setUserId(1)
+    student1.setUserId(2)
+    instructor1.notifyStudent(
+      student1,
+      'Plagiarism detected',
+      'Plagiarism detected in Machine Learning Project',
+      undefined
+    )
+    let notification = new Notification(
+      instructor1,
+      'Plagiarism detected',
+      'Plagiarism detected in Machine Learning Project',
+      undefined
+    )
+    student1.addNotification(notification)
+    expect(student1.getNotifications()[0].body).to.equal('Plagiarism detected in Machine Learning Project')
   })
 })

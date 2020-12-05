@@ -28,7 +28,6 @@ describe('tests for SubmissionMatch', () => {
   })
 
   it('SubmissionMatch for 2 submissions', () => {
-    console.log(JSON.stringify(submissionMatch.getSimilarity(0)))
     expect(submissionMatch.getSimilarity(0)).to.deep.equal({
       file1: {
         name: 'file1.ts',
