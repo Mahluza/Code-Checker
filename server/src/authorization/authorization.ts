@@ -6,13 +6,7 @@ const jwt = require('jsonwebtoken')
 export const ACCESS_TOKEN_SECRET = 'aNhztLmF5F5RhHTxI9EJ6jodwefMq19m'
 
 export function authorize(req: any, res: any, next: any): void {
-  if (
-    req.url != '/users' &&
-    req.url != '/users/validate' &&
-    req.url != '/submission/testProject' &&
-    req.url != '/submission/testProject2' &&
-    req.url != '/submission/testAST'
-  ) {
+  if (req.url != '/users' && req.url != '/users/validate') {
     let authHeader = req.headers.authorization
     if (authHeader) {
       authHeader = authHeader.split(' ')[1]

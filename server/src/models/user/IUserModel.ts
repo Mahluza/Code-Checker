@@ -6,5 +6,6 @@ export default interface IUserModel {
   getLastName(): string
   getInstitution(): string
   getUserDetails(): UserDetails
+  getRole(): number
   validate(password: string): boolean
 }

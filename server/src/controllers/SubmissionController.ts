@@ -1,5 +1,5 @@
 import * as express from 'express'
-import Builder from '../models/core/Builder'
+import Builder from '../models/user/UserBuilder'
 import FileModel from '../models/content/FileModel'
 import ProjectModel from '../models/content/ProjectModel'
 import { SubmissionSchema } from '../models/schema/SubmissionSchema'

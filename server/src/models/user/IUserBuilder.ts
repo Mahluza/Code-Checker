@@ -1,7 +1,6 @@
-import FileModel from '../content/FileModel'
-import AbstractUserModel from '../user/AbstractUserModel'
+import AbstractUserModel from './AbstractUserModel'
 
-export default interface IBuilder {
+export default interface IUserBuilder {
   buildUser(
     firstName: string,
     lastName: string,

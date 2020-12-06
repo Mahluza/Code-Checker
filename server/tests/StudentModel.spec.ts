@@ -4,7 +4,7 @@ import StudentModel from '../src/models/user/StudentModel'
 import Notification from '../src/models/schema/Notification'
 
 describe('tests for StudentModel', () => {
-  let student1: StudentModel = new StudentModel('Thomas', 'George', 'Neu', 'Thomas.George@gmail.com', '12345')
+  let student1: StudentModel = new StudentModel('Thomas', 'George', 'Neu', 'Thomas.George@gmail.com', '12345', 2)
   student1.setUserId(1)
   it('getFirstName gets the first name', () => {
     expect(student1.getFirstName()).to.equal('Thomas')
@@ -33,6 +33,7 @@ describe('tests for StudentModel', () => {
       id: number
       institution: string
       lastName: string
+      role: number
     }
 
     let user_details: UserDetail = {
@@ -41,6 +42,7 @@ describe('tests for StudentModel', () => {
       id: 1,
       institution: 'Neu',
       lastName: 'George',
+      role: 2,
     }
     expect(student1.getUserDetails()).to.deep.equal(user_details)
   })
@@ -51,7 +53,7 @@ describe('tests for StudentModel', () => {
   })
 
   it('getNotifications to get the messages sent by Instructor', () => {
-    let instructor1: InstructorModel = new InstructorModel('aaa', 'aaaa', 'Neu', 'aaa.aaaa@gmail.com', '12345')
+    let instructor1: InstructorModel = new InstructorModel('aaa', 'aaaa', 'Neu', 'aaa.aaaa@gmail.com', '12345', 1)
     instructor1.createProject('MachineLearning')
     instructor1.setUserId(1)
     student1.setUserId(2)

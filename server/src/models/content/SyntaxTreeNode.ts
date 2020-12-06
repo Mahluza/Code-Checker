@@ -1,5 +1,5 @@
 import ISyntaxTreeNode from './ISyntaxTreeNode'
-import { Node, SyntaxKind, ThrowStatement } from 'ts-morph'
+import { SyntaxKind } from 'ts-morph'
 import { HashString } from '../schema/HashString'
 
 class SyntaxTreeNode implements ISyntaxTreeNode {
@@ -24,10 +24,6 @@ class SyntaxTreeNode implements ISyntaxTreeNode {
     this.hashCode = hashCode
     this.children = children
     this.commentLines = commentLines
-  }
-
-  isIntermediate(): boolean {
-    return this.children != null
   }
 
   modifyNodeType(nodeType: SyntaxKind) {

@@ -1,5 +1,5 @@
 import * as express from 'express'
-import Builder from '../models/core/Builder'
+import Builder from '../models/user/UserBuilder'
 import Director from '../models/core/Director'
 import { generateToken } from '../authorization/authorization'
 import StudentModel from '../models/user/StudentModel'

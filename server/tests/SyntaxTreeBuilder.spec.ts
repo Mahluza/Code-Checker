@@ -42,19 +42,20 @@ describe('tests for SyntaxTreeBuilder', () => {
   it('construction of syntax tree for while loop', () => {
     let syntaxBuilder1 = new SyntaxTreeBuilder()
     const project: Project = ASTProject.instance()
-    let content: string = 'let a = 3 \n while(a>0) \n {a--}'
+    let content: string =
+      '/**\n* Example JS Doc Comment\n* @example <caption>Comment example usage</caption>\n* // returns Number\n* exp.call(a, b);\n* @returns {Number} Returns the value of x \n*/let a = 3 \n while(a>0) \n {a--}'
     const sourceFile: SourceFile = project.createSourceFile('__temptest3__.ts', content)
-    let child1 = new SyntaxTreeNode(229, 1, 1, '229.247.246.78.8', null)
-    let child3 = new SyntaxTreeNode(230, 3, 3, '230.212.78', null)
-    let child2 = new SyntaxTreeNode(233, 2, 3, 'ITERATION_STATEMENT 213.78.31.8^230.212.78', [child3])
+    let child1 = new SyntaxTreeNode(229, 7, 7, '229.247.246.78.8', null, [1, 2, 3, 4, 5, 6, 7])
+    let child3 = new SyntaxTreeNode(230, 9, 9, '230.212.78', null)
+    let child2 = new SyntaxTreeNode(233, 8, 9, 'ITERATION_STATEMENT 213.78.31.8^230.212.78', [child3])
 
     let expectedSyntaxTree: SyntaxTreeNode = new SyntaxTreeNode(
       294,
-      1,
-      3,
+      7,
+      9,
       '229.247.246.78.8*ITERATION_STATEMENT 213.78.31.8^230.212.78',
       [child1, child2],
-      []
+      [1, 2, 3, 4, 5, 6, 7]
     )
     let actual = syntaxBuilder1.buildRootNode(sourceFile)
     sourceFile.deleteImmediately()

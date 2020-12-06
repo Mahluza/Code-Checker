@@ -141,10 +141,6 @@ function computeSimilarityPercentageForCodeBlock(
   linesInNode1: number,
   linesInNode2: number
 ): number {
-  if (commonLines === 0) {
-    //not even single match
-    return 0
-  }
   let minLines = Math.min(linesInNode1, linesInNode2)
   return Math.ceil((commonLines / minLines) * 100)
 }

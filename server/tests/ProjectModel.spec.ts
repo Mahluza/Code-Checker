@@ -25,8 +25,10 @@ describe('tests for Project Model', () => {
         id: -1,
         institution: undefined,
         lastName: undefined,
+        role: 2,
       },
     })
+    expect(pModel.getSubmission('xyz@neu.com').getData()).to.deep.equal({ 'file1.js': 'let a = 3' })
   })
 
   it('addToSubmission adds multiple submissions of a user to project', () => {
@@ -42,6 +44,7 @@ describe('tests for Project Model', () => {
         id: -1,
         institution: undefined,
         lastName: undefined,
+        role: 2,
       },
     })
   })
@@ -62,6 +65,7 @@ describe('tests for Project Model', () => {
         id: -1,
         institution: undefined,
         lastName: undefined,
+        role: 2,
       },
       'aaa@neu.com': {
         email: 'aaa@neu.com',
@@ -70,6 +74,7 @@ describe('tests for Project Model', () => {
         id: -1,
         institution: undefined,
         lastName: undefined,
+        role: 2,
       },
       'abc@neu.com': {
         email: 'abc@neu.com',
@@ -78,6 +83,7 @@ describe('tests for Project Model', () => {
         id: -1,
         institution: undefined,
         lastName: undefined,
+        role: 2,
       },
     })
   })
@@ -110,6 +116,7 @@ describe('tests for Project Model', () => {
         user2: 'user2@neu.com',
       },
     ])
+    expect(pModel.getSimilarity(0).getSimilarityPercentage()).to.equal(100)
   })
 
   it('similarity detection should report plagiarism for simple programs between multiple users', () => {

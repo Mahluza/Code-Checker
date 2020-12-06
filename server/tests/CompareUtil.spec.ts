@@ -8,7 +8,6 @@ import StudentModel from '../src/models/user/StudentModel'
 import SubmissionModel from '../src/models/content/SubmissionModel'
 import CodeMatch from '../src/models/comparision/CodeMatch'
 import SyntaxTreeNode from '../src/models/content/SyntaxTreeNode'
-import { getServers } from 'dns'
 
 describe('tests for CompareUtil', () => {
   it('Similarities for 2 files with statements', () => {

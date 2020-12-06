@@ -3,7 +3,7 @@ import Director from '../core/Director'
 import FileModel from './FileModel'
 import SubmissionMatch from '../comparision/SubmissionMatch'
 import SubmissionModel from './SubmissionModel'
-import DetectionBuilder from '../core/Builder'
+import DetectionBuilder from '../user/UserBuilder'
 
 export default class ProjectModel {
   private createdOn: Date
@@ -34,7 +34,7 @@ export default class ProjectModel {
       //if student not registered into system
       if (!student) {
         let builder = new DetectionBuilder()
-        builder.buildUser(undefined, undefined, undefined, email, undefined, undefined)
+        builder.buildUser(undefined, undefined, undefined, email, undefined, 2)
         student = Director.instance().getUserModel(email)
       }
       // to hold all submissions of this student for this project

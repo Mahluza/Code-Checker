@@ -1,6 +1,5 @@
 import { expect } from 'chai'
 import FileModel from '../src/models/content/FileModel'
-import ISyntaxTreeNode from '../src/models/content/ISyntaxTreeNode'
 import SyntaxTreeNode from '../src/models/content/SyntaxTreeNode'
 
 describe('tests for FileModel', () => {
@@ -10,14 +9,15 @@ describe('tests for FileModel', () => {
     expect(fModel.getName()).to.equal('file1.ts')
   })
 
-  it('getName gets the content of file', () => {
+  it('getContent gets the content of file', () => {
     let file1: string = 'let a = 3'
     let fModel = new FileModel('file1.ts', file1, '')
     expect(fModel.getContent()).to.equal('let a = 3')
   })
 
-  it('getName gets the content of file', () => {
-    let file1: string = 'let a = 3'
+  it('getNumberOfStatements gets number of statements in file', () => {
+    let file1: string =
+      '/**\n* Example JS Doc Comment\n* @example <caption>Comment example usage</caption>\n* // returns Number\n* exp.call(a, b);\n* @returns {Number} Returns the value of x \n*/let a = 3'
     let fModel = new FileModel('file1.ts', file1, '')
     expect(fModel.getNumberOfStatements()).to.equal(1)
   })

@@ -2,9 +2,19 @@ import { expect } from 'chai'
 import InstructorModel from '../src/models/user/InstuctorModel'
 import StudentModel from '../src/models/user/StudentModel'
 import Notification from '../src/models/schema/Notification'
+import UserBuilder from '../src/models/user/UserBuilder'
+import IUserBuilder from '../src/models/user/IUserBuilder'
+import Director from '../src/models/core/Director'
 
 describe('tests for InstructorModel', () => {
-  let instructor1: InstructorModel = new InstructorModel('Thomas', 'George', 'Neu', 'Thomas.George@gmail.com', '12345')
+  let instructor1: InstructorModel = new InstructorModel(
+    'Thomas',
+    'George',
+    'Neu',
+    'Thomas.George@gmail.com',
+    '12345',
+    1
+  )
   instructor1.setUserId(1)
   it('getFirstName gets the first name', () => {
     instructor1.createProject('Plagiarism Detector')
@@ -35,6 +45,7 @@ describe('tests for InstructorModel', () => {
       id: number
       institution: string
       lastName: string
+      role: number
     }
     let user_details: UserDetail = {
       email: 'Thomas.George@gmail.com',
@@ -42,6 +53,7 @@ describe('tests for InstructorModel', () => {
       id: 1,
       institution: 'Neu',
       lastName: 'George',
+      role: 1,
     }
     expect(instructor1.getUserDetails()).to.deep.equal(user_details)
   })
@@ -67,10 +79,10 @@ describe('tests for InstructorModel', () => {
     expect(project_model.getProjectMetaData().name).to.equal('Plagiarism Detector')
   })
 
-  it('Notify student', () => {
+  it('notifying student works', () => {
     instructor1.setUserId(1)
     instructor1.createProject('MachineLearning')
-    let student1: StudentModel = new StudentModel('aa', 'aaa', 'Neu', 'aa.aaa@gmail.com', '12345')
+    let student1: StudentModel = new StudentModel('aa', 'aaa', 'Neu', 'aa.aaa@gmail.com', '12345', 2)
     student1.setUserId(1)
     instructor1.notifyStudent(
       student1,
@@ -86,5 +98,17 @@ describe('tests for InstructorModel', () => {
     )
     student1.addNotification(notification)
     expect(student1.getNotifications()[0].body).to.equal('Plagiarism detected in Machine Learning Project')
+  })
+
+  it('creating instructor using Builder', () => {
+    let builder: IUserBuilder = new UserBuilder()
+    builder.buildUser('James', 'James', 'NEU', 'james@xyz.com', 'password', 1)
+    expect(Director.instance().getUserModel('james@xyz.com').validate('password')).to.equal(true)
+    expect(Director.instance().getUserModel('james@xyz.com').getRole()).to.equal(1)
+  })
+
+  it('creating instructor with already used email', () => {
+    let builder: IUserBuilder = new UserBuilder()
+    expect(() => builder.buildUser('Thomas', 'George', 'Neu', 'Thomas.George@gmail.com', '12345', 1)).to.throw(Error)
   })
 })
