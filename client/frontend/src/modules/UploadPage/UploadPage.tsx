@@ -38,7 +38,7 @@ function UploadPage() {
       setSimilarityPairs(resp.data.similarityResults);
       setReadyToUpload(false);
     });
-  },[]);
+  }, []);
 
   useEffect(() => {
     if (readyToUpload) {
@@ -49,14 +49,12 @@ function UploadPage() {
         var splitKey = fileData[2].split("/");
         for (var k = 0; k < splitKey.length; k++) {
           if (k > 0) {
-            key+= splitKey[k]
+            key += splitKey[k];
             if (k !== splitKey.length - 1) {
-              key+="/"
+              key += "/";
             }
           }
         }
-        console.log(mapping, key)
-        key+="\r";
         var submission = {
           email: mapping[key],
           file: { name: fileData[1], content: fileData[0] },
@@ -95,15 +93,15 @@ function UploadPage() {
     read.onload = function () {
       if (file.name === "mapping.csv") {
         let res: string = read.result as string;
-        let lines = res.split("\n");
+        let lines: string[] = res.split("\n");
         while (typeof lines[0] !== "undefined") {
           let line = lines.shift();
           if (line) {
+            line = line.trim();
             let split = line.split(",");
             setMapping((mapping) => {
               let newMapping = Object.assign({}, mapping);
               newMapping[split[1]] = split[0];
-              console.log("hi", newMapping)
               return newMapping;
             });
           }
@@ -126,7 +124,6 @@ function UploadPage() {
       setReadyToUpload(true);
     }, 700);
   };
-console.log(similarityPairs)
   return (
     <Row>
       <Col span={8}>
