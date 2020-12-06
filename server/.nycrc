@@ -5,13 +5,7 @@
     "src/models/**/*.ts"
   ],
   "exclude": [
-    "src/models/schema/**/*.ts",
-    "src/models/exp/**/*.ts",
-    "src/models/hash_factory/IEncryptor.ts",
-    "src/models/user/IUserModel.ts",
-    "src/models/data/InstitutionUtil.ts",
-    "src/models/core/IBuilder.ts",
-    "src/models/content/ISyntaxTreeNode.ts"
+    "src/models/schema/**/*.ts"
   ],
   "reporter": ["html","text"],
   "checkCoverage": true,
