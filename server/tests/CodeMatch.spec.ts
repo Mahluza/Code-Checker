@@ -1,10 +1,6 @@
 import { expect } from 'chai'
-import { Project, SourceFile } from 'ts-morph'
 import CodeMatch from '../src/models/comparision/CodeMatch'
-import { findSimilarities } from '../src/models/comparision/CompareUtil'
-import SyntaxTreeBuilder from '../src/models/content/SyntaxTreeBuilder'
 import SyntaxTreeNode from '../src/models/content/SyntaxTreeNode'
-import ASTProject from '../src/models/core/ASTProject'
 
 describe('tests for CodeMatch', () => {
   it('CodeMatch for 2 syntax trees', () => {
