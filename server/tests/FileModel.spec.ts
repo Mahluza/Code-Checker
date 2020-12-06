@@ -17,7 +17,7 @@ describe('tests for FileModel', () => {
 
   it('getNumberOfStatements gets number of statements in file', () => {
     let file1: string =
-      '/**\n* Example JS Doc Comment\n* @example <caption>Comment example usage</caption>\n* // returns Number\n* exp.call(a, b);\n* @returns {Number} Returns the value of x \n*/let a = 3'
+      '/**\n* Example JS Doc Comment\n* @example <caption>Comment example usage</caption>\n* // returns Number\n* exp.call(a, b);\n* @returns {Number} Returns the value of x \n*/\nlet a = 3'
     let fModel = new FileModel('file1.ts', file1, '')
     expect(fModel.getNumberOfStatements()).to.equal(1)
   })

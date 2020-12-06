@@ -59,7 +59,7 @@ export default class FileModel {
   /**
    * Creates a syntax tree for a file name provided
    */
-  createSyntaxTree(encryption = 'sha256') {
+  createSyntaxTree(encryption: string) {
     //Singleton pattern to get instance
     const project: Project = ASTProject.instance()
     //temp file creation for getting AST

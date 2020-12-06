@@ -6,6 +6,7 @@ import { Project } from 'ts-morph'
 export default class ASTProject {
   private static project: Project
 
+  /* istanbul ignore next */
   private constructor() {}
 
   public static instance(): Project {

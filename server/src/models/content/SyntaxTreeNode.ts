@@ -15,7 +15,7 @@ class SyntaxTreeNode implements ISyntaxTreeNode {
     startLine: number,
     endLine: number,
     hashCode: HashString,
-    children: Array<ISyntaxTreeNode> = null,
+    children: Array<ISyntaxTreeNode>,
     commentLines: Array<number> = []
   ) {
     this.nodeType = nodeType
