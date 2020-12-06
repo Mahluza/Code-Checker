@@ -23,21 +23,28 @@ function AnalysisPage() {
   const [file1Highlight, setFile1HightLight] = useState<Record<string, string>>(
     {}
   );
-  const [file2Highlight, setFile2HightLight] = useState<Record<string, string>>({});
+  const [file2Highlight, setFile2HightLight] = useState<Record<string, string>>(
+    {}
+  );
 
   const highlightProcess = (similarities: any[]) => {
+    setFile1HightLight({});
+    setFile2HightLight({});
     for (var i = 0; i < similarities.length; i++) {
       let match: any = similarities[i].codeMatch;
       let matchType: string = match.type;
-      var o = Math.round, r = Math.random, s = 255;
-      var randColor = 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',0.4)';
+      var o = Math.round,
+        r = Math.random,
+        s = 255;
+      var randColor =
+        "rgba(" + o(r() * s) + "," + o(r() * s) + "," + o(r() * s) + ",0.4)";
 
       if (matchType === "COMPLETE_MATCH") {
         let range1 = match.rangeOfNode1;
         let range2 = match.rangeOfNode2;
 
         setFile1HightLight((file1H) => {
-          let newMapping = Object.assign({}, file1H);
+          let newMapping: Record<string, string> = Object.assign({}, file1H);
           for (var i = range1[0]; i <= range1[1]; i++) {
             newMapping[i] = randColor;
           }
@@ -47,7 +54,6 @@ function AnalysisPage() {
         setFile2HightLight((file2H) => {
           let newMapping: Record<string, string> = Object.assign({}, file2H);
           for (var i = range2[0]; i <= range2[1]; i++) {
-            
             newMapping[i] = randColor;
           }
           return newMapping;
@@ -60,7 +66,6 @@ function AnalysisPage() {
           let line = lines[j];
           setFile1HightLight((file1H) => {
             let newMapping = Object.assign({}, file1H);
-            console.log(line)
             newMapping[line[0]] = randColor;
             return newMapping;
           });
@@ -101,7 +106,6 @@ function AnalysisPage() {
                   instance
                     .get(`/similarity/${projectId}/${similarityId}/${rowIndex}`)
                     .then((resp) => {
-                      console.log(resp);
                       let file1: string = resp.data.file1;
                       let file2: string = resp.data.file2;
                       highlightProcess(resp.data.similarities);
