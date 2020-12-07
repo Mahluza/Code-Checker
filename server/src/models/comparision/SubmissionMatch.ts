@@ -38,7 +38,9 @@ export default class SubmissionMatch {
       return {
         id: ind,
         file1: fileMatch.getFile1().getName(),
+        student1: this.getUser1().getEmail(),
         file2: fileMatch.getFile2().getName(),
+        student2: this.getUser2().getEmail(),
         similarity: fileMatch.getSimilarityPercentage(),
       }
     })

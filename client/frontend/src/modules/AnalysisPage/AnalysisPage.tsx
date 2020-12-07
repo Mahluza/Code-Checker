@@ -1,25 +1,27 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useHistory, useLocation, withRouter } from "react-router-dom";
-import { CodeBlock, paraisoLight } from "react-code-blocks";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import { Row, Col, Table, Button, Typography, Upload } from "antd";
-import { analysisPageTableColumns, codeBlockStyle } from "./constants";
-import "./analysisPageStyles.css";
-import "antd/dist/antd.css";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useHistory, useLocation, withRouter } from 'react-router-dom';
+import { CodeBlock, paraisoLight } from 'react-code-blocks';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { Row, Col, Table, Button, Typography, Upload } from 'antd';
+import { analysisPageTableColumns, codeBlockStyle } from './constants';
+import './analysisPageStyles.css';
+import 'antd/dist/antd.css';
+import MessageModal from './subcomponents/MessageModal';
 
-axios.defaults.headers.common["Authorization"] =
-  "Bearer " + localStorage.getItem("userToken");
-const instance = axios.create({ baseURL: "http://localhost:4000" });
+axios.defaults.headers.common['Authorization'] =
+  'Bearer ' + localStorage.getItem('userToken');
+const instance = axios.create({ baseURL: 'http://localhost:4000' });
 
 function AnalysisPage() {
+  const [visible, setVisible] = useState(false);
   let location = useLocation();
   let history = useHistory();
-  let projectId = location.pathname.split("/")[2];
-  let similarityId = location.pathname.split("/")[3];
+  let projectId = location.pathname.split('/')[2];
+  let similarityId = location.pathname.split('/')[3];
   const [similarities, setSimilarities] = useState([]);
-  const [fileDiff, setFileDiff] = useState(["Loading...", "Loading..."]);
+  const [fileDiff, setFileDiff] = useState(['Loading...', 'Loading...']);
   const [file1Highlight, setFile1HightLight] = useState<Record<string, string>>(
     {}
   );
@@ -27,6 +29,12 @@ function AnalysisPage() {
     {}
   );
 
+  const showModal = () => {
+    setVisible(true);
+  };
+  const handleCancel = () => {
+    setVisible(false);
+  };
   const highlightProcess = (similarities: any[]) => {
     setFile1HightLight({});
     setFile2HightLight({});
@@ -37,9 +45,9 @@ function AnalysisPage() {
         r = Math.random,
         s = 255;
       var randColor =
-        "rgba(" + o(r() * s) + "," + o(r() * s) + "," + o(r() * s) + ",0.4)";
+        'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',0.4)';
 
-      if (matchType === "COMPLETE_MATCH") {
+      if (matchType === 'COMPLETE_MATCH') {
         let range1 = match.rangeOfNode1;
         let range2 = match.rangeOfNode2;
 
@@ -60,7 +68,7 @@ function AnalysisPage() {
         });
       }
 
-      if (matchType === "COMMON_LINES") {
+      if (matchType === 'COMMON_LINES') {
         let lines = match.lines;
         for (var j = 0; j < lines.length; j++) {
           let line = lines[j];
@@ -115,6 +123,16 @@ function AnalysisPage() {
               };
             }}
           />
+          <Button
+            className="message-button message-button-highlight"
+            onClick={showModal}
+          >
+            Message Student
+          </Button>
+          <MessageModal
+            visible={visible}
+            handleCancel={handleCancel}
+          ></MessageModal>
         </div>
       </Col>
       <Col span={16}>

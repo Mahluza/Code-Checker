@@ -12,6 +12,7 @@ router.route('').post((req: express.Request, res: express.Response) => {
   let lastName = req.body.lastName
   let institution = req.body.institution
   let email = req.body.email
+  console.log('email:', email)
   let password = req.body.password
   let role = 1 //default to professor
   if (req.body.role) {
@@ -49,8 +50,9 @@ router.route('/notification').post((req: express.Request, res: express.Response)
   let messageBody = req.body.messageBody
   let messageTitle = req.body.messageTitle
   let owner: InstructorModel = req.body.user
-  let submissionId: number = req.body.submissionId
+  // let submissionId: number = req.body.submissionId
   let studentEmail: string = req.body.studentEmail
+  console.log('student email:', studentEmail)
   let student: any = Director.instance().getUserModel(studentEmail)
   //console.log(student)
   if (!student) {

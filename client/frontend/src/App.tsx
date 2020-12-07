@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Route,
   Switch,
@@ -6,55 +6,59 @@ import {
   useLocation,
   withRouter,
   useHistory,
-} from "react-router-dom";
-import { Layout, Menu } from "antd";
-import { FireOutlined } from "@ant-design/icons";
-import HomePage from "./modules/HomePage/HomePage";
-import "./App.css";
-import LogInPage from "./modules/UserAuthentication/LogInPage";
-import RegistrationPage from "./modules/UserAuthentication/RegistrationPage";
-import UploadPage from "./modules/UploadPage/UploadPage";
-import AnalysisPage from "./modules/AnalysisPage/AnalysisPage";
-import TestForm from "./modules/UserAuthentication/TestForm";
-import StudentDash from "./modules/StudentDash/StudentDash";
-import StudentDashMessage from "./modules/StudentDash/StudentDash";
-import { useSelector } from "react-redux";
-import { RootState } from "./redux/stateTypes";
+} from 'react-router-dom';
+import { Layout, Menu } from 'antd';
+import { FireOutlined } from '@ant-design/icons';
+import HomePage from './modules/HomePage/HomePage';
+import './App.css';
+import LogInPage from './modules/UserAuthentication/LogInPage';
+import RegistrationPage from './modules/UserAuthentication/RegistrationPage';
+import UploadPage from './modules/UploadPage/UploadPage';
+import AnalysisPage from './modules/AnalysisPage/AnalysisPage';
+import TestForm from './modules/UserAuthentication/TestForm';
+import StudentDash from './modules/StudentDash/StudentDash';
+import StudentDashMessage from './modules/StudentDash/StudentDash';
+
+import { useSelector } from 'react-redux';
+
+import { RootState } from './redux/stateTypes';
 
 function App() {
   // fetches the current path - used to check if the navbar should render
   let location = useLocation();
   let history = useHistory();
+
+  // get user role from redux store
   const userRole = useSelector(
     (state: RootState) => state.currentUser.userRole
   );
 
   const onMenuClick = (e: any) => {
     // home button
-    if (e.key === "0" || e.key === "1") {
+    if (e.key === '0' || e.key === '1') {
       if (userRole == 1) {
-        history.push("/home");
+        history.push('/home');
       } else {
-        history.push("/student");
+        history.push('/student');
       }
     }
     // logout button
-    if (e.key === "3") {
-      history.push("/login");
+    if (e.key === '3') {
+      history.push('/login');
     }
   };
 
   return (
     <div className="App">
       <header className="App-header">
-        {location.pathname !== "/login" &&
-          location.pathname !== "/register" &&
-          location.pathname !== "/test" && (
+        {location.pathname !== '/login' &&
+          location.pathname !== '/register' &&
+          location.pathname !== '/test' && (
             <Menu
               theme="dark"
               mode="horizontal"
-              defaultSelectedKeys={["1"]}
-              style={{ lineHeight: "64px" }}
+              defaultSelectedKeys={['1']}
+              style={{ lineHeight: '64px' }}
               onClick={onMenuClick}
             >
               <Menu.Item>

@@ -1,26 +1,44 @@
 .analysis-page-container {
-    height: 800px;
-    background-color: white;
-    border-radius: 10px;
-    margin: 24px;
-    text-align: none;
-  }
+  height: 800px;
+  background-color: white;
+  border-radius: 10px;
+  margin: 24px;
+  text-align: none;
+}
 
-  .analysis-page-code-container {
-    height: 800px;
-    background-color: white;
-    border-radius: 10px;
-    margin: 24px;
-    text-align: none;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    font-size: 16px;
-  }
+.analysis-page-code-container {
+  height: 800px;
+  background-color: white;
+  border-radius: 10px;
+  margin: 24px;
+  text-align: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  font-size: 16px;
+}
 
-  .code-block {
-    width: 45%;
-    overflow-y: auto;
-    margin-top: 24px;
-    margin-bottom: 24px;
-  }
+.code-block {
+  width: 45%;
+  overflow-y: auto;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.message-button {
+  width: 200px;
+  color: white;
+  background-color: #1890ff;
+  border-color: #1890ff;
+  margin-left: 25px;
+}
+
+.send-button {
+  width: 100px;
+}
+
+.message-button-highlight:hover {
+  color: white;
+  border-color: #40a9ff;
+  background-color: #40a9ff;
+}

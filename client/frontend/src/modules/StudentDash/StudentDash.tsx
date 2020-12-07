@@ -45,7 +45,7 @@ export default function StudentDash() {
     instance
       .get('/users/notification', {
         headers: {
-          Authorization: 'Bearer' + testToken,
+          Authorization: 'Bearer ' + accessToken,
           'Content-Type': 'application/json',
         },
       })
@@ -107,6 +107,7 @@ export default function StudentDash() {
         </div>
       </Col>
       <Col span={14}>
+        {/* <MessageDisplay email={emailList[currentEmail]}></MessageDisplay> */}
         {emailOpen ? (
           <MessageDisplay email={emailList[currentEmail]}></MessageDisplay>
         ) : (

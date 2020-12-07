@@ -20,8 +20,6 @@ interface IDisplayProps {
 }
 
 export default function MessageDisplay(props: IDisplayProps) {
-
-  console.log()
   return (
     <div className="stu-dash-display-container">
       {/*Info passed from clicked message will populate these columns*/}
@@ -58,7 +56,7 @@ export default function MessageDisplay(props: IDisplayProps) {
           </Col>
         </div>
       </Row>
-      <Row className="follow-up-buttons">
+      {/* <Row className="follow-up-buttons">
         <Button type="primary">Message Instructor</Button>
       </Row>
       <Row
@@ -84,7 +82,7 @@ export default function MessageDisplay(props: IDisplayProps) {
             <Title level={5}> View Report</Title>
           </a>
         </Col>
-      </Row>
+      </Row> */}
     </div>
   );
 }
