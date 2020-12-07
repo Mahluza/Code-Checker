@@ -1,47 +1,51 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { withRouter, useHistory } from 'react-router-dom';
-import { Row, Form, Input, Button, Typography, Divider } from 'antd';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { withRouter, useHistory } from "react-router-dom";
+import { Row, Form, Input, Button, Typography, Divider } from "antd";
 //import Login from 'antd'; //'ant-design-pro/lib/Login';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 // import 'antd/dist/antd.css';
-import './loginAndRegistration.css';
-import { useDispatch } from 'react-redux';
-import allActions from '../../redux/actions/allActions';
+import "./loginAndRegistration.css";
+import { useDispatch } from "react-redux";
+import allActions from "../../redux/actions/allActions";
 
 // difference between doing a class and a function?
 
 // from typography module import Title class. And assign it to a variable Title?
 const { Title } = Typography;
-const instance = axios.create({ baseURL: 'http://localhost:4000' });
+const instance = axios.create({ baseURL: "http://localhost:4000" });
 
 function LogInPage() {
   let history = useHistory();
   let dispatch = useDispatch();
 
   const registerClick = () => {
-    history.push('/register');
+    history.push("/register");
   };
   // set state of empty errMessage
   // if err message has something in it render it
-  const [errMessage, setErr] = useState('');
+  const [errMessage, setErr] = useState("");
 
   const onFinish = (values: any) => {
     instance
-      .post('/users/validate', values)
+      .post("/users/validate", values)
       .then((result) => {
         console.log(result, values);
 
         if (result.data.accessToken) {
-          const user = { userToken: result.data.accessToken };
+          const user = {
+            userToken: result.data.accessToken,
+            firstName: result.data.userDetails.firstName,
+            lastName: result.data.userDetails.lastName,
+          };
           dispatch(allActions.userActions.setUser(user));
-          localStorage.setItem('userToken', result.data.accessToken);
-          localStorage.setItem('userRole', result.data.userDetails.role);
-          if (result.data.userDetails.role === 1) history.push('/home');
-          else history.push('/student');
+          localStorage.setItem("userToken", result.data.accessToken);
+          localStorage.setItem("userRole", result.data.userDetails.role);
+          if (result.data.userDetails.role === 1) history.push("/home");
+          else history.push("/student");
         } else {
           setErr(result.data.errMessage);
-          console.log('errMessage', errMessage);
+          console.log("errMessage", errMessage);
         }
       })
       .catch(function (error) {
@@ -54,7 +58,7 @@ function LogInPage() {
     // and Form.Item as a class or method within Form
 
     <div className="center-div">
-      <Row align="bottom" justify="center" style={{ minHeight: '35vh' }}>
+      <Row align="bottom" justify="center" style={{ minHeight: "35vh" }}>
         <Title>CodeChecker</Title>
       </Row>
 
@@ -68,7 +72,7 @@ function LogInPage() {
               <Form.Item
                 name="email"
                 rules={[
-                  { required: true, message: 'Please input your username!' },
+                  { required: true, message: "Please input your username!" },
                 ]}
               >
                 <Input
@@ -79,7 +83,7 @@ function LogInPage() {
               <Form.Item
                 name="password"
                 rules={[
-                  { required: true, message: 'Please input your password!' },
+                  { required: true, message: "Please input your password!" },
                 ]}
               >
                 <Input.Password

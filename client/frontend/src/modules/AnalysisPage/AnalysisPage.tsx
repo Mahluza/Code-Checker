@@ -102,9 +102,10 @@ function AnalysisPage() {
 
   return (
     <Row>
-      <Col span={8}>
+      <Col span={10}>
         <div className="analysis-page-container">
           <Table
+            size="small"
             columns={analysisPageTableColumns}
             dataSource={similarities}
             style={{ padding: 25 }}
@@ -135,7 +136,7 @@ function AnalysisPage() {
           ></MessageModal>
         </div>
       </Col>
-      <Col span={16}>
+      <Col span={14}>
         <div className="analysis-page-code-container">
           <div className="code-block">
             <SyntaxHighlighter

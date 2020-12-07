@@ -21,6 +21,7 @@ function HomePage() {
   const dispatch = useDispatch();
   const history = useHistory();
   const accessToken = localStorage.getItem('userToken');
+  const lastName = useSelector((root: RootState) => root.currentUser.lastName);
 
   const { Title } = Typography;
 
@@ -54,7 +55,7 @@ function HomePage() {
     <div className="home-page-container">
       <Row style={{ height: 30 }}>
         <text className="welcome-text" style={{ marginLeft: 15, marginTop: 5 }}>
-          Welcome Professor Fauci
+          Welcome Professor {lastName}
         </text>
       </Row>
       <Row>

@@ -14,6 +14,8 @@ const currentUser = (
         userToken: action.payload.userToken,
         loggedIn: true,
         userRole: action.payload.userRole,
+        firstName: action.payload.firstName,
+        lastName: action.payload.lastName
       };
     case 'LOG_OUT':
       return {

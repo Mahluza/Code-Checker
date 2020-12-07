@@ -6,6 +6,8 @@ export interface RootState {
 export interface CurrentUser {
     userToken: string;
     userRole: number;
+    firstName: string;
+    lastName: string;
 }
 
 export interface Project {
