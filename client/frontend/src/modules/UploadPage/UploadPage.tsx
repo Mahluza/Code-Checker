@@ -32,6 +32,7 @@ function UploadPage() {
   );
   const [readyToUpload, setReadyToUpload] = useState<boolean>(false);
 
+  // Fetch any pre-existing similarity pairs that exist for the current upload.
   useEffect(() => {
     instance.get(`project/${projectId}`).then((resp: any) => {
       console.log(resp);
@@ -41,6 +42,7 @@ function UploadPage() {
   }, []);
 
   useEffect(() => {
+    // Once all files are loaded in, upload them to the server.
     if (readyToUpload) {
       let submissionData = [];
       for (var i = 0; i < submissionList.length; i++) {
@@ -86,11 +88,11 @@ function UploadPage() {
 
   const dummyRequest = (option: any) => {
     const { onSuccess, file } = option;
-    console.log("option", option);
 
     let read = new FileReader();
 
     read.onload = function () {
+      // load in the student-to-submission mappings from the csv file
       if (file.name === "mapping.csv") {
         let res: string = read.result as string;
         let lines: string[] = res.split("\n");
@@ -107,6 +109,7 @@ function UploadPage() {
           }
         }
       } else {
+        // update the current list of submissions and set files to be uploaded
         let res: string = read.result as string;
         setSubmissionList((submissionList) => [
           ...submissionList,
