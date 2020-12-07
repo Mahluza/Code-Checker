@@ -35,8 +35,7 @@ function MessageModal(props: IMessageModalProps) {
         }
       )
       .then(() => {
-        // render a message in the modal
-        // history.push()
+        props.handleCancel();
       })
       .catch(function (error) {
         console.log(error);

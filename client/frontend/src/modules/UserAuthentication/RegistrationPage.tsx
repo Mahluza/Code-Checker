@@ -47,25 +47,27 @@ function RegistrationPage() {
     history.push('/login');
   };
   const onFinish = (values: any) => {
-    values.role = roleVal;
-    console.log('role value =', roleVal);
-    values.institution = insVal;
-    instance
-      .post('/users', values)
-      .then((result) => {
-        if (result.data.accessToken) {
-          console.log('result', result);
-          const user = { token: result.data.accessToken };
-          dispatch(allActions.userActions.setUser(user));
-          localStorage.setItem('userToken', result.data.accessToken);
-          history.push('/login');
-        } else {
-          setErr(result.data.errMessage);
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    if (values.password === values.confirmPassword) {
+      values.role = roleVal;
+      console.log('role value =', roleVal);
+      values.institution = insVal;
+      instance
+        .post('/users', values)
+        .then((result) => {
+          if (result.data.accessToken) {
+            console.log('result', result);
+            const user = { token: result.data.accessToken };
+            dispatch(allActions.userActions.setUser(user));
+            localStorage.setItem('userToken', result.data.accessToken);
+            history.push('/login');
+          } else {
+            setErr(result.data.errMessage);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } else setErr("Passwords don't match");
   };
 
   return (
@@ -173,11 +175,14 @@ function RegistrationPage() {
                       {
                         required: true,
                         message: 'Required',
+                        // min: 8,
+                        pattern: new RegExp(
+                          '^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
+                        ),
                       },
                     ]}
                   >
                     <Input.Password
-                      visibilityToggle={false}
                       prefix={<LockOutlined className="site-form-item-icon" />}
                       placeholder="Password"
                     />
@@ -190,11 +195,13 @@ function RegistrationPage() {
                       {
                         required: true,
                         message: 'Required',
+                        pattern: new RegExp(
+                          '^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
+                        ),
                       },
                     ]}
                   >
                     <Input.Password
-                      visibilityToggle={false}
                       prefix={<LockOutlined className="site-form-item-icon" />}
                       placeholder="Confirm Password"
                     />
@@ -206,7 +213,7 @@ function RegistrationPage() {
                 <text> - 8 or more chatacters</text>
               </Row>
               <Row gutter={[0, 18]}>
-                <text> - mix of letters, numbers, & symbols</text>
+                <text> - mix of at least one letter, number, & symbol</text>
               </Row>
               <Row style={{ paddingTop: 10, height: 40 }}>
                 <Form.Item>

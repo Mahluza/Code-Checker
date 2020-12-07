@@ -54,7 +54,7 @@ router.route('/notification').post((req: express.Request, res: express.Response)
   let studentEmail: string = req.body.studentEmail
   console.log('student email:', studentEmail)
   let student: any = Director.instance().getUserModel(studentEmail)
-  //console.log(student)
+  console.log(student)
   if (!student) {
     res.status(200).send({ errMessage: 'Student does not exist' })
   }
