@@ -1,6 +1,9 @@
 import ISyntaxTreeNode from '../content/ISyntaxTreeNode'
 import { MatchType } from '../schema/MatchType'
 
+/**
+ * Represents the matched code portion in two files i.e. between two nodes belonging to two files of user
+ */
 export default class CodeMatch {
   constructor(
     private node1: ISyntaxTreeNode,
@@ -9,6 +12,9 @@ export default class CodeMatch {
     private matchedLines?: Array<[number, number]>
   ) {}
 
+  /**
+   * Returns the code match information on type of match and the lines or range that matched in both files.
+   */
   getCodeMatch() {
     if (this.matchedLines) {
       return {
@@ -26,6 +32,9 @@ export default class CodeMatch {
     }
   }
 
+  /**
+   * Returns the similarity percentage of the code match
+   */
   getSimilarityPercentage(): number {
     return this.similarityPercetage
   }

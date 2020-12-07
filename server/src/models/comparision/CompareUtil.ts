@@ -4,7 +4,6 @@ import FileModel from '../content/FileModel'
 import ISyntaxTreeNode from '../content/ISyntaxTreeNode'
 import SubmissionMatch from './SubmissionMatch'
 import { MatchType } from '../schema/MatchType'
-import e = require('express')
 import { LINE_THRESHOLD_FOR_CODEMATCH, PERCENTAGE_THRESHOLD_FOR_CODEMATCH } from '../config/threshold'
 
 /**
@@ -36,6 +35,14 @@ export function computeSimilarityPercentageBetweenSubmissions(submissionMatch: S
   return computeSimilarityPercentage(user1TotalLines, user2TotalLines, commonLinesInUser1, commonLinesInUser2)
 }
 
+/**
+ * Helper function to compute similarity percentage based on overall lines and the common lines.
+ *
+ * @param overallLines1 Number of lines in node 1
+ * @param overallLines2 Number of lines in node 2
+ * @param commonLines1 Common lines in node 1
+ * @param commonLines2 Common lines in node 2
+ */
 function computeSimilarityPercentage(
   overallLines1: number,
   overallLines2: number,
@@ -53,8 +60,16 @@ function computeSimilarityPercentage(
   }
 }
 
+/**
+ * Helper function to add the common lines information to file
+ *
+ * @param mapping map representing the file and its common lines
+ * @param name name of the file
+ * @param commonLines common lines of the file
+ */
 function updateCommonLines(mapping: Map<string, Set<number>>, name: string, commonLines: Set<number>) {
   if (mapping.has(name)) {
+    //if file is already present add the line numbers
     let updatedCommonLines: Set<number> = new Set([...mapping.get(name), ...commonLines])
     mapping.set(name, updatedCommonLines)
   } else {
@@ -81,6 +96,10 @@ export function findSimilarities(submissionMatch: SubmissionMatch, file1: FileMo
   return fileMatch
 }
 
+/**
+ * Helper function to get common lines from the file match.
+ * @param fileMatch file match for which common lines are to found
+ */
 function getCommonLines(fileMatch: FileMatch): [Set<number>, Set<number>] {
   let commonLines: [Set<number>, Set<number>] = [new Set(), new Set()]
   fileMatch.getCodeMatches().map((codeMatch) => {
@@ -146,7 +165,7 @@ function computeSimilarityPercentageForCodeBlock(
 }
 
 /**
- * Helper to identify matches across two files or two nodes.
+ * Helper to detect plagiarism across two files or two nodes.
  *
  * @param fileMatch FileMatch to hold all the matches between file1(or node1 of file1) and file2(or node2 of file2)
  * @param node1 node representing file1
@@ -154,44 +173,57 @@ function computeSimilarityPercentageForCodeBlock(
  */
 function checkMatch(fileMatch: FileMatch, node1: ISyntaxTreeNode, node2: ISyntaxTreeNode): [number, number] {
   if (node1.getHashCode() === node2.getHashCode()) {
+    //if hashcodes match then the code can be mentioned as plagiarised
+    //checking for number of lines in node 1 and node 2
     let linesInNode1: number = node1.getStartLineNumber() - node1.getEndLineNumber() + 1
     let linesInNode2: number = node2.getStartLineNumber() - node2.getEndLineNumber() + 1
     if (linesInNode1 == 1 && linesInNode2 == 1) {
       //a single line match
+      //these are tracked by the parent i.e. caller which is the same function
       return [node1.getStartLineNumber(), node2.getStartLineNumber()]
     } else {
-      // anything other than a line - example class or function complete match
+      // anything other than a line - example class or function is a complete match
       let similarltyPercentage = 100
       fileMatch.addCodeMatch(new CodeMatch(node1, node2, similarltyPercentage))
     }
   } else if (node1.getNodeType() === node2.getNodeType() && node1.getChildren() && node2.getChildren()) {
+    //if node types are same and they have children
+    //compare the children by recursively calling this function
     let matchedLines: Array<[number, number]> = []
     let innerNodes1 = node1.getChildren()
     let innerNodes2 = node2.getChildren()
+    //any identified matches can be ignored from subsequent comparisions
     let seenNodesIn1: ISyntaxTreeNode[] = []
     let seenNodesIn2: ISyntaxTreeNode[] = []
+    //comparing children of the current nodes
     for (let i = 0; i < innerNodes1.length; i++) {
       for (let j = 0; j < innerNodes2.length; j++) {
         let innerNode1 = innerNodes1[i]
         let innerNode2 = innerNodes2[j]
         if (seenNodesIn1.includes(innerNode1)) {
+          //this node in file 1 has already been marked as plagiarized completely
           break
         }
         if (seenNodesIn2.includes(innerNode2)) {
+          //this node in file 2 has already been marked as plagiarized completely
           continue
         }
         let innerMatchResults = checkMatch(fileMatch, innerNode1, innerNode2)
         if (innerMatchResults) {
           seenNodesIn1.push(innerNode1)
           seenNodesIn2.push(innerNode2)
+          //all the lines or blocks inside of this node that matched
           matchedLines.push(innerMatchResults)
         }
       }
     }
+    //if identified lines are above the decided threshold
     if (matchedLines.length > LINE_THRESHOLD_FOR_CODEMATCH) {
+      //all lines in node 1. all other types are already added during recursive check
       let linesIn1 = innerNodes1.filter(
         (innerNode1) => innerNode1.getStartLineNumber() === innerNode1.getEndLineNumber()
       ).length
+      //all lines in node 2
       let linesIn2 = innerNodes2.filter(
         (innerNode2) => innerNode2.getStartLineNumber() === innerNode2.getEndLineNumber()
       ).length
