@@ -233,38 +233,40 @@ export default class SyntaxTreeBuilder {
     let childNodes: ISyntaxTreeNode[] = []
     let expressionInFor: Node
     childNodes = this.buildAST(node.getFirstChildByKind(SyntaxKind.Block))
-    //specific handling when for loop is used
-    if (node.getKind() === SyntaxKind.ForStatement) {
-      let variableDecls = node.getChildrenOfKind(SyntaxKind.VariableDeclarationList)
-      //declarations in for loop might be attempted to declare outside when using while
-      //appending variable statement to match with normal declaration and adding to block
-      variableDecls.map((variableDecl) => {
-        let hashCode_variable_decl: HashString = ''
-        hashCode_variable_decl = this.hashBuilder.buildGenericHash(
-          variableDecl,
-          SyntaxKind.VariableStatement.toString(),
+    if (childNodes && childNodes.length > 0) {
+      //specific handling when for loop is used
+      if (node.getKind() === SyntaxKind.ForStatement) {
+        let variableDecls = node.getChildrenOfKind(SyntaxKind.VariableDeclarationList)
+        //declarations in for loop might be attempted to declare outside when using while
+        //appending variable statement to match with normal declaration and adding to block
+        variableDecls.map((variableDecl) => {
+          let hashCode_variable_decl: HashString = ''
+          hashCode_variable_decl = this.hashBuilder.buildGenericHash(
+            variableDecl,
+            SyntaxKind.VariableStatement.toString(),
+            DELIMITER.TOKEN
+          )
+          syntaxTreeNodes.push(this.buildSyntaxTreeNode(variableDecl, hashCode_variable_decl))
+        })
+        //expression condition can be moved inside the block hence moving it and appending prefix
+        expressionInFor = node.getChildAtIndex(6)
+        this.buildGenericStatements(
+          expressionInFor,
+          childNodes,
+          SyntaxKind.ExpressionStatement.toString(),
           DELIMITER.TOKEN
         )
-        syntaxTreeNodes.push(this.buildSyntaxTreeNode(variableDecl, hashCode_variable_decl))
+      }
+      //any iteration statement to represent in a standard iteration <condition> to detect similarities
+      let prefix: HashString = INDICATOR.ITERATION_STATEMENT
+      node.getChildrenOfKind(SyntaxKind.BinaryExpression).forEach((expr) => {
+        prefix += this.hashBuilder.buildGenericHash(expr)
       })
-      //expression condition can be moved inside the block hence moving it and appending prefix
-      expressionInFor = node.getChildAtIndex(6)
-      this.buildGenericStatements(
-        expressionInFor,
-        childNodes,
-        SyntaxKind.ExpressionStatement.toString(),
-        DELIMITER.TOKEN
-      )
+      hashCode = this.hashBuilder.buildHashForBlock(childNodes, prefix)
+      let iterationNode = this.buildSyntaxTreeNode(node, hashCode, childNodes)
+      iterationNode.modifyNodeType(SyntaxKind.WhileStatement)
+      syntaxTreeNodes.push(iterationNode)
     }
-    //any iteration statement to represent in a standard iteration <condition> to detect similarities
-    let prefix: HashString = INDICATOR.ITERATION_STATEMENT
-    node.getChildrenOfKind(SyntaxKind.BinaryExpression).forEach((expr) => {
-      prefix += this.hashBuilder.buildGenericHash(expr)
-    })
-    hashCode = this.hashBuilder.buildHashForBlock(childNodes, prefix)
-    let iterationNode = this.buildSyntaxTreeNode(node, hashCode, childNodes)
-    iterationNode.modifyNodeType(SyntaxKind.WhileStatement)
-    syntaxTreeNodes.push(iterationNode)
   }
 
   /**
