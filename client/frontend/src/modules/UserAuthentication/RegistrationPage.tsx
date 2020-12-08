@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
-// import { withRouter } from "react-router-dom";
 import {
   Radio,
   Select,
@@ -13,12 +12,8 @@ import {
   Typography,
   Divider,
 } from 'antd';
-//import Login from 'antd'; //'ant-design-pro/lib/Login';
 import { LockOutlined } from '@ant-design/icons';
-// import 'antd/dist/antd.css';
 import './loginAndRegistration.css';
-import './RoleRadio';
-import RoleRadio from './RoleRadio';
 import allActions from '../../redux/actions/allActions';
 import { useDispatch } from 'react-redux';
 
@@ -31,54 +26,70 @@ function RegistrationPage() {
   const [insVal, setInstitution] = useState(null);
   const [errMessage, setErr] = useState('');
 
-  let institution: string;
-
   let history = useHistory();
   let dispatch = useDispatch();
 
+  /**
+   * Changes state of role radio button
+   */
   const onRoleChange = (values: any) => {
     setRole(values.target.value);
   };
 
+  /**
+   * Changes state of institution select tag
+   */
   const onInstitutionChange = (ins: any) => {
     setInstitution(ins);
   };
+
+  /**
+   * route user to login page
+   */
   const loginClick = () => {
     history.push('/login');
   };
+
+  /**
+   * function activated when registration button is pressed
+   *
+   * @param values contains all form values
+   */
   const onFinish = (values: any) => {
+    // verify that password and confirm password are the same
     if (values.password === values.confirmPassword) {
+      // add some state values to values parameter
       values.role = roleVal;
-      console.log('role value =', roleVal);
       values.institution = insVal;
       instance
-        .post('/users', values)
+        .post('/users', values) // post to user registration method in backend
         .then((result) => {
+          // if access token was returned then user registration was succesful
           if (result.data.accessToken) {
-            console.log('result', result);
             const user = { token: result.data.accessToken };
-            dispatch(allActions.userActions.setUser(user));
+            dispatch(allActions.userActions.setUser(user)); // use redux to make user information persists from this point
+            // store user token in redux store
             localStorage.setItem('userToken', result.data.accessToken);
+            // route user to login page after registration
             history.push('/login');
           } else {
+            // if user was not registered
+            // set errMessage state to response from backend
             setErr(result.data.errMessage);
           }
         })
         .catch(function (error) {
+          // catch and log any network status errors
           console.log(error);
         });
-    } else setErr("Passwords don't match");
+    } else setErr("Passwords don't match"); // if passwords don't match
   };
 
   return (
-    // canyou think of name... as an argument into the Form element?
-    // and Form.Item as a class or method within Form
-
     <div className="center-div">
       <Row align="bottom" justify="center" style={{ minHeight: '20vh' }}>
         <Title>Registration</Title>
       </Row>
-
       <Row>
         <div className="register-form-container">
           <Row align="bottom" justify="center">
@@ -118,16 +129,7 @@ function RegistrationPage() {
                   </Form.Item>
                 </Col>
               </Row>
-
               <Row gutter={[0, 24]} style={{ paddingTop: 3 }}>
-                {/*
-                <Form.Item>
-                  <Input
-                    placeholder="Institution"
-                    className="full-length"
-                  ></Input>
-                </Form.Item>
-                */}
                 <Select
                   placeholder="Institution"
                   style={{ width: '170%' }}
@@ -230,9 +232,6 @@ function RegistrationPage() {
                 <Divider className="divider" />
               </Row>
               <Row justify="center">
-                {/* <a href="/register" className="alt-action">
-                  Register
-                </a> */}
                 <Button
                   type="primary"
                   className="register-form-button-login alt-button"

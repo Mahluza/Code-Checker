@@ -1,8 +1,4 @@
-import React, { useState } from 'react';
-import { Tag, Space } from 'antd';
-
 export const studentDashColumns = [
-  // check to make sure data indices and keys are correct
   {
     title: 'Sender',
     dataIndex: 'name',
@@ -18,19 +14,6 @@ export const studentDashColumns = [
     dataIndex: 'date',
     key: 'date',
   },
-
-  /*
-    // insert bin delete icon for action
-    {
-      title: "Action",
-      key: "action",
-      render: (text: any, record: { name: React.ReactNode }) => (
-        <Space size="middle">
-          <a>Delete</a>
-        </Space>
-      ),
-    },
-    */
 ];
 
 export const mockData = [

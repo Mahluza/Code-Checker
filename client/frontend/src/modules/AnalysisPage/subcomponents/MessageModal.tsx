@@ -1,9 +1,6 @@
 import { Modal, Button, Form, Input } from 'antd';
-import React, { useState } from 'react';
-import { useHistory, withRouter } from 'react-router-dom';
+import React from 'react';
 import axios from 'axios';
-import { RootState } from '../../../redux/stateTypes';
-import { useSelector } from 'react-redux';
 
 interface IMessageModalProps {
   visible: boolean;
@@ -13,7 +10,6 @@ interface IMessageModalProps {
 const instance = axios.create({ baseURL: 'http://localhost:4000' });
 
 function MessageModal(props: IMessageModalProps) {
-  let history = useHistory();
   const accessToken = localStorage.getItem('userToken');
 
   const onFinish = (values: any) => {
@@ -21,7 +17,6 @@ function MessageModal(props: IMessageModalProps) {
     instance
       .post(
         '/users/notification',
-        // send message body, student email and such
         {
           studentEmail: values.studentEmail,
           messageBody: values.messageBody,
@@ -49,8 +44,6 @@ function MessageModal(props: IMessageModalProps) {
   return (
     <Modal visible={props.visible} onCancel={props.handleCancel} footer={null}>
       <Form
-        // what's this
-
         name="basic"
         initialValues={{ remember: true }}
         onFinish={onFinish}

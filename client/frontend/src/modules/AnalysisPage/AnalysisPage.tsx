@@ -124,10 +124,7 @@ function AnalysisPage() {
               };
             }}
           />
-          <Button
-            className="message-button message-button-highlight"
-            onClick={showModal}
-          >
+          <Button type="primary" style={{ marginLeft: 25 }} onClick={showModal}>
             Message Student
           </Button>
           <MessageModal
@@ -135,6 +132,7 @@ function AnalysisPage() {
             handleCancel={handleCancel}
           ></MessageModal>
         </div>
+        <Row></Row>
       </Col>
       <Col span={14}>
         <div className="analysis-page-code-container">

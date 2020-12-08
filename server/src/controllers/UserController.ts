@@ -50,7 +50,6 @@ router.route('/notification').post((req: express.Request, res: express.Response)
   let messageBody = req.body.messageBody
   let messageTitle = req.body.messageTitle
   let owner: InstructorModel = req.body.user
-  // let submissionId: number = req.body.submissionId
   let studentEmail: string = req.body.studentEmail
   console.log('student email:', studentEmail)
   let student: any = Director.instance().getUserModel(studentEmail)
