@@ -5,6 +5,10 @@ import AbstractUserModel from './AbstractUserModel'
 import Notification from '../schema/Notification'
 import SubmissionMatch from '../comparision/SubmissionMatch'
 
+/**
+ * Instructor Model representing the instructor user.
+ * Instructor will have functions related to create projects, manage them and notify student for any plagiarized code.
+ */
 export default class InstructorModel extends AbstractUserModel {
   private projects: Map<number, ProjectModel> = new Map()
   constructor(firstName: string, lastName: string, institution: string, email: string, password: string, role: number) {
@@ -12,6 +16,9 @@ export default class InstructorModel extends AbstractUserModel {
     this.projects = new Map()
   }
 
+  /**
+   * Creates a project repository to hold students' submissions.
+   */
   createProject(name: string): number {
     let id = this.projects.size
     let projectModel = new ProjectModel(name, id)
@@ -19,6 +26,9 @@ export default class InstructorModel extends AbstractUserModel {
     return id
   }
 
+  /**
+   * Returns projects owned by the Instructor.
+   */
   getProjects(): ProjectMetaData[] {
     let projectDetails: ProjectMetaData[] = []
     this.projects.forEach((p, id) => {
@@ -27,10 +37,16 @@ export default class InstructorModel extends AbstractUserModel {
     return projectDetails
   }
 
+  /**
+   * Returns project associated with the project id.
+   */
   getProject(id: number) {
     return this.projects.get(id)
   }
 
+  /**
+   * Notifies student about detection of plagiarised code.
+   */
   notifyStudent(student: StudentModel, messageTitle: string, messageBody: string, submissionMatch: SubmissionMatch) {
     let notification = new Notification(this, messageTitle, messageBody, null)
     student.addNotification(notification)

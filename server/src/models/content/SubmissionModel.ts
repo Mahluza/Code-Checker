@@ -1,6 +1,10 @@
 import FileModel from './FileModel'
 import IUserModel from '../user/IUserModel'
 
+/**
+ * SubmissionModel represents submission of a student for a project.
+ * This internally has all the files belonging to the student as FileModel array
+ */
 export default class SubmissionModel {
   student: IUserModel
   files: Array<FileModel>

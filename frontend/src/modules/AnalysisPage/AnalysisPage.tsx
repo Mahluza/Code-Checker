@@ -35,18 +35,23 @@ function AnalysisPage() {
   const handleCancel = () => {
     setVisible(false);
   };
+
+  // takes the grouping of similarities and highlights matching sections
   const highlightProcess = (similarities: any[]) => {
     setFile1HightLight({});
     setFile2HightLight({});
     for (var i = 0; i < similarities.length; i++) {
       let match: any = similarities[i].codeMatch;
       let matchType: string = match.type;
+
+      // generate a new color for each match
       var o = Math.round,
         r = Math.random,
         s = 255;
       var randColor =
         'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',0.4)';
 
+      // for complete matches, we highlight every line in the range provided in both code blocks
       if (matchType === 'COMPLETE_MATCH') {
         let range1 = match.rangeOfNode1;
         let range2 = match.rangeOfNode2;
@@ -68,6 +73,7 @@ function AnalysisPage() {
         });
       }
 
+      // for pairs of common lines, we cycle through each pair and assign the colors in the blocks
       if (matchType === 'COMMON_LINES') {
         let lines = match.lines;
         for (var j = 0; j < lines.length; j++) {
@@ -87,6 +93,7 @@ function AnalysisPage() {
     }
   };
 
+  // On mount, fetch the first file match pair and load it into the code blocks
   useEffect(() => {
     instance.get(`/similarity/${projectId}/${similarityId}`).then((resp) => {
       console.log(resp);

@@ -1,0 +1,21 @@
+When email clicked, should produce what is seen on the right in the mockup
+- Put link in subject content that redirects to the same page or another end point where right pane is rendered
+- Or it changes the state of the right pane
+- Can you put a link in the entire row?
+
+Tasks:
+- put link in subject
+- have it fetch student info and render right pane when clicked  
+- need to create display component of right pane (what will be rendered)
+
+Layout:
+- 1 row, 2 columns 
+    - table in column 1
+    - right pane in column 2
+        - put place holder info
+            - grey initially
+- after you've put everything in, look into how to vary height with content
+
+Questions?
+- When should you be thinking of using a table versus a row and a column
+
