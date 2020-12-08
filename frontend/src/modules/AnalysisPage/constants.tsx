@@ -1,6 +1,3 @@
-import React, { useState } from 'react';
-import { Tag, Space } from 'antd';
-
 export const analysisPageTableColumns = [
   {
     title: 'File One',

@@ -1,9 +1,6 @@
 import React from 'react';
 import { Radio } from 'antd';
 import './loginAndRegistration.css';
-import { inherits } from 'util';
-
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 const TestForm = () => {
   const onChange = (values: any) => {

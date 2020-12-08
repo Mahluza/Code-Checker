@@ -11,6 +11,7 @@ export default class ASTProject {
 
   public static instance(): Project {
     if (!ASTProject.project) {
+      //ASTProject instance to parse files for ts-morph temporarily
       ASTProject.project = new Project()
     }
     return this.project

@@ -41,7 +41,7 @@ router.route('/:projectId').get((req: express.Request, res: express.Response) =>
 })
 
 /**
- * Start the detection process on files in this project
+ * Runs the detection process on files in the project specified
  */
 router.route('/:projectId/runDetection').post((req: express.Request, res: express.Response) => {
   let owner: InstructorModel = req.body.user

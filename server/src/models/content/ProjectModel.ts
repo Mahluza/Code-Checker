@@ -5,6 +5,10 @@ import SubmissionMatch from '../comparision/SubmissionMatch'
 import SubmissionModel from './SubmissionModel'
 import DetectionBuilder from '../user/UserBuilder'
 
+/**
+ * Project model represents the Projects which holds the submissions of students.
+ * After running detection, it also holds the information about submissions that matched
+ */
 export default class ProjectModel {
   private createdOn: Date
   private submissions: Map<string, SubmissionModel>

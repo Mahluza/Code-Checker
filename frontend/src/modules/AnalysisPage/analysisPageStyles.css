@@ -25,20 +25,6 @@
   margin-bottom: 24px;
 }
 
-.message-button {
-  width: 200px;
-  color: white;
-  background-color: #1890ff;
-  border-color: #1890ff;
-  margin-left: 25px;
-}
-
 .send-button {
   width: 100px;
-}
-
-.message-button-highlight:hover {
-  color: white;
-  border-color: #40a9ff;
-  background-color: #40a9ff;
 }

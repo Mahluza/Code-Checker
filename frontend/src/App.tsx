@@ -77,7 +77,6 @@ function App() {
           <Route path="/home" component={HomePage} exact />
           <Route path="/upload" component={UploadPage} />
           <Route path="/similarity" component={AnalysisPage} />
-          <Route path="/test" component={TestForm} exact />
           <Route path="/student" component={StudentDash} exact />
         </Switch>
       </header>

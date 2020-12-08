@@ -23,8 +23,6 @@ function HomePage() {
   const accessToken = localStorage.getItem('userToken');
   const lastName = useSelector((root: RootState) => root.currentUser.lastName);
 
-  const { Title } = Typography;
-
   const showModal = () => {
     setVisible(true);
   };

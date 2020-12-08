@@ -4,6 +4,10 @@ import HashFactory from '../hash_factory/HashFactory'
 import IEncryptor from '../hash_factory/IEncryptor'
 import ISyntaxTreeNode from './ISyntaxTreeNode'
 
+/**
+ * DELIMITER to seperate out tokens, statements and different portions of the code
+ */
+//useful for debugging purpose
 export const DELIMITER = {
   TOKEN: '.', //Between tokens
   STATEMENT: '|', //Between statements
@@ -13,6 +17,9 @@ export const DELIMITER = {
   IF_EXPR: '()', //for expression in if
 }
 
+/**
+ * Builder for generating hashcodes for different types of code.
+ */
 export default class HashBuilder {
   encryptor: IEncryptor
 
@@ -35,7 +42,7 @@ export default class HashBuilder {
   }
 
   /**
-   * Generic hashcode generation for any node
+   * Generic hashcode generation for any node or statement
    */
   buildGenericHash(node: Node, prefix: HashString = '', prefix_delimiter: HashString = ''): HashString {
     let hashCode: HashString = ''
@@ -76,7 +83,8 @@ export default class HashBuilder {
   }
 
   /**
-   * Generate hashcode for nodes of type switch
+   * Generate hashcode for nodes of type switch. This would generate switch hashcode to be
+   * represented in same way as if else if statement
    */
   buildHashForSwitchCondn(
     condn: Node,

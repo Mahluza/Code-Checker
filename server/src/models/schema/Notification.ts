@@ -1,6 +1,9 @@
 import SubmissionMatch from '../comparision/SubmissionMatch'
 import InstructorModel from '../user/InstuctorModel'
 
+/**
+ * Notification class to hold the notification information sent from instructor to student.
+ */
 export default class Notification {
   private timestamp: Date
 
@@ -17,22 +20,37 @@ export default class Notification {
     this.submission = submission
   }
 
+  /**
+   * Returns the Instructor who sends the notification.
+   */
   getSender(): InstructorModel {
     return this.sender
   }
 
+  /**
+   * Returns the Date of the notification.
+   */
   getTimestamp(): Date {
     return this.timestamp
   }
 
+  /**
+   * Returns the title of the notification.
+   */
   getTitle(): string {
     return this.title
   }
 
+  /**
+   * Returns the content of the notification.
+   */
   getBody(): string {
     return this.body
   }
 
+  /**
+   * Returns the SubmissionMatch found.
+   */
   getSubmission(): SubmissionMatch {
     return this.submission
   }

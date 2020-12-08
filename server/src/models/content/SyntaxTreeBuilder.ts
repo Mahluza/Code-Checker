@@ -1,16 +1,24 @@
-import { Node, SyntaxKind, VariableDeclaration } from 'ts-morph'
+import { Node, SyntaxKind } from 'ts-morph'
 import { HashString } from '../schema/HashString'
 import HashBuilder from './HashBuilder'
 import { DELIMITER } from './HashBuilder'
 import ISyntaxTreeNode from './ISyntaxTreeNode'
 import SyntaxTreeNode from './SyntaxTreeNode'
 
+/**
+ * Indicator to indicate type of special statement/block. Useful for debugging purposes.
+ */
 const INDICATOR = {
   ITERATION_STATEMENT: 'ITERATION_STATEMENT ',
   CONDITIONAL_IF_STATEMENT: 'CONDITIONAL_STATEMENT ',
   CONDITIONAL_ELSE_STATEMENT: 'CONDITIONAL_ELSE_STATEMENT ',
 }
 
+/**
+ * SyntaxTreeBuilder builds the custom Syntax tree for different types of node.
+ * It exports a function which accepts root of file and internally invokes buildAST or related functions
+ * recursively till the traversal is complete.
+ */
 export default class SyntaxTreeBuilder {
   private hashBuilder: HashBuilder
   constructor(encryption?: string) {
@@ -35,6 +43,11 @@ export default class SyntaxTreeBuilder {
     )
   }
 
+  /**
+   * Return the comments found in the node
+   *
+   * @param node node in the AST
+   */
   private getCommentsInNode(file: Node): Array<number> {
     let nComments: Array<number> = []
     file.getDescendantsOfKind(SyntaxKind.JSDocComment).map((c) => {
@@ -55,6 +68,10 @@ export default class SyntaxTreeBuilder {
     return nComments
   }
 
+  /**
+   * Create a SyntaxTreeNode object
+   *
+   */
   private buildSyntaxTreeNode(node: Node, hashCode: HashString, childNodes: ISyntaxTreeNode[] = null): SyntaxTreeNode {
     return new SyntaxTreeNode(
       node.getKind(),
@@ -66,6 +83,10 @@ export default class SyntaxTreeBuilder {
     )
   }
 
+  /**
+   * Constructs a custom syntax tree by traversing the Ts-morph generated AST.
+   *
+   */
   private buildAST(node: Node, ignoreBreak: boolean = false): ISyntaxTreeNode[] {
     if (node) {
       let syntaxTreeNodes: ISyntaxTreeNode[] = []
@@ -87,6 +108,7 @@ export default class SyntaxTreeBuilder {
           case SyntaxKind.SingleLineCommentTrivia:
           case SyntaxKind.JSDocComment:
           case SyntaxKind.EndOfFileToken:
+            //we can ignore this.
             break
           case SyntaxKind.ForStatement:
           case SyntaxKind.WhileStatement:
@@ -112,6 +134,9 @@ export default class SyntaxTreeBuilder {
     }
   }
 
+  /**
+   * Creates a custom Class Declaration type SyntaxTreeNode.
+   */
   private buildClassDeclaration(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
     let hashCode: HashString = ''
     let childNodes: ISyntaxTreeNode[] = []
@@ -120,6 +145,9 @@ export default class SyntaxTreeBuilder {
     syntaxTreeNodes.push(this.buildSyntaxTreeNode(node, hashCode, childNodes))
   }
 
+  /**
+   * Creates a custom Class Declaration type SyntaxTreeNode.
+   */
   private buildFunctionDeclaration(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
     let hashCode: HashString = ''
     let childNodes: ISyntaxTreeNode[] = []
@@ -128,6 +156,9 @@ export default class SyntaxTreeBuilder {
     syntaxTreeNodes.push(this.buildSyntaxTreeNode(node, hashCode, childNodes))
   }
 
+  /**
+   * Creates a custom Switch Statement type SyntaxTreenNode which is equivalent to an If-Else-If construct.
+   */
   private buildSwitchStatement(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
     let identifierOfSwitch = node.getFirstChildByKind(SyntaxKind.Identifier)
     let caseBlock = node.getFirstChildByKind(SyntaxKind.CaseBlock)
@@ -161,6 +192,9 @@ export default class SyntaxTreeBuilder {
     }
   }
 
+  /**
+   * Creates a custom IF Statement type SyntaxTreenNode which is equivalent to an If-Else-If construct.
+   */
   private buildIfStatement(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
     let hashCode: HashString = ''
     let childNodes: ISyntaxTreeNode[] = []
@@ -191,45 +225,53 @@ export default class SyntaxTreeBuilder {
     }
   }
 
+  /**
+   * Creates a custom conditional loop type SyntaxTreenNode which has common format for the loops - FOR,WHILE,DO-WHILE.
+   */
   private buildLoopStatements(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
     let hashCode: HashString = ''
     let childNodes: ISyntaxTreeNode[] = []
     let expressionInFor: Node
     childNodes = this.buildAST(node.getFirstChildByKind(SyntaxKind.Block))
-    //specific handling when for loop is used
-    if (node.getKind() === SyntaxKind.ForStatement) {
-      let variableDecls = node.getChildrenOfKind(SyntaxKind.VariableDeclarationList)
-      //declarations in for loop might be attempted to declare outside when using while
-      //appending variable statement to match with normal declaration and adding to block
-      variableDecls.map((variableDecl) => {
-        let hashCode_variable_decl: HashString = ''
-        hashCode_variable_decl = this.hashBuilder.buildGenericHash(
-          variableDecl,
-          SyntaxKind.VariableStatement.toString(),
+    if (childNodes && childNodes.length > 0) {
+      //specific handling when for loop is used
+      if (node.getKind() === SyntaxKind.ForStatement) {
+        let variableDecls = node.getChildrenOfKind(SyntaxKind.VariableDeclarationList)
+        //declarations in for loop might be attempted to declare outside when using while
+        //appending variable statement to match with normal declaration and adding to block
+        variableDecls.map((variableDecl) => {
+          let hashCode_variable_decl: HashString = ''
+          hashCode_variable_decl = this.hashBuilder.buildGenericHash(
+            variableDecl,
+            SyntaxKind.VariableStatement.toString(),
+            DELIMITER.TOKEN
+          )
+          syntaxTreeNodes.push(this.buildSyntaxTreeNode(variableDecl, hashCode_variable_decl))
+        })
+        //expression condition can be moved inside the block hence moving it and appending prefix
+        expressionInFor = node.getChildAtIndex(6)
+        this.buildGenericStatements(
+          expressionInFor,
+          childNodes,
+          SyntaxKind.ExpressionStatement.toString(),
           DELIMITER.TOKEN
         )
-        syntaxTreeNodes.push(this.buildSyntaxTreeNode(variableDecl, hashCode_variable_decl))
+      }
+      //any iteration statement to represent in a standard iteration <condition> to detect similarities
+      let prefix: HashString = INDICATOR.ITERATION_STATEMENT
+      node.getChildrenOfKind(SyntaxKind.BinaryExpression).forEach((expr) => {
+        prefix += this.hashBuilder.buildGenericHash(expr)
       })
-      //expression condition can be moved inside the block hence moving it and appending prefix
-      expressionInFor = node.getChildAtIndex(6)
-      this.buildGenericStatements(
-        expressionInFor,
-        childNodes,
-        SyntaxKind.ExpressionStatement.toString(),
-        DELIMITER.TOKEN
-      )
+      hashCode = this.hashBuilder.buildHashForBlock(childNodes, prefix)
+      let iterationNode = this.buildSyntaxTreeNode(node, hashCode, childNodes)
+      iterationNode.modifyNodeType(SyntaxKind.WhileStatement)
+      syntaxTreeNodes.push(iterationNode)
     }
-    //any iteration statement to represent in a standard iteration <condition> to detect similarities
-    let prefix: HashString = INDICATOR.ITERATION_STATEMENT
-    node.getChildrenOfKind(SyntaxKind.BinaryExpression).forEach((expr) => {
-      prefix += this.hashBuilder.buildGenericHash(expr)
-    })
-    hashCode = this.hashBuilder.buildHashForBlock(childNodes, prefix)
-    let iterationNode = this.buildSyntaxTreeNode(node, hashCode, childNodes)
-    iterationNode.modifyNodeType(SyntaxKind.WhileStatement)
-    syntaxTreeNodes.push(iterationNode)
   }
 
+  /**
+   * Creates a custom node for the statements and expressions.
+   */
   private buildGenericStatements(
     node: Node,
     syntaxTreeNodes: ISyntaxTreeNode[],
