@@ -1,5 +1,8 @@
 import AbstractUserModel from './AbstractUserModel'
 
+/**
+ * Builder to build different User objects - Student or Instructor
+ */
 export default interface IUserBuilder {
   buildUser(
     firstName: string,

@@ -9,6 +9,10 @@ export default class UserBuilder implements IUserBuilder {
   constructor() {
     this.director = Director.instance()
   }
+
+  /**
+   * Builder to build different User objects - Student or Instructor
+   */
   buildUser(
     firstName: string,
     lastName: string,

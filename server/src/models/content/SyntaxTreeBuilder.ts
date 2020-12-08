@@ -35,6 +35,11 @@ export default class SyntaxTreeBuilder {
     )
   }
 
+  /**
+   * Return the comments found in the node
+   *
+   * @param node node in the AST
+   */
   private getCommentsInNode(file: Node): Array<number> {
     let nComments: Array<number> = []
     file.getDescendantsOfKind(SyntaxKind.JSDocComment).map((c) => {
@@ -55,6 +60,10 @@ export default class SyntaxTreeBuilder {
     return nComments
   }
 
+  /**
+   * Create a SyntaxTreeNode object
+   *
+   */
   private buildSyntaxTreeNode(node: Node, hashCode: HashString, childNodes: ISyntaxTreeNode[] = null): SyntaxTreeNode {
     return new SyntaxTreeNode(
       node.getKind(),
@@ -66,6 +75,10 @@ export default class SyntaxTreeBuilder {
     )
   }
 
+  /**
+   * Constructs a custom syntax tree by traversing the Ts-morph generated AST.
+   *
+   */
   private buildAST(node: Node, ignoreBreak: boolean = false): ISyntaxTreeNode[] {
     if (node) {
       let syntaxTreeNodes: ISyntaxTreeNode[] = []
@@ -112,6 +125,9 @@ export default class SyntaxTreeBuilder {
     }
   }
 
+  /**
+   * Creates a custom Class Declaration type SyntaxTreeNode.
+   */
   private buildClassDeclaration(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
     let hashCode: HashString = ''
     let childNodes: ISyntaxTreeNode[] = []
@@ -120,6 +136,9 @@ export default class SyntaxTreeBuilder {
     syntaxTreeNodes.push(this.buildSyntaxTreeNode(node, hashCode, childNodes))
   }
 
+  /**
+   * Creates a custom Class Declaration type SyntaxTreeNode.
+   */
   private buildFunctionDeclaration(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
     let hashCode: HashString = ''
     let childNodes: ISyntaxTreeNode[] = []
@@ -128,6 +147,9 @@ export default class SyntaxTreeBuilder {
     syntaxTreeNodes.push(this.buildSyntaxTreeNode(node, hashCode, childNodes))
   }
 
+  /**
+   * Creates a custom Switch Statement type SyntaxTreenNode which is equivalent to an If-Else-If construct.
+   */
   private buildSwitchStatement(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
     let identifierOfSwitch = node.getFirstChildByKind(SyntaxKind.Identifier)
     let caseBlock = node.getFirstChildByKind(SyntaxKind.CaseBlock)
@@ -161,6 +183,9 @@ export default class SyntaxTreeBuilder {
     }
   }
 
+  /**
+   * Creates a custom IF Statement type SyntaxTreenNode which is equivalent to an If-Else-If construct.
+   */
   private buildIfStatement(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
     let hashCode: HashString = ''
     let childNodes: ISyntaxTreeNode[] = []
@@ -191,6 +216,9 @@ export default class SyntaxTreeBuilder {
     }
   }
 
+  /**
+   * Creates a custom conditional loop type SyntaxTreenNode which has common format for the loops - FOR,WHILE,DO-WHILE.
+   */
   private buildLoopStatements(node: Node, syntaxTreeNodes: ISyntaxTreeNode[]) {
     let hashCode: HashString = ''
     let childNodes: ISyntaxTreeNode[] = []
@@ -230,6 +258,9 @@ export default class SyntaxTreeBuilder {
     syntaxTreeNodes.push(iterationNode)
   }
 
+  /**
+   * Creates a custom node for the statements and expressions.
+   */
   private buildGenericStatements(
     node: Node,
     syntaxTreeNodes: ISyntaxTreeNode[],

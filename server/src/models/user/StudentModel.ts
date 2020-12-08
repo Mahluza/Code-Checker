@@ -8,9 +8,17 @@ export default class StudentModel extends AbstractUserModel {
     super(firstName, lastName, institution, email, role, password)
     this.notifications = []
   }
+
+  /**
+   * To add notification sent by the Instructor to the Student dashboard.
+   */
   addNotification(notification: Notification) {
     this.notifications.push(notification)
   }
+
+  /**
+   * Gets all the notifications received by the student
+   */
   getNotifications(): NotificationSchema[] {
     return this.notifications.map((notification) => {
       return {
