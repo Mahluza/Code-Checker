@@ -3,6 +3,9 @@ import { UserDetails } from '../schema/UserDetails'
 
 const bcrypt = require('bcryptjs')
 
+/**
+ * AbstractUserModel having the common attributes and functions for Users.
+ */
 export default abstract class AbstractUserModel implements IUserModel {
   private id: number
   private passwordHash: string

@@ -5,6 +5,10 @@ import AbstractUserModel from './AbstractUserModel'
 import Notification from '../schema/Notification'
 import SubmissionMatch from '../comparision/SubmissionMatch'
 
+/**
+ * Instructor Model representing the instructor user.
+ * Instructor will have functions related to create projects, manage them and notify student for any plagiarized code.
+ */
 export default class InstructorModel extends AbstractUserModel {
   private projects: Map<number, ProjectModel> = new Map()
   constructor(firstName: string, lastName: string, institution: string, email: string, password: string, role: number) {

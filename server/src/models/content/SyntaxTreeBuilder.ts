@@ -1,16 +1,24 @@
-import { Node, SyntaxKind, VariableDeclaration } from 'ts-morph'
+import { Node, SyntaxKind } from 'ts-morph'
 import { HashString } from '../schema/HashString'
 import HashBuilder from './HashBuilder'
 import { DELIMITER } from './HashBuilder'
 import ISyntaxTreeNode from './ISyntaxTreeNode'
 import SyntaxTreeNode from './SyntaxTreeNode'
 
+/**
+ * Indicator to indicate type of special statement/block. Useful for debugging purposes.
+ */
 const INDICATOR = {
   ITERATION_STATEMENT: 'ITERATION_STATEMENT ',
   CONDITIONAL_IF_STATEMENT: 'CONDITIONAL_STATEMENT ',
   CONDITIONAL_ELSE_STATEMENT: 'CONDITIONAL_ELSE_STATEMENT ',
 }
 
+/**
+ * SyntaxTreeBuilder builds the custom Syntax tree for different types of node.
+ * It exports a function which accepts root of file and internally invokes buildAST or related functions
+ * recursively till the traversal is complete.
+ */
 export default class SyntaxTreeBuilder {
   private hashBuilder: HashBuilder
   constructor(encryption?: string) {
@@ -100,6 +108,7 @@ export default class SyntaxTreeBuilder {
           case SyntaxKind.SingleLineCommentTrivia:
           case SyntaxKind.JSDocComment:
           case SyntaxKind.EndOfFileToken:
+            //we can ignore this.
             break
           case SyntaxKind.ForStatement:
           case SyntaxKind.WhileStatement:

@@ -1,5 +1,8 @@
 import { UserDetails } from '../schema/UserDetails'
 
+/**
+ * IUserModel representing different users - student, instructor
+ */
 export default interface IUserModel {
   /**
    * Returns the user's email id.

@@ -3,8 +3,13 @@ import ASTProject from '../core/ASTProject'
 import ISyntaxTreeNode from './ISyntaxTreeNode'
 import SyntaxTreeBuilder from './SyntaxTreeBuilder'
 
+/**
+ * Represents a file of the student. This model takes in the content and stores Syntax Tree for it.
+ */
 export default class FileModel {
+  //syntax tree generated from file
   private syntaxTree: ISyntaxTreeNode
+  //number of statements excluding comments in the file
   private numOfStatements: number
 
   constructor(private name: string, private content: string, encryption: string = 'sha256') {
@@ -57,7 +62,7 @@ export default class FileModel {
   }
 
   /**
-   * Creates a syntax tree for a file name provided
+   * Creates a syntax tree for a file name provided using the encryption scheme provided
    */
   createSyntaxTree(encryption: string) {
     //Singleton pattern to get instance
@@ -68,6 +73,7 @@ export default class FileModel {
     numOfStatements -= this.getCommentsInNode(sourceFile)
     this.numOfStatements = numOfStatements
     let syntaxBuilder1 = new SyntaxTreeBuilder(encryption)
+    //generating our custom Syntax tree
     this.syntaxTree = syntaxBuilder1.buildRootNode(sourceFile)
     //deleting temp file
     sourceFile.deleteImmediately()

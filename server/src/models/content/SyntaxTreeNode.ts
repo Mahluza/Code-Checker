@@ -2,6 +2,13 @@ import ISyntaxTreeNode from './ISyntaxTreeNode'
 import { SyntaxKind } from 'ts-morph'
 import { HashString } from '../schema/HashString'
 
+/**
+ * Represents node of the custom syntax tree.
+ * We use this class to create our custom tree with relevant information at each level.
+ *
+ * We have the line details(start, end), number of comments in this node,
+ * type of the node, children of this node(if any) and hashCode of the node
+ */
 class SyntaxTreeNode implements ISyntaxTreeNode {
   private startLineNumber: number
   private endLineNumber: number

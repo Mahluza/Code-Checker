@@ -2,6 +2,9 @@ import AbstractUserModel from './AbstractUserModel'
 import Notification from '../schema/Notification'
 import { NotificationSchema } from '../schema/NotificationSchema'
 
+/**
+ * Student model to represent the student information and functionalities student has.
+ */
 export default class StudentModel extends AbstractUserModel {
   notifications: Array<Notification>
   constructor(firstName: string, lastName: string, institution: string, email: string, password: string, role: number) {

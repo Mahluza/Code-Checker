@@ -1,6 +1,9 @@
 import SubmissionMatch from '../comparision/SubmissionMatch'
 import InstructorModel from '../user/InstuctorModel'
 
+/**
+ * Notification class to hold the notification information sent from instructor to student.
+ */
 export default class Notification {
   private timestamp: Date
 

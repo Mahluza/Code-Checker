@@ -4,14 +4,16 @@ import AbstractUserModel from './AbstractUserModel'
 import InstructorModel from './InstuctorModel'
 import StudentModel from './StudentModel'
 
+/**
+ * Builder to build different User objects - Student or Instructor
+ */
 export default class UserBuilder implements IUserBuilder {
   private director: Director
   constructor() {
     this.director = Director.instance()
   }
-
   /**
-   * Builder to build different User objects - Student or Instructor
+   * Builds user object with the details provided and based on the role
    */
   buildUser(
     firstName: string,
@@ -30,6 +32,7 @@ export default class UserBuilder implements IUserBuilder {
     } else {
       userModel = new StudentModel(firstName, lastName, institution, email, password, role)
     }
+    //store the user created at a higher level
     this.director.addUserModel(email, userModel)
     return userModel
   }
