@@ -12,14 +12,5 @@ export const homePageTableColumns = [
     title: 'Created On',
     dataIndex: 'createdOn',
     key: 'createdOn',
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (text: any, record: { name: React.ReactNode }) => (
-      <Space size="middle">
-        <a>Delete</a>
-      </Space>
-    ),
-  },
+  }
 ];

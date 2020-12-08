@@ -29,14 +29,12 @@ function App() {
   let history = useHistory();
 
   // get user role from redux store
-  const userRole = useSelector(
-    (state: RootState) => state.currentUser.userRole
-  );
+  const userRole = localStorage.getItem('userRole')
 
   const onMenuClick = (e: any) => {
     // home button
     if (e.key === '0' || e.key === '1') {
-      if (userRole == 1) {
+      if (userRole === '1') {
         history.push('/home');
       } else {
         history.push('/student');
