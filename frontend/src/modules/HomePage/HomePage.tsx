@@ -45,7 +45,7 @@ function HomePage() {
         dispatch(allActions.projectActions.setProjects(projects));
       })
       .catch(function (error) {
-        console.log(error);
+
       });
   }, []);
 

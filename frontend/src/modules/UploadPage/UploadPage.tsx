@@ -35,7 +35,6 @@ function UploadPage() {
   // Fetch any pre-existing similarity pairs that exist for the current upload.
   useEffect(() => {
     instance.get(`project/${projectId}`).then((resp: any) => {
-      console.log(resp);
       setSimilarityPairs(resp.data.similarityResults);
       setReadyToUpload(false);
     });
@@ -63,13 +62,11 @@ function UploadPage() {
         };
         submissionData.push(submission);
       }
-      console.log(submissionData);
       let body = { projectId: projectId, submissions: submissionData };
       instance
         .post("/submission", body)
         .then((result) => {})
         .catch(function (error) {
-          console.log(error);
         });
     }
   }, [readyToUpload]);
@@ -79,7 +76,6 @@ function UploadPage() {
       .post(`project/${projectId}/runDetection`, { projectId })
       .then((resp) => {
         instance.get(`project/${projectId}`).then((resp: any) => {
-          console.log(resp);
           setSimilarityPairs(resp.data.similarityResults);
           setReadyToUpload(false);
         });

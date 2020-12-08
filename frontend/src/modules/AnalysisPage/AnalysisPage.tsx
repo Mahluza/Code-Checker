@@ -96,7 +96,6 @@ function AnalysisPage() {
   // On mount, fetch the first file match pair and load it into the code blocks
   useEffect(() => {
     instance.get(`/similarity/${projectId}/${similarityId}`).then((resp) => {
-      console.log(resp);
       setSimilarities(resp.data.similarities);
       instance
         .get(`/similarity/${projectId}/${similarityId}/0`)

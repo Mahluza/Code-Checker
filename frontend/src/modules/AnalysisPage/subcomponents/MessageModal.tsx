@@ -13,7 +13,6 @@ function MessageModal(props: IMessageModalProps) {
   const accessToken = localStorage.getItem('userToken');
 
   const onFinish = (values: any) => {
-    console.log('values:', values);
     instance
       .post(
         '/users/notification',
@@ -33,12 +32,11 @@ function MessageModal(props: IMessageModalProps) {
         props.handleCancel();
       })
       .catch(function (error) {
-        console.log(error);
       });
   };
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
+
   };
 
   return (

@@ -50,7 +50,6 @@ export default function StudentDash() {
       })
       .catch(function (error) {
         // catch and log any errors sent from backend
-        console.log(error);
       });
   }, []);
 

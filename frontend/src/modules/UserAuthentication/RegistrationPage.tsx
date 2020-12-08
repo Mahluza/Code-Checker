@@ -80,7 +80,6 @@ function RegistrationPage() {
         })
         .catch(function (error) {
           // catch and log any network status errors
-          console.log(error);
         });
     } else setErr("Passwords don't match"); // if passwords don't match
   };

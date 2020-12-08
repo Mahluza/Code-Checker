@@ -16,7 +16,6 @@ class RoleRadio extends React.Component {
 */
 
   onChange = (e: any) => {
-    console.log('radio checked', e.target.value);
     this.setState({
       value: e.target.value,
     });

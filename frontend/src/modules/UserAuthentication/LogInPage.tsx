@@ -58,7 +58,6 @@ function LogInPage() {
       })
       .catch(function (error) {
         // catch and log any network status errors
-        console.log(error);
       });
   };
 

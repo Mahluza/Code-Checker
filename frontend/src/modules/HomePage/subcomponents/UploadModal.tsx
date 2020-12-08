@@ -25,7 +25,6 @@ function UploadModal(props: IUploadModalProps) {
 
   const history = useHistory();
   const onFinish = (values: any) => {
-    console.log("Success:", values);
     instance
       .post(
         "/project",
@@ -41,12 +40,10 @@ function UploadModal(props: IUploadModalProps) {
         history.push(`/upload/${result.data.projectId}`);
       })
       .catch(function (error) {
-        console.log(error);
       });
   };
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
   };
 
   return (
@@ -64,10 +61,6 @@ function UploadModal(props: IUploadModalProps) {
         onFinishFailed={onFinishFailed}
       >
         <Form.Item label="Project Name" name="projectName">
-          <Input />
-        </Form.Item>
-
-        <Form.Item label="Instructors" name="instructors">
           <Input />
         </Form.Item>
 
