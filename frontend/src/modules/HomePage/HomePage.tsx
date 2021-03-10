@@ -44,9 +44,7 @@ function HomePage() {
         setProjectsList(projects);
         dispatch(allActions.projectActions.setProjects(projects));
       })
-      .catch(function (error) {
-
-      });
+      .catch(function (error) {});
   }, []);
 
   return (

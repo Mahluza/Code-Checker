@@ -29,7 +29,7 @@ function App() {
   let history = useHistory();
 
   // get user role from redux store
-  const userRole = localStorage.getItem('userRole')
+  const userRole = localStorage.getItem('userRole');
 
   const onMenuClick = (e: any) => {
     // home button
