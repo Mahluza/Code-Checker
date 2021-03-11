@@ -1,5 +1,5 @@
 # Team 18 (Plagiarism Avengers) 💫
-
+CodeChecker is an app for helping professors detect plagiarism. It was our final project in CS 5500 (Foundations of Software Engineering) at Northeastern University. 
 ## 1.1 Installation: 
 
 - Download repository: https://github.ccs.neu.edu/CS-4530-5500-Fall-2020-Term-Project/Team-18 
